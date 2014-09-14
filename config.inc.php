@@ -1,8 +1,8 @@
 <?php
 
 $mypage = 'focuspoint';
-$REX['ADDON']['version'][$mypage] = '0.1';
-$REX['ADDON']['author'][$mypage] = 'Oliver Kreischer';
+$REX['ADDON']['version'][$mypage] = '0.5';
+$REX['ADDON']['author'][$mypage] = 'Oliver Kreischer, Daniel Weitenauer';
 
 if($REX['REDAXO'])
 {

@@ -1,16 +1,7 @@
 <?php
 
-$u = rex_sql::factory();
-// $u->setQuery('ALTER TABLE `rex_file` ADD `med_focuspoint_data` VARCHAR( 255 ) NOT NULL , ADD `med_focuspoint_css` VARCHAR( 255 ) NOT NULL;');
-
-
 $REX['ADDON']['install']['focuspoint'] = true;
 
-
-
-
-// SETUP/REPAIR FOCUSPOINT METAINFOS
-////////////////////////////////////////////////////////////////////////////////
 function focus_setup_metainfo()
 {
   global $REX;

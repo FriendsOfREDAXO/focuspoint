@@ -1,5 +1,23 @@
-<style>
+<?php
 
+class rex_focuspoint {
+
+  static public function set_media($params)
+  {
+    global $REX;
+    $filename = $params['filename'];
+    $filenamepath = $REX["INCLUDE_PATH"].'/../../files/'.$filename;
+
+    $s = rex_sql::factory()->getArray('select * from ' . $REX['TABLE_PREFIX'] . 'file where filename="' . mysql_real_escape_string($filename) . '"');
+
+  }
+
+
+  static public function show_form_info($params)
+  {
+      global $REX;
+
+      echo'<style>
 .more {
   display: none;
      }
@@ -60,34 +78,11 @@
 }
 </style>
 
-
-
-
 <script type="text/javascript" src="/../../redaxo/media/jquery.min.js"></script>
-<script type="text/javascript" src="/../../files/addons/focuspoint/jquery_focuspoint.js"></script>
-
-
-
-<?php
-
-class rex_focuspoint {
-
-  static public function set_media($params)
-  {
-    global $REX;
-    $filename = $params['filename'];
-    $filenamepath = $REX["INCLUDE_PATH"].'/../../files/'.$filename;
-
-    $s = rex_sql::factory()->getArray('select * from ' . $REX['TABLE_PREFIX'] . 'file where filename="' . mysql_real_escape_string($filename) . '"');
-
-  }
-
-
-  static public function show_form_info($params)
-  {
+<script type="text/javascript" src="'.$REX["HTDOCS_PATH"].'files/addons/focuspoint/jquery_focuspoint.js"></script>';
 
     $vars = rex_sql::factory()->getArray('select * from rex_file where file_id='.$params["file_id"]);
-    $dateiart = substr($vars[0][filename], -3);
+    $dateiart = substr($vars[0]['filename'], -3);
     if ($dateiart == 'jpg' OR $dateiart == 'png' OR $dateiart == 'gif') {
    echo "
    <script>
@@ -129,8 +124,8 @@ class rex_focuspoint {
 
    <div class="rex-form-row">
        <div id="fwidth" class="helper-tool-target">
-            <img src="'.$REX["INCLUDE_PATH"].'/../../files/'.$vars[0][filename].'" class="helper-tool-img">
-            <img class="reticle" src="/../../files/addons/focuspoint/focuspoint-target.png">
+            <img src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" class="helper-tool-img">
+            <img class="reticle" src="'.$REX["HTDOCS_PATH"].'files/addons/focuspoint/focuspoint-target.png">
         </div>
      </div>
 
