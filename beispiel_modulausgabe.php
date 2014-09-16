@@ -1,8 +1,8 @@
 <?php
 
-    if ('REX_FILE[1]') {
+    if ('REX_MEDIA[1]') {
 
-      $bild               = OOMedia::getMediaByName('REX_FILE[1]');
+      $bild               = OOMedia::getMediaByName('REX_MEDIA[1]');
       $bildTitle          = $bild->getTitle();
       $bildDateiName      = $bild->getFileName();
       $bildBreite         = $bild->getWidth();
@@ -25,6 +25,8 @@
         ';
 
       }
+
+
     }
 
 ?>
