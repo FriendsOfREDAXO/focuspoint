@@ -1,42 +1,30 @@
 <?php
 
-    if ("REX_FILE[1]" != "") { // Bild
+    if ('REX_FILE[1]') {
 
       $bild               = OOMedia::getMediaByName('REX_FILE[1]');
       $bildTitle          = $bild->getTitle();
-
-      $focuspoint_data    = $bild->getValue('med_focuspoint_data');
-      $focuspoint_css     = $bild->getValue('med_focuspoint_css');
-
       $bildDateiName      = $bild->getFileName();
       $bildBreite         = $bild->getWidth();
       $bildHoehe          = $bild->getHeight();
 
-      $image              = rex_image_manager::getImageCache('REX_FILE[1]', "contentimage_REX_VALUE[8]");
+      $focuspoint_data    = $bild->getValue('med_focuspoint_data');
+      $focuspoint_css     = $bild->getValue('med_focuspoint_css');
 
-      if ($focuspoint_data != '') {
-
-        // echo $focuspoint_data.' data-focus-w="'.$bildBreite.'" data-focus-h="'.$bildHoehe.'"<br/>';
-        // echo $focuspoint_css.'<br/>';
-
-        $bildcode = '
+      if ($focuspoint_data) {
+        //   echo $focuspoint_data.' data-focus-w="'.$bildBreite.'" data-focus-h="'.$bildHoehe.'"<br/>';
+        //   echo $focuspoint_css.'<br/>';
+        echo '
         <div class="focuspoint"
           '.$focuspoint_data.'
           data-focus-w="'.$bildBreite.'"
           data-focus-h="'.$bildHoehe.'"
         >
-             <img src="./files/'.$bildDateiName.'" alt="" />
+          <img src="./files/'.$bildDateiName.'" alt="" />
         </div>
-
-
         ';
 
-      } else {
-
-        // Bildangaben ohne gesetzten Focuspoint
-
       }
-
-  echo $bildcode;
+    }
 
 ?>
