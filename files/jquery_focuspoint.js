@@ -187,10 +187,11 @@
 			$cssAttrInput = $('#Focuspoint_CSS');
 			$helperToolImage = $('img.helper-tool-img, img.target-overlay');
 
-			//Create Grid Elements
-			for(var i = 1; i < 10; i++) {
-				$('#Frames').append('<div id="Frame'+i+'" class="focuspoint"><img/></div>');
-			}
+		//	Create Grid Elements
+		//	for(var i = 1; i < 10; i++) {
+		//		$('#Frames').append('<div id="Frame'+i+'" class="focuspoint"><img/></div>');
+		// 	}
+
 			//Store focus point containers
 			$focusPointContainers = $('.focuspoint');
 			$focusPointImages = $('.focuspoint img');
@@ -261,7 +262,8 @@
 		/*-----------------------------------------*/
 
 		function printDataAttr(){
-			$dataAttrInput.val('data-focus-x="'+focusPointAttr.x.toFixed(2)+'" data-focus-y="'+focusPointAttr.y.toFixed(2)+'" data-focus-w="'+focusPointAttr.w+'" data-focus-h="'+focusPointAttr.h+'"');
+			//$dataAttrInput.val('data-focus-x="'+focusPointAttr.x.toFixed(2)+'" data-focus-y="'+focusPointAttr.y.toFixed(2)+'" data-focus-w="'+focusPointAttr.w+'" data-focus-h="'+focusPointAttr.h+'"');
+			$dataAttrInput.val('data-focus-x="'+focusPointAttr.x.toFixed(2)+'" data-focus-y="'+focusPointAttr.y.toFixed(2)+'"');
 		}
 
 		/*-----------------------------------------*/
@@ -309,7 +311,7 @@
 		// Change image on paste/blur
 		// When you paste an image into the specified input, it will be used for the demo
 
-		/*-----------------------------------------*/
+		/*---------------------------------------
 
 		$('input.helper-tool-set-src').on('paste blur', function(e){
 		  var element = this;
@@ -318,7 +320,7 @@
 			setImage(text);
 		  }, 100);
 		});
-
+		--*/
 		/*-----------------------------------------*/
 
 		/* Update Helper */
