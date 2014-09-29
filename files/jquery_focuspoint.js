@@ -5,8 +5,7 @@
  * Copyright (c) 2014 J. Menz; MIT License
  * @preserve
  */
-;
-(function($) {
+;(function($) {
 	$.fn.focusPoint = function(options) {
 		var settings = $.extend({
 			//These are the defaults.
@@ -262,8 +261,9 @@
 		/*-----------------------------------------*/
 
 		function printDataAttr(){
+			// Original
 			//$dataAttrInput.val('data-focus-x="'+focusPointAttr.x.toFixed(2)+'" data-focus-y="'+focusPointAttr.y.toFixed(2)+'" data-focus-w="'+focusPointAttr.w+'" data-focus-h="'+focusPointAttr.h+'"');
-			$dataAttrInput.val('data-focus-x="'+focusPointAttr.x.toFixed(2)+'" data-focus-y="'+focusPointAttr.y.toFixed(2)+'"');
+			$dataAttrInput.val(focusPointAttr.x.toFixed(2)+','+focusPointAttr.y.toFixed(2));
 		}
 
 		/*-----------------------------------------*/
@@ -281,8 +281,8 @@
 			//Calculate FocusPoint coordinates
 			var offsetX = e.pageX - $(this).offset().left;
 			var offsetY = e.pageY - $(this).offset().top;
-			var focusX = (offsetX/imageW - .5)*2;
-			var focusY = (offsetY/imageH - .5)*-2;
+			var focusX = (offsetX/imageW - 0.5)*2;
+			var focusY = (offsetY/imageH - 0.5)*-2;
 			focusPointAttr.x = focusX;
 			focusPointAttr.y = focusY;
 
@@ -295,8 +295,13 @@
 			//Calculate CSS Percentages
 			var percentageX = (offsetX/imageW)*100;
 			var percentageY = (offsetY/imageH)*100;
-			var backgroundPosition = percentageX.toFixed(0) + '% ' + percentageY.toFixed(0) + '%';
+			// var backgroundPosition = percentageX.toFixed(0) + '% ' + percentageY.toFixed(0) + '%';
+			// var backgroundPositionCSS = 'background-position: ' + backgroundPosition + ';';
+
+			var backgroundPosition = percentageX.toFixed(0) + '%, ' + percentageY.toFixed(0) + '%';
 			var backgroundPositionCSS = 'background-position: ' + backgroundPosition + ';';
+
+
 			$cssAttrInput.val(backgroundPositionCSS);
 
 			//Leave a sweet target reticle at the focus point.
