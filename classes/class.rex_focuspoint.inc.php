@@ -9,7 +9,6 @@ class rex_focuspoint {
     $filenamepath = $REX["INCLUDE_PATH"].'/../../files/'.$filename;
 
     $s = rex_sql::factory()->getArray('select * from ' . $REX['TABLE_PREFIX'] . 'file where filename="' . mysql_real_escape_string($filename) . '"');
-
   }
 
   static public function show_form_info($params)
@@ -17,9 +16,7 @@ class rex_focuspoint {
       global $REX;
 
 
-
-
-      echo'
+echo'
 <style>
   .more { display: none; }
   a.showLink, a.hideLink {
@@ -76,14 +73,34 @@ class rex_focuspoint {
           transition: all 500ms ease-in-out;
           -webkit-transition: all 500ms ease-in-out;
           -moz-transition: all 500ms ease-in-out;
+          border: 1px solid #fff;
 }
+
+
 </style>
 
 <script type="text/javascript" src="/../../redaxo/media/jquery.min.js"></script>
-<script type="text/javascript" src="'.$REX["HTDOCS_PATH"].'files/addons/focuspoint/jquery_focuspoint.js"></script>
+<script type="text/javascript" src="'.$REX["HTDOCS_PATH"].'files/addons/focuspoint/jquery_focuspoint.js" ></script>
 ';
 
-    $vars = rex_sql::factory()->getArray('select * from rex_file where file_id='.$params["file_id"]);
+   $vars = rex_sql::factory()->getArray('select * from rex_file where file_id='.$params["file_id"]);
+   $saved_css_data = explode(",",  $vars[0]['med_focuspoint_css'] , 2);;
+
+    if (count($saved_css_data) == 2) {
+        $css_x = $saved_css_data[0];
+        $css_y = $saved_css_data[1];
+    }
+
+	echo '
+	<style>
+		.helper-tool-target img.target-overlay, .helper-tool-target img.reticle  {
+        	top: '.$css_y.';
+			left: '.$css_x.';
+		}
+	</style>
+	';
+
+
     $dateiart = substr($vars[0]['filename'], -3);
     if ($dateiart == 'jpg' OR $dateiart == 'png' OR $dateiart == 'gif') {
 
@@ -109,7 +126,7 @@ class rex_focuspoint {
    echo '
      <div id="focuspointinfo-show" class="rex-form-row">
      <p class="rex-form-read">
-     <label for="fwidth">focuspoint</label>
+     <label for="fwidth">Focuspoint</label>
        <span id="fwidth" class="rex-form-read">
         <a href="#"  class="showLink" onclick="showHide(\'focuspointinfo\');return false;">Anzeigen</a>
        </span>
@@ -119,7 +136,7 @@ class rex_focuspoint {
     <div id="focuspointinfo" class="more">
      <div class="rex-form-row">
      <p class="rex-form-read">
-        <label for="fwidth">focuspoint</label>
+        <label for="fwidth">Focuspoint</label>
       <span id="fwidth" class="rex-form-read">
         <a href="#" id="iptc-hide" class="hideLink" onclick="showHide(\'focuspointinfo\');return false;">Verbergen</a>
        </span>
@@ -128,15 +145,9 @@ class rex_focuspoint {
 
 
    <div class="rex-form-row">
-      <div class="helper-tool-target">
-          <img class="helper-tool-img">
-          <img class="reticle" src="../img/focuspoint-target.png">
-          <img class="target-overlay">
-      </div>
-
-
+      
        <div id="fwidth" class="helper-tool-target">
-            <img class="helper-tool-img" src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" >
+	            <img class="helper-tool-img" src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" >
             <img class="reticle" src="'.$REX["HTDOCS_PATH"].'files/addons/focuspoint/focuspoint-target.png">
             <img class="target-overlay" src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" >
         </div>

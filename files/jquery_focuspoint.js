@@ -1,4 +1,6 @@
-/**
+
+	
+	/**
  * jQuery FocusPoint; version: 1.0.3
  * Author: http://jonathonmenz.com
  * Source: https://github.com/jonom/jquery-focuspoint
@@ -37,6 +39,7 @@
 		});
 	};
 	$.fn.adjustFocus = function() {
+
 		return this.each(function() {
 			//Declare variables at top of scope
 			var containerW,
@@ -299,7 +302,8 @@
 			// var backgroundPositionCSS = 'background-position: ' + backgroundPosition + ';';
 
 			var backgroundPosition = percentageX.toFixed(0) + '%, ' + percentageY.toFixed(0) + '%';
-			var backgroundPositionCSS = 'background-position: ' + backgroundPosition + ';';
+			//var backgroundPositionCSS = 'background-position: ' + backgroundPosition + ';';
+			var backgroundPositionCSS = backgroundPosition;
 
 
 			$cssAttrInput.val(backgroundPositionCSS);
@@ -310,22 +314,7 @@
 				'left':percentageX+'%'
 			});
 		});
-
-		/*-----------------------------------------*/
-
-		// Change image on paste/blur
-		// When you paste an image into the specified input, it will be used for the demo
-
-		/*---------------------------------------
-
-		$('input.helper-tool-set-src').on('paste blur', function(e){
-		  var element = this;
-		  setTimeout(function () {
-		    var text = $(element).val();
-			setImage(text);
-		  }, 100);
-		});
-		--*/
+		
 		/*-----------------------------------------*/
 
 		/* Update Helper */
@@ -350,4 +339,13 @@
 			$focusPointContainers.adjustFocus();
 		};
 	});
+
+
+
+
+
+
+
+
+
 }(jQuery));
