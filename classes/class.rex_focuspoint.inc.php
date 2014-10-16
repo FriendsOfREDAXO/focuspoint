@@ -93,7 +93,7 @@ echo'
 
 	echo '
 	<style>
-		.helper-tool-target img.target-overlay, .helper-tool-target img.reticle  {
+		.helper-tool-target img.reticle  {
         	top: '.$css_y.';
 			left: '.$css_x.';
 		}
