@@ -10,6 +10,8 @@ function focus_setup_metainfo()
         return;
     }
 
+
+
     $install_metas = array(
         'med_focuspoint_data' => array('Focuspoint Data', 'med_focuspoint_data', 200, '', 1, '', '', '', ''),
         'med_focuspoint_css' => array('Focuspoint CSS', 'med_focuspoint_css', 201, '', 1, '', '', '', ''),
