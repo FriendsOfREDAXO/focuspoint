@@ -46,8 +46,7 @@ echo'
 /* !HELPER TOOL TARGETING SYSTEM */
 .helper-tool-target {
           position: relative;
-          float: left;
-          width: auto;
+          width: 470px;
           overflow: hidden;
           margin-bottom:1em;
 }
@@ -90,17 +89,17 @@ echo'
     if (count($saved_css_data) == 2) {
         $css_x = $saved_css_data[0];
         $css_y = $saved_css_data[1];
+    }
 
 	echo '
 	<style>
-		.helper-tool-target img.reticle  {
+		.helper-tool-target img.target-overlay, .helper-tool-target img.reticle  {
         	top: '.$css_y.';
 			left: '.$css_x.';
 		}
 	</style>
 	';
 
-    }
 
     $dateiart = substr($vars[0]['filename'], -3);
     if ($dateiart == 'jpg' OR $dateiart == 'png' OR $dateiart == 'gif') {
