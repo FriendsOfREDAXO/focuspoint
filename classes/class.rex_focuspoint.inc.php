@@ -46,7 +46,7 @@ echo'
 /* !HELPER TOOL TARGETING SYSTEM */
 .helper-tool-target {
           position: relative;
-          width: 470px;
+          display: inline-block;
           overflow: hidden;
           margin-bottom:1em;
 }
@@ -65,15 +65,16 @@ echo'
           opacity: 0.01;
 }
 .helper-tool-target img.reticle {
+          width: 102px;
+          height: 102px;
           -webkit-transform: translate(-50%, -50%);
           -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
-          top:50%;
-          left:50%;
+          top: 50%;
+          left: 50%;
           transition: all 500ms ease-in-out;
           -webkit-transition: all 500ms ease-in-out;
           -moz-transition: all 500ms ease-in-out;
-          border: 1px solid #fff;
 }
 
 
@@ -84,7 +85,7 @@ echo'
 ';
 
    $vars = rex_sql::factory()->getArray('select * from rex_file where file_id='.$params["file_id"]);
-   $saved_css_data = explode(",",  $vars[0]['med_focuspoint_css'] , 2);;
+   $saved_css_data = explode(",",  $vars[0]['med_focuspoint_css'] , 2);
 
     if (count($saved_css_data) == 2) {
         $css_x = $saved_css_data[0];
@@ -94,8 +95,8 @@ echo'
 	echo '
 	<style>
 		.helper-tool-target img.target-overlay, .helper-tool-target img.reticle  {
-        	top: '.$css_y.';
-			left: '.$css_x.';
+        	 top: '.$css_y.';
+			     left: '.$css_x.';
 		}
 	</style>
 	';
@@ -145,7 +146,7 @@ echo'
 
 
    <div class="rex-form-row">
-      
+
        <div id="fwidth" class="helper-tool-target">
 	            <img class="helper-tool-img" src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" >
             <img class="reticle" src="'.$REX["HTDOCS_PATH"].'files/addons/focuspoint/focuspoint-target.png">
