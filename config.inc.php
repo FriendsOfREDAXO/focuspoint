@@ -1,5 +1,7 @@
 <?php
 
+
+
 $mypage = 'focuspoint';
 
 if($REX['REDAXO']) {
