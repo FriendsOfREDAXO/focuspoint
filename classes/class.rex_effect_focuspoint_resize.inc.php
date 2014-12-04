@@ -43,8 +43,10 @@ class rex_effect_focuspoint_resize extends rex_effect_abstract
     }
 
     $gdimage = & $this->image->getImage();
+
     $w = $this->image->getWidth();
     $h = $this->image->getHeight();
+
 
     $filename = $this->image->getFileName();
     if ( ($im_image = OOMedia::getMediaByName($filename)) ) {

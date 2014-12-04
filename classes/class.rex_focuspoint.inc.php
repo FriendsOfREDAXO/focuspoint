@@ -87,6 +87,8 @@ echo'
    $vars = rex_sql::factory()->getArray('select * from rex_file where file_id='.$params["file_id"]);
    $saved_css_data = explode(",",  $vars[0]['med_focuspoint_css'] , 2);
 
+    $css_x = '';
+    $css_y = '';
     if (count($saved_css_data) == 2) {
         $css_x = $saved_css_data[0];
         $css_y = $saved_css_data[1];
