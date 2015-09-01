@@ -107,56 +107,19 @@ echo'
     $dateiart = substr($vars[0]['filename'], -3);
     if ($dateiart == 'jpg' OR $dateiart == 'png' OR $dateiart == 'gif') {
 
+   $html = '<div class="rex-mediapool-detail-image"><div id="fwidth" class="helper-tool-target"><img class="helper-tool-img" src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" ><img class="reticle" src="'.$REX["HTDOCS_PATH"].'files/addons/focuspoint/focuspoint-target.png"><img class="target-overlay" src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" ></div></div>';
+
    echo "
    <script>
 
+     $('#rex-mediapool-detail-wrapper').append('$html');
 
-     function showHide(shID) {
-        if (document.getElementById(shID)) {
-           if (document.getElementById(shID+'-show').style.display != 'none') {
-              document.getElementById(shID+'-show').style.display = 'none';
-              document.getElementById(shID).style.display = 'block';
-           }
-           else {
-              document.getElementById(shID+'-show').style.display = 'inline';
-              document.getElementById(shID).style.display = 'none';
-           }
-        }
-     }
+    setTimeout(function() {
+      $('.rex-mediapool-detail-image p').html('');
+    }, 50);
+
    </script>
    ";
-
-   echo '
-     <div id="focuspointinfo-show" class="rex-form-row">
-     <p class="rex-form-read">
-     <label for="fwidth">Focuspoint</label>
-       <span id="fwidth" class="rex-form-read">
-        <a href="#"  class="showLink" onclick="showHide(\'focuspointinfo\');return false;">Anzeigen</a>
-       </span>
-     </p>
-     </div>
-
-    <div id="focuspointinfo" class="more">
-     <div class="rex-form-row">
-     <p class="rex-form-read">
-        <label for="fwidth">Focuspoint</label>
-      <span id="fwidth" class="rex-form-read">
-        <a href="#" id="iptc-hide" class="hideLink" onclick="showHide(\'focuspointinfo\');return false;">Verbergen</a>
-       </span>
-     </p>
-     </div>
-
-
-   <div class="rex-form-row">
-
-       <div id="fwidth" class="helper-tool-target">
-	            <img class="helper-tool-img" src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" >
-            <img class="reticle" src="'.$REX["HTDOCS_PATH"].'files/addons/focuspoint/focuspoint-target.png">
-            <img class="target-overlay" src="'.$REX["HTDOCS_PATH"].'files/'.$vars[0]['filename'].'" >
-        </div>
-     </div>
-
-    </div>';
      }
     }
 }
