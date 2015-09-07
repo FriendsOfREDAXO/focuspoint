@@ -112,10 +112,10 @@ echo'
    echo "
    <script>
 
-     $('#rex-mediapool-detail-wrapper').append('$html');
+     jQuery('#rex-mediapool-detail-wrapper').append('$html');
 
     setTimeout(function() {
-      $('.rex-mediapool-detail-image p').html('');
+      jQuery('.rex-mediapool-detail-image p').html('');
     }, 50);
 
    </script>
