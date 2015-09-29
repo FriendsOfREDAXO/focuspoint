@@ -10,10 +10,11 @@ function focus_setup_metainfo()
         return;
     }
 
-    $install_metas = [
-        'med_focuspoint_data' => ['Focuspoint Data', 'med_focuspoint_data', 200, '', 1, '', '', '', ''],
-        'med_focuspoint_css' => ['Focuspoint CSS', 'med_focuspoint_css', 201, '', 1, '', '', '', ''],
-    ];
+    $install_metas = array(
+        'med_focuspoint_data' => array('Focuspoint Data', 'med_focuspoint_data', 200, '', 1, '', '', '', ''),
+        'med_focuspoint_css' => array('Focuspoint CSS', 'med_focuspoint_css', 201, '', 1, '', '', '', '')
+    );
+
 
     $db = new rex_sql;
     foreach ($db->getDbArray('SHOW COLUMNS FROM `rex_file` LIKE \'med_focuspoint_%\';') as $column) {
