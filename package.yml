@@ -1,0 +1,12 @@
+package:  focuspoint
+version:  '1.0'
+author:   Oliver Kreischer, Jan Kristinus, Thomas, Blum, Daniel Weitenauer
+supportpage: www.redaxo.org/de/forum
+
+page:
+    title: 'translate:title'
+    perm: focuspoint[]
+    icon: rex-icon fa-dot-circle-o
+    subpages:
+      info: { title: 'translate:info'}
+
