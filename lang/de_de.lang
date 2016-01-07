@@ -1,8 +1,0 @@
-fp_title = Focuspoint
-fp_setup = Setup
-fp_help = Hilfe
-
-fp_module_script_info = Weitere Infos zum Focuspoint gibt es hier: <a href="https://github.com/jonom/jquery-focuspoint">https://github.com/jonom/jquery-focuspoint</a><br /><br />Folgendes im Template einfügen:
-fp_module_info = Diese Ausgabe dient als Beispiel für ein Modul:
-
-fp_effect_info = Bei der Installation wurde ein Effekt beim Image Manager AddON hinzugefügt. Sollte dieser fehlen, bitte ein reinstall durchführen
