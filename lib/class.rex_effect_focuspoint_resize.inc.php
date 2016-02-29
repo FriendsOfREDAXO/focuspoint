@@ -198,36 +198,34 @@ class rex_effect_focuspoint_resize extends rex_effect_abstract
     }
   }
 
-  function getParams()
-  {
-    global $REX, $I18N;
-
-    return array(
-    array(
-    'label' => $I18N->msg('imanager_effect_resize_width'),
-    'name' => 'width',
-    'type' => 'int',
-    ),
-    array(
-    'label' => $I18N->msg('imanager_effect_resize_height'),
-    'name' => 'height',
-    'type' => 'int'
-    ),
-    array(
-    'label' => $I18N->msg('imanager_effect_resize_style'),
-    'name' => 'style',
-    'type'  => 'select',
-    'options' => $this->options,
-    'default' => 'fit',
-    'suffix' => $this->script
-    ),
-    array(
-    'label' => $I18N->msg('imanager_effect_resize_imgtosmall'),
-    'name' => 'allow_enlarge',
-    'type' => 'select',
-    'options' => array('enlarge', 'not_enlarge'),
-    'default' => 'enlarge',
-    ),
-    );
-  }
+  public function getParams()
+    {
+        return [
+            [
+                'label' => rex_i18n::msg('media_manager_effect_resize_width'),
+                'name' => 'width',
+                'type' => 'int',
+            ],
+            [
+                'label' => rex_i18n::msg('media_manager_effect_resize_height'),
+                'name' => 'height',
+                'type' => 'int',
+            ],
+            [
+                'label' => rex_i18n::msg('media_manager_effect_resize_style'),
+                'name' => 'style',
+                'type' => 'select',
+                'options' => $this->options,
+                'default' => 'fit',
+                'suffix' => $this->script,
+            ],
+            [
+                'label' => rex_i18n::msg('media_manager_effect_resize_imgtosmall'),
+                'name' => 'allow_enlarge',
+                'type' => 'select',
+                'options' => ['enlarge', 'not_enlarge'],
+                'default' => 'enlarge',
+            ],
+        ];
+    }
 }

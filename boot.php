@@ -6,5 +6,5 @@ if (rex::isBackend()) {
   rex_extension::register('MEDIA_FORM_EDIT', 'rex_focuspoint::show_form_info');
 };
 
-// rex_media_manager::addEffect('rex_effect_focuspoint_resize');
+rex_media_manager::addEffect('rex_effect_focuspoint_resize');
 

@@ -1,24 +1,23 @@
 <?php
 
+
+
 class rex_focuspoint {
   static public function set_media($media)
   {
-    $file_id = $_GET["file_id"];
+
+    $file_id = rex_request('file_id', 'int');
     $s = rex_sql::factory()->getArray('select * from rex_media file where id="'.$file_id.'"');
   }
 
   static public function show_form_info($media)
   {
-    $file_id = $_GET["file_id"];
+
+
+   $file_id = rex_request('file_id', 'int');
 
     echo'
       <style>
-        .more { display: none; }
-        a.showLink, a.hideLink {
-                text-decoration: none;
-                color: #0092C0;
-        }
-
       .helper-tool, .helper-tool * {
                 box-sizing:border-box;
       }
@@ -46,6 +45,7 @@ class rex_focuspoint {
                 margin-bottom:1em;
       }
       .helper-tool-target img {
+                position: relative;
                 display: block;
                 max-width: 100%;
                 height:auto;
@@ -54,10 +54,13 @@ class rex_focuspoint {
                 position: absolute;
                 top: 0;
                 left: 0;
+
       }
       .helper-tool-target img.target-overlay {
+                top: 0 !important;
+                left: 0 !important;
                 cursor:pointer;
-                opacity: 0.01;
+                opacity: 0.0;
       }
       .helper-tool-target img.reticle {
                 width: 102px;
@@ -74,8 +77,8 @@ class rex_focuspoint {
 
       </style>
 
-      <script type="text/javascript" src="./../assets/addons/focuspoint/jquery_focuspoint.js" ></script>
     ';
+
 
     $vars = rex_sql::factory()->getArray('select * from rex_media where id='.$file_id);
 
@@ -108,10 +111,42 @@ class rex_focuspoint {
         <script>
           $(document).on('ready pjax:success',function(){
             $('.panel-body .col-sm-4').replaceWith('$html');
+
+            $('img').click(function(e){
+
+              var imageW = $(this).width();
+              var imageH = $(this).height();
+
+              //Calculate FocusPoint coordinates
+              var offsetX = e.pageX - $(this).offset().left;
+              var offsetY = e.pageY - $(this).offset().top;
+              var focusX = (offsetX/imageW - .5)*2;
+              var focusY = (offsetY/imageH - .5)*-2;
+
+              //Calculate CSS Percentages
+              var percentageX = (offsetX/imageW)*100;
+              var percentageY = (offsetY/imageH)*100;
+              var backgroundPositionCSS = percentageX.toFixed(0) + '%, ' + percentageY.toFixed(0) + '%';
+
+              $('#Focuspoint_Data' ).val(focusX.toFixed(2) + ',' + focusY.toFixed(2));
+              $('#Focuspoint_CSS' ).val(backgroundPositionCSS);
+
+              $('.reticle').css({
+                'top':percentageY+'%',
+                'left':percentageX+'%'
+              });
+
+
+             // window.alert('FocusX:' + focusX.toFixed(2) + ', FocusY:' + focusY.toFixed(2) + ' (For CSS version: ' + backgroundPositionCSS + ')');
+
+            });
+
           });
+
         </script>
       ";
     }
   }
 }
+
 ?>
