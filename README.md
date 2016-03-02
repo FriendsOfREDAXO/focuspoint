@@ -2,8 +2,8 @@
 ___
 
 
-Dieses Addon erweitert den Medienpool um dei Fähigkeit bei einem
-Bild einen Focuspoint zu setzten. Die Daten werden in die DB geschrieben.
+Dieses Addon erweitert den Medienpool um die Fähigkeit bei einem
+Bild einen Focuspoint zu setzten. Die ermittelten Daten werden in die DB geschrieben und können bei der Bildausgabe berücksichtigt werden.
 
 Hierfür wird das jQuery Plugin von [Jono Menz](https://github.com/jonom/jquery-focuspoint) benutzt.
 

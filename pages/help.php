@@ -8,9 +8,8 @@ $content = '
 $content .= rex_string::highlight(rex_file::get(rex_path::addon('focuspoint','pages/info_template.inc')));
 
 $content .= '
-Bei der Installation wurde ein Effekt beim Image Manager AddOn hinzugefügt. Sollte dieser fehlen, bitte ein reinstall durchführen
-
-Diese Ausgabe dient als Beispiel für ein Modul:
+<p>Bei der Installation wurde ein Effekt beim Media Manager AddOn hinzugefügt. Sollte dieser fehlen, bitte ein reinstall durchführen</p>
+<p>Diese Ausgabe dient als Beispiel für ein Modul:</p>
 
 ';
 $content .= rex_string::highlight(rex_file::get(rex_path::addon('focuspoint','pages/info_modul.inc')));
