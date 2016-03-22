@@ -105,7 +105,7 @@ class rex_focuspoint {
 
     if ($dateiart == 'jpg' OR $dateiart == 'png' OR $dateiart == 'gif') {
 
-      $html = '<div class="rex-mediapool-detail-image col-sm-4"><div id="fwidth" class="helper-tool-target"><img class="helper-tool-img" src="'.rex_url::media($filename).'" ><img class="reticle" src="./../assets/addons/focuspoint/focuspoint-target.png"><img class="target-overlay" src="'.rex_url::media($filename).'" ></div></div>';
+      $html = '<div class="rex-mediapool-detail-image col-sm-4"><div id="fwidth" class="helper-tool-target"><img class="helper-tool-img" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file='.rex_url::media($filename).'" ><img class="reticle" src="./../assets/addons/focuspoint/focuspoint-target.png"><img class="target-overlay" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file='.rex_url::media($filename).'" ></div></div>';
 
       echo "
         <script>
