@@ -80,7 +80,11 @@ class rex_focuspoint {
     ';
 
 
-    $vars = rex_sql::factory()->getArray('select * from rex_media where id='.$file_id);
+   if($file_id) {
+     $vars = rex_sql::factory()->getArray('select * from rex_media where id='.$file_id);
+   } else {
+     $vars = rex_sql::factory()->getArray('select * from rex_media where filename="'.rex_request('file_name', 'string').'"');
+   }
 
     $saved_css_data = explode(",",  $vars[0]['med_focuspoint_css'] , 2);
 
