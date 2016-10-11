@@ -1,7 +1,7 @@
-Das Addon wird hier nicht wieter gepflegt.
+Das Addon wird hier nicht mehr gepflegt.
 
 ___
-Weiter geht es hier: [https://github.com/FriendsOfREDAXO/focuspoint](https://github.com/FriendsOfREDAXO/focuspoint)
+#### Weiter geht es hier: [https://github.com/FriendsOfREDAXO/focuspoint](https://github.com/FriendsOfREDAXO/focuspoint)
 ___
 
 #### Focuspoint für Redaxo 5
