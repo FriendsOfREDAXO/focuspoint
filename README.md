@@ -1,10 +1,4 @@
-Das Addon wird hier nicht mehr gepflegt.
-
-___
-#### Weiter geht es hier: [https://github.com/FriendsOfREDAXO/focuspoint](https://github.com/FriendsOfREDAXO/focuspoint)
-___
-
-#### Focuspoint für Redaxo 5
+### Focuspoint für Redaxo 5
 ___
 
 
@@ -15,21 +9,13 @@ Hierfür wird das jQuery Plugin von [Jono Menz](https://github.com/jonom/jquery-
 
 ___
 
-Schreibt doch bitte auftretende Fehler, Notices und Wünsche als Issue auf [Github](https://github.com/olien/rex5_focuspoint/issues)
+Schreibt doch bitte auftretende Fehler, Notices und Wünsche als Issue auf [Github](https://github.com/FriendsOfREDAXO/focuspoint/issues)
 
 ___
 
-### ToDo
 
-siehe [ISSUES](https://github.com/olien/rex5_focuspoint/issues)
-
-___
 
 ### Credits
 
-* [Thomas Blum](https://github.com/tbaddade)
-* [Jan Kristinus](https://github.com/dergel)
-* [Daniel Weitenauer](https://github.com/DanielWeitenauer)
-* [Jono Menz](https://github.com/jonom)
-* [Emanuil Rusev](http://parsedown.org)
-
+- [Jono Menz](https://github.com/jonom/jquery-focuspoint)
+- [FriendsOfREDAXO](https://github.com/FriendsOfREDAXO)
