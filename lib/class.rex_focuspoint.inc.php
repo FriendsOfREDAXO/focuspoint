@@ -126,7 +126,7 @@ class rex_focuspoint {
               //Calculate CSS Percentages
               var percentageX = (offsetX/imageW)*100;
               var percentageY = (offsetY/imageH)*100;
-              var backgroundPositionCSS = percentageX.toFixed(0) + '% ' + percentageY.toFixed(0) + '%';
+              var backgroundPositionCSS = percentageX.toFixed(0) + '%, ' + percentageY.toFixed(0) + '%';
 
               $('#Focuspoint_Data' ).val(focusX.toFixed(2) + ',' + focusY.toFixed(2));
               $('#Focuspoint_CSS' ).val(backgroundPositionCSS);
