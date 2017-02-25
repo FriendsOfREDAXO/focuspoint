@@ -1,0 +1,18 @@
+focuspoint_title = Focuspoint
+focuspoint_info = Info
+focuspoint_help = Help
+focuspoint_license = Licence
+
+licence = Licence
+help = Help
+changelog = Changes
+
+
+perm_general_focuspoint[] = Permissions for focuspoint addon
+
+
+media_manager_effect_crop_width = Target width
+media_manager_effect_crop_height = Target height
+media_manager_effect_crop_offset_width = Horizontal offset
+media_manager_effect_crop_offset_height = Vertical offset
+media_manager_effect_crop_position = Crop position
