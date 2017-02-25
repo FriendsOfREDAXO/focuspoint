@@ -1,3 +1,7 @@
+**25.02.2017 Version 1.3.2**
+
+- Update en_gb.lang - Danke an @ynamite!
+
 **14.10.2016 Version 1.3.1**
 
 - CSS Augabewert angepasst (Komma)
