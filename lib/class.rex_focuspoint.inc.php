@@ -128,8 +128,8 @@ class rex_focuspoint {
               var percentageY = (offsetY/imageH)*100;
               var backgroundPositionCSS = percentageX.toFixed(0) + '%, ' + percentageY.toFixed(0) + '%';
 
-              $('#Focuspoint_Data' ).val(focusX.toFixed(2) + ',' + focusY.toFixed(2));
-              $('#Focuspoint_CSS' ).val(backgroundPositionCSS);
+              $('#rex-metainfo-med_focuspoint_data' ).val(focusX.toFixed(2) + ',' + focusY.toFixed(2));
+              $('#rex-metainfo-med_focuspoint_css' ).val(backgroundPositionCSS);
 
               $('.reticle').css({
                 'top':percentageY+'%',
