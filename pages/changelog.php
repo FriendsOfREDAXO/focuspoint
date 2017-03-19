@@ -1,9 +1,15 @@
 <?php
 
-$file = rex_file::get(rex_path::addon('focuspoint','changelog.md'));
+/**
+ * focuspoint Addon.
+ *
+ * @author FriendsOfREDAXO
+ *
+ * @var rex_addon
+ */
+$file = rex_file::get(rex_path::addon('focuspoint', 'changelog.md'));
 $Parsedown = new Parsedown();
-$content =  $Parsedown->text($file);
-
+$content = $Parsedown->text($file);
 
 $fragment = new rex_fragment();
 $fragment->setVar('class', 'info', false);

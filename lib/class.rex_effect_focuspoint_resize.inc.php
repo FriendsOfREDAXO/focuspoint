@@ -10,27 +10,27 @@ class rex_effect_focuspoint_resize extends rex_effect_abstract
         $this->options = ['maximum', 'minimum', 'exact'];
 
         $this->script = '
-<script type="text/javascript">
-<!--
+        <script type="text/javascript">
+        <!--
 
-(function($) {
-    $(function() {
-        var $fx_resize_select_style = $("#media_manager_rex_effect_resize_style_select");
-        var $fx_resize_enlarge = $("#media_manager_rex_effect_resize_allow_enlarge_select").parent().parent();
+        (function($) {
+            $(function() {
+                var $fx_resize_select_style = $("#media_manager_rex_effect_resize_style_select");
+                var $fx_resize_enlarge = $("#media_manager_rex_effect_resize_allow_enlarge_select").parent().parent();
 
-        $fx_resize_select_style.change(function(){
-            if(jQuery(this).val() == "exact")
-            {
-                $fx_resize_enlarge.hide();
-            }else
-            {
-                $fx_resize_enlarge.show();
-            }
-        }).change();
-    });
-})(jQuery);
+                $fx_resize_select_style.change(function(){
+                    if(jQuery(this).val() == "exact")
+                    {
+                        $fx_resize_enlarge.hide();
+                    }else
+                    {
+                        $fx_resize_enlarge.show();
+                    }
+                }).change();
+            });
+        })(jQuery);
 
-//--></script>';
+        //--></script>';
     }
 
     public function execute()
@@ -41,60 +41,56 @@ class rex_effect_focuspoint_resize extends rex_effect_abstract
         $w = $this->media->getWidth();
         $h = $this->media->getHeight();
 
-    $filename = $this->media->getMediaFilename();
+        $filename = $this->media->getMediaFilename();
 
-      if ( ($im_image = rex_media::get($filename)) ) {
-
-
-        $focuspoint_data = explode(",", $im_image->getValue('med_focuspoint_data'), 2);
-        if (count($focuspoint_data) == 2) {
+        if (($im_image = rex_media::get($filename))) {
+            $focuspoint_data = explode(',', $im_image->getValue('med_focuspoint_data'), 2);
+            if (count($focuspoint_data) == 2) {
 
           // Mittelpunkt finden
-          $x = ceil($w/2);
-          $y = ceil($h/2);
+          $x = ceil($w / 2);
+                $y = ceil($h / 2);
 
           // focusoffsets einarbeiten
           $fp_w = $focuspoint_data[0];
-          $fp_h = $focuspoint_data[1];
+                $fp_h = $focuspoint_data[1];
 
           // Neuen Mittelpunkt finden
           $nx = $x + ceil($x * $fp_w);
-          $ny = $y - ceil($y * $fp_h);
+                $ny = $y - ceil($y * $fp_h);
 
           // Abstand zum Rand herausfinden
           $nw = $w - $nx; // 1/2 Breite
           if ($fp_w < 0) {
-            $nw = $nx; // 1/2 Breite
+              $nw = $nx; // 1/2 Breite
           }
 
-          $nh = $ny; // 1/2 Breite
+                $nh = $ny; // 1/2 Breite
           if ($fp_h < 0) {
-            $nh = $h - $ny; // 1/2 Breite
+              $nh = $h - $ny; // 1/2 Breite
           }
 
-          $npx = $nx - $nw;
-          $npy = $ny - $nh;
-          $nw = $nw * 2;
-          $nh = $nh * 2;
+                $npx = $nx - $nw;
+                $npy = $ny - $nh;
+                $nw = $nw * 2;
+                $nh = $nh * 2;
 
-          if (function_exists('ImageCreateTrueColor')) {
-            $des = @ImageCreateTrueColor($nw, $nh);
-          } else {
-            $des = @ImageCreate($nw, $nh);
-          }
+                if (function_exists('ImageCreateTrueColor')) {
+                    $des = @ImageCreateTrueColor($nw, $nh);
+                } else {
+                    $des = @ImageCreate($nw, $nh);
+                }
 
-          $this->keepTransparent($des);
-          imagecopyresampled($des, $gdimage, 0, 0, $npx, $npy, $nw, $nh, $nw, $nh);
+                $this->keepTransparent($des);
+                imagecopyresampled($des, $gdimage, 0, 0, $npx, $npy, $nw, $nh, $nw, $nh);
 
-          $gdimage = $des;
-          $this->media->refreshImageDimensions();
+                $gdimage = $des;
+                $this->media->refreshImageDimensions();
 
-          $w = $nw;
-          $h = $nh;
-
+                $w = $nw;
+                $h = $nh;
+            }
         }
-
-      }
 
         if (!isset($this->params['style']) || !in_array($this->params['style'], $this->options)) {
             $this->params['style'] = 'maximum';
@@ -121,6 +117,7 @@ class rex_effect_focuspoint_resize extends rex_effect_abstract
             $this->params['width'] = $w;
             $this->params['height'] = $h;
             $this->keepTransparent($gdimage);
+
             return;
         }
 
@@ -193,8 +190,6 @@ class rex_effect_focuspoint_resize extends rex_effect_abstract
             $this->params['height'] = ceil($h / $img_factor);
         }
     }
-
-
 
     public function getParams()
     {

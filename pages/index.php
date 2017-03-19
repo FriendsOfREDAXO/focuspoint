@@ -1,6 +1,12 @@
 <?php
 
-/** @var rex_addon $this */
+/**
+ * focuspoint Addon.
+ *
+ * @author FriendsOfREDAXO
+ *
+ * @var rex_addon
+ */
 
 // Die layout/top.php und layout/bottom.php werden automatisch eingebunden
 
