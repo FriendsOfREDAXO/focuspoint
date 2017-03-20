@@ -1,5 +1,5 @@
 package:  focuspoint
-version:  '1.3.3'
+version:  '1.3.4'
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/focuspoint
 
@@ -13,3 +13,11 @@ page:
       help: { title: 'translate:help'}
       changelog: { title: 'translate:changelog'}
       license: { title: 'translate:license'}
+
+requires:
+    packages:
+        metainfo: '^2.0'
+        media_manager: '^2.0'
+    redaxo: '^5.1.0'
+    php:
+        version: '>=5.6'
