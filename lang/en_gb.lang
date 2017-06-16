@@ -16,3 +16,19 @@ media_manager_effect_crop_height = Target height
 media_manager_effect_crop_offset_width = Horizontal offset
 media_manager_effect_crop_offset_height = Vertical offset
 media_manager_effect_crop_position = Crop position
+
+########
+#
+# rex_effect_focuspoint_fit
+#
+media_manager_effekt_resize_notice = Enter a number = target size in px / enter a %-number = target size in % of source-picture
+media_manager_effekt_focuspointfit_zoom = Zoom-factor for the viewframe
+media_manager_effekt_focuspointfit_modus_fit = maximum size for viewframe (100%)
+media_manager_effekt_focuspointfit_modus_excerpt = use target-size of viewframe (0%)
+media_manager_effekt_focuspointfit_vpos = general vertical focuspoint
+media_manager_effekt_focuspointfit_hpos = general horizontal focuspoint
+media_manager_effekt_focuspointfit_vpos_notice = 0 = upper border, 50 = centered, 100 = lower border
+media_manager_effekt_focuspointfit_hpos_notice = 0 = left border, 50 = centered, 100 = right border
+media_manager_effekt_focuspointfit_fp = Align viewframe to ...
+media_manager_effekt_focuspointfit_fp_inherit = general focuspoint only
+media_manager_effekt_focuspointfit_fp_pic = picture-individual focuspoint first, fallback to general focuspoint
