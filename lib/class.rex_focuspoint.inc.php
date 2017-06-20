@@ -103,9 +103,9 @@ class rex_focuspoint
         ';
 
         $filename = $vars[0]['filename'];
-        $dateiart = substr($filename, -3);
+        $dateiart = substr($filename, -4);
 
-        if ($dateiart == 'jpg' or $dateiart == 'png' or $dateiart == 'gif') {
+        if ($dateiart == '.jpg' or $dateiart == 'jpeg' or $dateiart == '.png' or $dateiart == '.gif') {
             $html = '<div class="rex-mediapool-detail-image col-sm-4"><div id="fwidth" class="helper-tool-target"><img class="helper-tool-img" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file='.rex_url::media($filename).'" ><img class="reticle" src="./../assets/addons/focuspoint/focuspoint-target.png"><img class="target-overlay" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file='.rex_url::media($filename).'" ></div></div>';
 
             echo "

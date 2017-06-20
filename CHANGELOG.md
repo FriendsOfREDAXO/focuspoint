@@ -2,6 +2,14 @@
 
 ---
 
+**07.03.2017 Version 1.3.5**
+
+- Neuer Effekt: focuspoint_fit (christophboecker)
+- Unterstützung von jpeg Dateien (tbaddade / skerbis)
+- Neue Sprachdateien (ytraduko-bot)
+- "Target"-Image ausgetauscht
+
+
 **07.03.2017 Version 1.3.3**
 
 - Feldzuordnung korrigiert. Danke an [Norbert](https://github.com/tyrant88)
