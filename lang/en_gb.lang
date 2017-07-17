@@ -32,3 +32,5 @@ media_manager_effekt_focuspointfit_hpos_notice = 0 = left border, 50 = centered,
 media_manager_effekt_focuspointfit_fp = Align viewframe to ...
 media_manager_effekt_focuspointfit_fp_inherit = general focuspoint only
 media_manager_effekt_focuspointfit_fp_pic = picture-individual focuspoint first, fallback to general focuspoint
+
+mediapool_focuspoint_reset = reset Focuspoint

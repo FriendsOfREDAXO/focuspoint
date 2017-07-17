@@ -77,6 +77,9 @@ class rex_focuspoint
             -webkit-transition: all 500ms ease-in-out;
             -moz-transition: all 500ms ease-in-out;
         }
+        .focuspoint-reset {
+            cursor: pointer;
+        }
 
         </style>
 
@@ -106,7 +109,14 @@ class rex_focuspoint
         $dateiart = substr($filename, -4);
 
         if ($dateiart == '.jpg' or $dateiart == 'jpeg' or $dateiart == '.png' or $dateiart == '.gif') {
-            $html = '<div class="rex-mediapool-detail-image col-sm-4"><div id="fwidth" class="helper-tool-target"><img class="helper-tool-img" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file='.rex_url::media($filename).'" ><img class="reticle" src="./../assets/addons/focuspoint/focuspoint-target.png"><img class="target-overlay" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file='.rex_url::media($filename).'" ></div></div>';
+            $html  = '<div class="rex-mediapool-detail-image col-sm-4">';
+            $html .=     '<div id="fwidth" class="helper-tool-target">';
+            $html .=         '<img class="helper-tool-img" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file='.rex_url::media($filename).'" >';
+            $html .=         '<img class="reticle" src="./../assets/addons/focuspoint/focuspoint-target.png">';
+            $html .=         '<img class="target-overlay" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file='.rex_url::media($filename).'" >';
+            $html .=     '</div>';
+            $html .=     '<a id="focuspoint-reset" class="focuspoint-reset">'.rex_i18n::msg('mediapool_focuspoint_reset').'</a>';
+            $html .= '</div>';
 
             echo "
             <script>
@@ -140,6 +150,14 @@ class rex_focuspoint
 
                     // window.alert('FocusX:' + focusX.toFixed(2) + ', FocusY:' + focusY.toFixed(2) + ' (For CSS version: ' + backgroundPositionCSS + ')');
 
+                });
+                $('#focuspoint-reset').on('click', function () {
+                    $('#rex-metainfo-med_focuspoint_data' ).val('');
+                    $('#rex-metainfo-med_focuspoint_css' ).val('');
+                    $('.reticle').css({
+                        'top':'50%',
+                        'left':'50%'
+                    });
                 });
 
             });
