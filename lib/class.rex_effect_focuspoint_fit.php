@@ -233,7 +233,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
 
     private function numParaOk( $para, $low=0, $default=0, $high=0 )
     {
-        return ( empty($para) || !ctype_digit($para) || $para < $low || $para > $high ) ? $default : (int)$para;
+        $para = trim( $para );
+        return ( empty($para) || !is_numeric($para) || $para < $low || $para > $high ) ? $default : (int)$para;
     }
 
     private function decodeSize( $value, $ref=0 )
