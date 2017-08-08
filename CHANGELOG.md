@@ -2,6 +2,20 @@
 
 ---
 
+**08.08.2017 Version 1.3.8**
+
+- Minimale CSS Anpassung
+
+**17.07.2017 Version 1.3.7**
+
+- Focuspoint wird nun auch initialisiert, wenn die Bilddetailansicht von einem Media Widget aus geöffnet wird (dann wird der Dateiname statt der Datei Id übergeben) (IngoWinter)
+
+
+**17.07.2017 Version 1.3.6**
+
+- reset Focuspoint Link (IngoWinter)
+
+
 **07.03.2017 Version 1.3.5**
 
 - Neuer Effekt: focuspoint_fit (christophboecker)

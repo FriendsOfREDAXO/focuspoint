@@ -95,6 +95,7 @@ class rex_focuspoint
         }
         .focuspoint-reset {
             cursor: pointer;
+            display: inline-block;
         }
         </style>
         ';
