@@ -2,6 +2,10 @@
 
 ---
 
+**17.11.2017 Version 1.3.9**
+
+- Menülink unter AddOns entfernt (#27)
+
 **08.08.2017 Version 1.3.8**
 
 - Minimale CSS Anpassung
