@@ -2,6 +2,11 @@
 
 ---
 
+**24.11.2017 Veriosn 1.3.10**
+
+- rex_sql_exception bei abweichendem tabellen-prefix behoben (#28)
+- README erweitert
+
 **17.11.2017 Version 1.3.9**
 
 - Menülink unter AddOns entfernt (#27)

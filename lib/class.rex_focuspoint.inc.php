@@ -12,7 +12,7 @@ class rex_focuspoint
     public static function set_media($media)
     {
         $file_id = rex_request('file_id', 'int');
-        $s = rex_sql::factory()->getArray('select * from rex_media file where id="' . $file_id . '"');
+        $s = rex_sql::factory()->getArray('select * from ' . rex::getTable('media') . ' file where id="' . $file_id . '"');
     }
 
     public static function show_form_info($media)
@@ -20,12 +20,12 @@ class rex_focuspoint
         // aufruf ueber mediapool
         if (rex_request('file_id', 'int'))
         {
-            $vars = rex_sql::factory()->getArray('select * from rex_media where id=' . rex_request('file_id', 'int'));
+            $vars = rex_sql::factory()->getArray('select * from ' . rex::getTable('media') . ' where id=' . rex_request('file_id', 'int'));
         }
         // aufruf ueber widget
         else
         {
-            $vars = rex_sql::factory()->getArray('select * from rex_media where filename="' . rex_request('file_name', 'string') . '"');
+            $vars = rex_sql::factory()->getArray('select * from ' . rex::getTable('media') . ' where filename="' . rex_request('file_name', 'string') . '"');
         }
         $filename = $vars[0]['filename'];
         if (!rex_media::isImageType(pathinfo($filename, PATHINFO_EXTENSION)))

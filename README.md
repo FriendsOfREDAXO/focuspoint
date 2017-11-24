@@ -71,6 +71,17 @@ if ('REX_MEDIA[1]') {
 ?>
 ```
 
+Diese Beispiel zeigt wie Daten via CSS im Modul benutzt werden könnten:
+```php
+// auslesen
+$media = rex_media::get("REX_MEDIA[id=1 output=1]");
+$back = $media->getValue('focuspoint_css');
+$back = explode(",",$back);
+// CSS Style:
+background-position: <?php echo $position; unset($position); ?>
+
+```
+
 
 ## Lizenz
 
