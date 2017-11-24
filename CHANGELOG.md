@@ -2,6 +2,10 @@
 
 ---
 
+**24.11.2017 Veriosn 1.3.11**
+
+- Media Manager Effekte umbenannt (#29)
+
 **24.11.2017 Veriosn 1.3.10**
 
 - rex_sql_exception bei abweichendem tabellen-prefix behoben (#28)

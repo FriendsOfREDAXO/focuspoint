@@ -36,6 +36,11 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
     private $optionsZoom;
     private $optionsFP;
 
+	public function getName()
+	{
+		return rex_i18n::msg('rex_effect_focuspoint_fit');
+	}
+
     public function __construct()
     {
         $this->optionsZoom = [rex_i18n::msg('media_manager_effekt_focuspointfit_modus_excerpt'),

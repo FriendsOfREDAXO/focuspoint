@@ -34,3 +34,6 @@ media_manager_effekt_focuspointfit_fp_inherit = general focuspoint only
 media_manager_effekt_focuspointfit_fp_pic = picture-individual focuspoint first, fallback to general focuspoint
 
 mediapool_focuspoint_reset = reset Focuspoint
+
+rex_effect_focuspoint_fit = Image: Focuspoint fit
+rex_effect_focuspoint_resize = Image: Focuspoint resize

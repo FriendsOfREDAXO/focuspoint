@@ -16,3 +16,6 @@ media_manager_effect_crop_height = Comprimento alvo
 media_manager_effect_crop_offset_width = Deslocamento horizontal
 media_manager_effect_crop_offset_height = Deslocamento vertical
 media_manager_effect_crop_position = Ponto de referência
+
+rex_effect_focuspoint_fit = Retrato: Focuspoint fit
+rex_effect_focuspoint_resize = Retrato: Focuspoint resize
