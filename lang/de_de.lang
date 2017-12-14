@@ -32,7 +32,10 @@ media_manager_effekt_focuspointfit_fp = Ausrichtung an ...
 media_manager_effekt_focuspointfit_fp_inherit = Nur allgemeiner Bezugspunkt
 media_manager_effekt_focuspointfit_fp_pic = Fokuspunkt des Bildes, Fallback allgemeiner Bezugspunkt
 
-mediapool_focuspoint_reset = Focuspoint zurücksetzen
+mediapool_focuspoint_reset = Zurücksetzen
 
 rex_effect_focuspoint_fit = Bild: Focuspoint fit
 rex_effect_focuspoint_resize = Bild: Focuspoint resize
+
+mediapool_focuspoint_preview = Vorschau
+mediapool_focuspoint_preview_error = Kein Focuspoint ausgewählt!

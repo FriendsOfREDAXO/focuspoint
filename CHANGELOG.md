@@ -2,7 +2,11 @@
 
 ---
 
-**24.11.2017 Veriosn 1.3.12**
+**14.12.2017 Veriosn 1.3.2**
+
+- Vorschau für Mediatypen hinzugefügt (#30)
+
+**14.12.2017 Veriosn 1.3.12**
 
 - Inputfelder bei Upload/Sync versteckt (#25)
 

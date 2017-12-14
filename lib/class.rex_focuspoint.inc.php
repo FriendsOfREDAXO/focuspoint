@@ -97,23 +97,89 @@ class rex_focuspoint
             cursor: pointer;
             display: inline-block;
         }
+        #focuspoint-preview {
+            padding: 20px 0;
+        }
+        #preview-container {
+            display: inline-block;
+            transition: all 300ms ease-in-out;
+            -webkit-transition: all 300ms ease-in-out;
+            -moz-transition: all 300ms ease-in-out;
+        }
+        #preview-container img {
+            max-width: 100%;
+            visibility: hidden;
+        }
         </style>
         ';
 
+        $mediatypesArray = rex_sql::factory()->getArray('select name from ' . rex::getTable('media_manager_type'));
         $html = '<div class="rex-mediapool-detail-image col-sm-4">';
         $html .= '<div id="fwidth" class="helper-tool-target">';
         $html .= '<img class="helper-tool-img" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file=' . rex_url::media($filename) . '" >';
         $html .= '<img class="reticle" src="./../assets/addons/focuspoint/focuspoint-target.png">';
         $html .= '<img class="target-overlay" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file=' . rex_url::media($filename) . '" >';
         $html .= '</div>';
-        $html .= '<a id="focuspoint-reset" class="focuspoint-reset">' . rex_i18n::msg('mediapool_focuspoint_reset') . '</a>';
+        $html .= '<div class="btn-group" role="group">';
+        $html .= '<button type="button" class="btn btn-primary focuspoint-reset" id="focuspoint-reset"><i class="fa fa-undo"></i>&nbsp;&nbsp;' . rex_i18n::msg('mediapool_focuspoint_reset') . '</button>';
+        //focuspoint preview select
+        $html .= '<div class="btn-group" role="group">';
+        $html .= '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' . rex_i18n::msg("mediapool_focuspoint_preview") . '&nbsp;&nbsp;';
+        $html .= '<i class="fa fa-chevron-down"></i></button>';
+        $html .= '<ul class="dropdown-menu" id="focuspoint-preview-select"> ';
+        foreach ($mediatypesArray as $mediatype)
+        {
+            $name = $mediatype["name"];
+            $html .= '<li><a href="#" data-name="' . $name . '">' . $name . '</a></li>';
+        }
+        $html .= '</ul> ';
         $html .= '</div>';
-        
+        $html .= '</div>';
+
+        $html .= '<div id="focuspoint-preview">';
+        $html .= '<div id="preview-container">';
+        $html .= '</div>';
+        $html .= '</div>';
+
         echo "
         <script>
         $(document).on('ready pjax:success',function(){
             $('.panel-body .col-sm-4').replaceWith('$html');
+
+            var typeSelected = false;
+            var jSelect = jQuery('#focuspoint-preview-select');
+            var jPreviewContainer = jQuery('#preview-container');
+            var jPreviewAnchor = jSelect.find('a');
+            var mediaType = '';
+            
+            function getPosition()
+            {
+                return jQuery('#rex-metainfo-med_focuspoint_css').val().replace(/,/g , '');
+            }
+            
+            function updateFocuspointPreview()
+            {
+                if(!typeSelected || mediaType == '')
+                {
+                    return false;
+                }
                 
+                var position = getPosition();
+                var src = 'index.php?rex_media_type='+mediaType+'&rex_media_file=" . rex_url::media($filename) . "';
+
+                jPreviewContainer.find('img').attr('src', src);
+                jPreviewContainer.css('background-position', position);
+            }
+            
+            function resetFocuspointPreview()
+            {
+                jPreviewContainer.css('background-image', '');
+                jPreviewContainer.css('background-position', '');
+                jPreviewContainer.empty();
+                
+                typeSelected = false;
+            }
+
             $('img').click(function(e){
 
                 var imageW = $(this).width();
@@ -138,7 +204,8 @@ class rex_focuspoint
                     'left':percentageX+'%'
                 });
 
-                
+                updateFocuspointPreview();
+
                 // window.alert('FocusX:' + focusX.toFixed(2) + ', FocusY:' + focusY.toFixed(2) + ' (For CSS version: ' + backgroundPositionCSS + ')');
 
             });
@@ -149,6 +216,38 @@ class rex_focuspoint
                     'top':'50%',
                     'left':'50%'
                 });
+
+                resetFocuspointPreview();
+            });
+            
+            jPreviewAnchor.on('click', function(event)
+            {
+                event.preventDefault();
+                
+                var jThis = jQuery(this);
+                var position = getPosition();
+                mediaType = jThis.data('name');
+
+                if(position === '')
+                {
+                    alert('" . rex_i18n::msg('mediapool_focuspoint_preview_error') . "');
+                    return false;
+                }
+
+                var src = 'index.php?rex_media_type='+mediaType+'&rex_media_file=" . rex_url::media($filename) . "';
+
+                jPreviewContainer.empty();
+                jPreviewContainer.css('background-image', 'url('+src+')');
+                jPreviewContainer.css('background-position', position);
+                
+                var jImg = jQuery('<img />');
+                
+                jImg.attr('src', src);
+                jImg.css('visibility', 'invisible');
+                
+                jPreviewContainer.append(jImg);
+                
+                typeSelected = true;
             });
 
             });
