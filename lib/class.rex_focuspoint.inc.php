@@ -14,7 +14,7 @@ class rex_focuspoint
         $file_id = rex_request('file_id', 'int');
         $s = rex_sql::factory()->getArray('select * from ' . rex::getTable('media') . ' file where id="' . $file_id . '"');
     }
-
+    
     public static function show_form_info($media)
     {
         // aufruf ueber mediapool
@@ -108,12 +108,12 @@ class rex_focuspoint
         $html .= '</div>';
         $html .= '<a id="focuspoint-reset" class="focuspoint-reset">' . rex_i18n::msg('mediapool_focuspoint_reset') . '</a>';
         $html .= '</div>';
-
+        
         echo "
         <script>
         $(document).on('ready pjax:success',function(){
             $('.panel-body .col-sm-4').replaceWith('$html');
-
+                
             $('img').click(function(e){
 
                 var imageW = $(this).width();
@@ -138,7 +138,7 @@ class rex_focuspoint
                     'left':percentageX+'%'
                 });
 
-
+                
                 // window.alert('FocusX:' + focusX.toFixed(2) + ', FocusY:' + focusY.toFixed(2) + ' (For CSS version: ' + backgroundPositionCSS + ')');
 
             });
@@ -151,10 +151,26 @@ class rex_focuspoint
                 });
             });
 
-        });
+            });
 
         </script>
         ";
 
+    }
+    
+    public static function remove_inputs()
+    {
+        echo "
+        <script>
+        $(document).on('ready',function(){
+            var jDataInput = jQuery('#rex-metainfo-med_focuspoint_data');
+            var jCssInput = jQuery('#rex-metainfo-med_focuspoint_css');
+            
+            jDataInput.closest('.rex-form-group').hide();
+            jCssInput.closest('.rex-form-group').hide();
+        });
+
+        </script>
+        ";
     }
 }
