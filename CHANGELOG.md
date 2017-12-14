@@ -2,6 +2,10 @@
 
 ---
 
+**24.11.2017 Veriosn 1.3.12**
+
+- Inputfelder bei Upload/Sync versteckt (#25)
+
 **24.11.2017 Veriosn 1.3.11**
 
 - Media Manager Effekte umbenannt (#29)
