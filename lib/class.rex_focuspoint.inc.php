@@ -17,6 +17,32 @@ class rex_focuspoint
     
     public static function show_form_info($media)
     {
+        if (rex_post('updatepreview') == "true")
+        {
+            ob_end_clean();
+            rex_media_manager::deleteCache(rex_post('filename'), rex_post('type'));
+            
+            $sql = rex_sql::factory();
+            $sql->setTable(rex::getTable('media'));
+            $sql->setWhere(array('id' => rex_request('file_id', 'int')));
+            $sql->setValue('med_focuspoint_data', rex_post('med_focuspoint_data'));
+            $sql->setValue('med_focuspoint_css', rex_post('med_focuspoint_css'));
+            
+            try
+            {
+                $sql->update();
+            }
+            catch (rex_sql_exception $e)
+            {
+                $error = $sql->getError();
+                throw new Exception($error);
+            }
+
+            rex_media_cache::generate(rex_post('filename'));
+
+            exit;
+        }
+        
         // aufruf ueber mediapool
         if (rex_request('file_id', 'int'))
         {
@@ -112,6 +138,19 @@ class rex_focuspoint
         }
         </style>
         ';
+        
+        function in_array_r($needle, $haystack, $strict = false)
+        {
+            foreach ($haystack as $item)
+            {
+                if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         $mediatypesArray = rex_sql::factory()->getArray('select name from ' . rex::getTable('media_manager_type'));
         $html = '<div class="rex-mediapool-detail-image col-sm-4">';
@@ -129,18 +168,28 @@ class rex_focuspoint
         $html .= '<ul class="dropdown-menu" id="focuspoint-preview-select"> ';
         foreach ($mediatypesArray as $mediatype)
         {
+            $mediatypeEffectsArray = rex_media_manager::effectsFromType($mediatype["name"]);
+            $hasFocusFit = in_array_r("focuspoint_fit", $mediatypeEffectsArray) ? true : false;
+            $hasFocusResize = in_array_r("focuspoint_resize", $mediatypeEffectsArray) ? true : false;
+            $type = "css";
             $name = $mediatype["name"];
-            $html .= '<li><a href="#" data-name="' . $name . '">' . $name . '</a></li>';
+            
+            if($hasFocusFit || $hasFocusResize)
+            {
+                $type = "nativ";
+            }
+            
+            $html .= '<li><a href="#" data-name="' . $name . '" data-type="'. $type .'">' . $name . '</a></li>';
         }
         $html .= '</ul> ';
         $html .= '</div>';
         $html .= '</div>';
-
+        $html .= '<input type="hidden" name="updatepreview" id="updatepreview" value="false" />';
         $html .= '<div id="focuspoint-preview">';
         $html .= '<div id="preview-container">';
         $html .= '</div>';
         $html .= '</div>';
-
+        
         echo "
         <script>
         $(document).on('ready pjax:success',function(){
@@ -150,25 +199,104 @@ class rex_focuspoint
             var jSelect = jQuery('#focuspoint-preview-select');
             var jPreviewContainer = jQuery('#preview-container');
             var jPreviewAnchor = jSelect.find('a');
+            var jUpdatePreviewInput = jQuery('#updatepreview');
+            var jRexLoader = jQuery('#rex-js-ajax-loader');
             var mediaType = '';
-            
+            var focusType = '';
+            var preview = false;
+
+            function getPreviewSrc()
+            {
+                var d = new Date();
+                return 'index.php?rex_media_type='+mediaType+'&rex_media_file=" . rex_url::media($filename) . "&t='+d.getTime();
+            }
+
             function getPosition()
             {
                 return jQuery('#rex-metainfo-med_focuspoint_css').val().replace(/,/g , '');
             }
             
-            function updateFocuspointPreview()
+            function updateNativPreview()
+            {
+                var img = new Image();
+                img.onload = function () 
+                {
+                    jQuery(img).css('visibility', 'visible');
+                    jPreviewContainer.find('img').remove();
+                    jPreviewContainer.append(img);
+                }
+                img.src=getPreviewSrc();
+            }
+            
+            function updateCssPreview()
+            {
+                jPreviewContainer.css('background-position', getPosition());
+            }
+
+            function updatePreview()
             {
                 if(!typeSelected || mediaType == '')
                 {
                     return false;
                 }
                 
-                var position = getPosition();
-                var src = 'index.php?rex_media_type='+mediaType+'&rex_media_file=" . rex_url::media($filename) . "';
+                jQuery.ajax(
+                {
+                    type: 'POST',
+                    url: '" . filter_input(INPUT_SERVER, 'REQUEST_URI') . "',
+                    data: $('.panel-body form').serialize() + '&filename=" . $filename . "' + '&type=' + mediaType,
+                    beforeSend: function ()
+                    {
+                        jRexLoader.addClass('rex-visible');
+                    },
+                    success: function (data)
+                    {
+                        if(focusType == 'nativ')
+                        {
+                            updateNativPreview();
+                        }
+                        else
+                        {
+                            updateCssPreview();
+                        }
 
-                jPreviewContainer.find('img').attr('src', src);
-                jPreviewContainer.css('background-position', position);
+                        jRexLoader.fadeOut(function()
+                        {
+                            jRexLoader.removeClass('rex-visible');
+                        });
+                    },
+                    error: function (xhr, type, exception)
+                    {
+                        jRexLoader.removeClass('rex-visible');
+                        console.error('ajax error response xhr, type, exception ', xhr, type, exception);
+                    }
+                });
+            }
+            
+            function setPreview()
+            {
+                jPreviewContainer.empty();
+                jPreviewContainer.css('background-image', '');
+                jPreviewContainer.css('background-position', '');
+                var src = getPreviewSrc();
+                var img = new Image();
+                img.onload = function () 
+                {
+                    var jImg = jQuery(img);
+                    if(focusType == 'nativ')
+                    {
+                        jImg.css('visibility', 'visible');
+                    }
+                    else
+                    {
+                        jPreviewContainer.css('background-image', 'url('+src+')');
+                        jPreviewContainer.css('background-position', getPosition());
+                        jImg.css('visibility', 'hidden');
+                    }
+                }
+                img.src=src;
+                jPreviewContainer.append(img);
+                preview = true;
             }
             
             function resetFocuspointPreview()
@@ -177,7 +305,31 @@ class rex_focuspoint
                 jPreviewContainer.css('background-position', '');
                 jPreviewContainer.empty();
                 
+                jQuery.ajax(
+                {
+                    type: 'POST',
+                    url: '" . filter_input(INPUT_SERVER, 'REQUEST_URI') . "',
+                    data: $('.panel-body form').serialize() + '&filename=" . $filename . "' + '&type=' + mediaType,
+                    beforeSend: function ()
+                    {
+                        jRexLoader.addClass('rex-visible');
+                    },
+                    success: function (data)
+                    {
+                        jRexLoader.fadeOut(function()
+                        {
+                            jRexLoader.removeClass('rex-visible');
+                        });
+                    },
+                    error: function (xhr, type, exception)
+                    {
+                        jRexLoader.removeClass('rex-visible');
+                        console.error('ajax error response xhr, type, exception ', xhr, type, exception);
+                    }
+                });
+                
                 typeSelected = false;
+                jUpdatePreviewInput.val(false);
             }
 
             $('img').click(function(e){
@@ -204,7 +356,10 @@ class rex_focuspoint
                     'left':percentageX+'%'
                 });
 
-                updateFocuspointPreview();
+                if(preview)
+                {
+                    updatePreview();
+                }
 
                 // window.alert('FocusX:' + focusX.toFixed(2) + ', FocusY:' + focusY.toFixed(2) + ' (For CSS version: ' + backgroundPositionCSS + ')');
 
@@ -226,35 +381,24 @@ class rex_focuspoint
                 
                 var jThis = jQuery(this);
                 var position = getPosition();
+               
                 mediaType = jThis.data('name');
-
+                focusType = jThis.data('type');
+                    
                 if(position === '')
                 {
                     alert('" . rex_i18n::msg('mediapool_focuspoint_preview_error') . "');
                     return false;
                 }
 
-                var src = 'index.php?rex_media_type='+mediaType+'&rex_media_file=" . rex_url::media($filename) . "';
-
-                jPreviewContainer.empty();
-                jPreviewContainer.css('background-image', 'url('+src+')');
-                jPreviewContainer.css('background-position', position);
-                
-                var jImg = jQuery('<img />');
-                
-                jImg.attr('src', src);
-                jImg.css('visibility', 'invisible');
-                
-                jPreviewContainer.append(jImg);
+                setPreview();
                 
                 typeSelected = true;
+                jUpdatePreviewInput.val(true);
             });
-
-            });
-
+        });
         </script>
         ";
-
     }
     
     public static function remove_inputs()
