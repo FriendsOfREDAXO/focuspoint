@@ -2,7 +2,7 @@
 
 Das Addon erweitert den Medienpool um die Fähigkeit, den Fokuspunkt eines Bilds zu bestimmen, um es bei der Darstellung auf der Website daran auszurichten.
 
-<img src="https://raw.githubusercontent.com/FriendsOfREDAXO/focuspoint/assets/focuspoint_01.png" style="width: 100%; max-width: 888px" />
+<img src="https://raw.githubusercontent.com/eace/focuspoint/assets/focuspoint_02.jpg" style="width: 100%; max-width: 888px" />
 
 Die ermittelten Daten werden in der Datenbank hinterlegt und können bei der Bildausgabe berücksichtigt werden. Hierfür wird das jQuery-Plugin von [Jono Menz](https://github.com/jonom/jquery-focuspoint) benutzt.
 
