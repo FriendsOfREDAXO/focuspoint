@@ -10,7 +10,6 @@ changelog = Änderungen
 
 perm_general_focuspoint[] = Rechte für Focuspoint-Addon
 
-
 media_manager_effect_crop_width = Zielbreite
 media_manager_effect_crop_height = Zielhöhe
 media_manager_effect_crop_offset_width = Horizontaler Versatz/Offset
@@ -32,3 +31,11 @@ media_manager_effekt_focuspointfit_hpos_notice = 0 = am linken Rand, 50 = mittig
 media_manager_effekt_focuspointfit_fp = Ausrichtung an ...
 media_manager_effekt_focuspointfit_fp_inherit = Nur allgemeiner Bezugspunkt
 media_manager_effekt_focuspointfit_fp_pic = Fokuspunkt des Bildes, Fallback allgemeiner Bezugspunkt
+
+mediapool_focuspoint_reset = Zurücksetzen
+
+rex_effect_focuspoint_fit = Bild: Focuspoint fit
+rex_effect_focuspoint_resize = Bild: Focuspoint resize
+
+mediapool_focuspoint_preview = Vorschau
+mediapool_focuspoint_preview_error = Kein Focuspoint ausgewählt!

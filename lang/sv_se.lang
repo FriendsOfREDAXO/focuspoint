@@ -1,0 +1,39 @@
+focuspoint_title = Focuspoint
+focuspoint_info = Info
+focuspoint_help = Hjälp
+focuspoint_license = Licens
+
+licence = Licens
+help = Hjälp
+changelog = Ändringar
+
+
+perm_general_focuspoint[] = Permissions for focuspoint addon
+
+
+media_manager_effect_crop_width = Målbredden
+media_manager_effect_crop_height = Målhöjden
+media_manager_effect_crop_offset_width = Horisontell offset
+media_manager_effect_crop_offset_height = Vertikal offset
+media_manager_effect_crop_position = Referenspunkt
+
+########
+#
+# rex_effect_focuspoint_fit
+#
+media_manager_effekt_resize_notice = Ange ett nummer = målstorlek i px / ange en% -number = målstorlek i% av källbilden
+media_manager_effekt_focuspointfit_zoom = Zoomfaktor för visningsramen
+media_manager_effekt_focuspointfit_modus_fit = Maximal storlek för bildrutan
+media_manager_effekt_focuspointfit_modus_excerpt = Använd målstorlek för visningsramen (0%)
+media_manager_effekt_focuspointfit_vpos = Generell vertikal fokuspunkt
+media_manager_effekt_focuspointfit_hpos = Generell horisontell fokuspunkt
+media_manager_effekt_focuspointfit_vpos_notice = 0 = övre gränsen, 50 = centrerad, 100 = nedre gränsen
+media_manager_effekt_focuspointfit_hpos_notice = 0 = vänstra gränsen, 50 = centrerad, 100 = högra gränsen
+media_manager_effekt_focuspointfit_fp = Justera visningsramen till ...
+media_manager_effekt_focuspointfit_fp_inherit = Endast allmän fokuspunkt
+media_manager_effekt_focuspointfit_fp_pic = Bild-individuell fokuspunkt först, fallback till allmän fokuspunkt
+
+mediapool_focuspoint_reset = Aterställ focuspoint till standard
+
+rex_effect_focuspoint_fit = Bild: Focuspoint fit
+rex_effect_focuspoint_resize = Bild: Focuspoint resize

@@ -5,6 +5,11 @@ class rex_effect_focuspoint_resize extends rex_effect_abstract
     private $options;
     private $script;
 
+	public function getName()
+	{
+		return rex_i18n::msg('rex_effect_focuspoint_resize');
+	}
+
     public function __construct()
     {
         $this->options = ['maximum', 'minimum', 'exact'];
