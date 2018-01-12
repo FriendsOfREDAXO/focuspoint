@@ -168,7 +168,11 @@ class rex_focuspoint
         $html .= '<ul class="dropdown-menu" id="focuspoint-preview-select"> ';
         foreach ($mediatypesArray as $mediatype)
         {
-            $mediatypeEffectsArray = rex_media_manager::effectsFromType($mediatype["name"]);
+            $media = rex_media::get($filename);
+            $mediaPath = rex_path::media($filename);
+            $managedMedia = new rex_managed_media($mediaPath);
+            $mediaManager = new rex_media_manager($managedMedia);
+            $mediatypeEffectsArray = $mediaManager->effectsFromType($mediatype["name"]);
             $hasFocusFit = in_array_r("focuspoint_fit", $mediatypeEffectsArray) ? true : false;
             $hasFocusResize = in_array_r("focuspoint_resize", $mediatypeEffectsArray) ? true : false;
             $type = "css";
