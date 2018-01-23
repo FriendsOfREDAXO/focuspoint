@@ -27,6 +27,7 @@ media_manager_effekt_focuspointfit_modus_fit = Maximal storlek för bildrutan
 media_manager_effekt_focuspointfit_modus_excerpt = Använd målstorlek för visningsramen (0%)
 media_manager_effekt_focuspointfit_vpos = Generell vertikal fokuspunkt
 media_manager_effekt_focuspointfit_hpos = Generell horisontell fokuspunkt
+media_manager_effekt_focuspointfit_pattern = 1..., 1...px / 1..100%, 1..100fr
 media_manager_effekt_focuspointfit_vpos_notice = 0 = övre gränsen, 50 = centrerad, 100 = nedre gränsen
 media_manager_effekt_focuspointfit_hpos_notice = 0 = vänstra gränsen, 50 = centrerad, 100 = högra gränsen
 media_manager_effekt_focuspointfit_fp = Justera visningsramen till ...

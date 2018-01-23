@@ -35,6 +35,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
 {
     private $optionsZoom;
     private $optionsFP;
+    private $targetByAR;
+    static $inpPattern = '((([1-9]\d?|100)(%|fr))|([1-9]\d*(px)?))';
 
 	public function getName()
 	{
@@ -63,12 +65,20 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
         Parameter überprüfen und ungültige Werte korrigieren
 
             Zielhöhe und/oder Zielbreite müssen angegeben sein. Akzeptiert werden Zahlen und
-            Zahlen mit %. nnn => Größe in Pixel, nnn% => % der Originalgröße.
             Ungültige Werte führen zum Abbruch
+                Zahlen mit %, px und fr.
+                1111 => Größe in Pixel,
+                1111px => Größe in Pixel
+                11% => % der Originalgröße
+                iifr => "Anteil/fraction" zur Eingabe von Aspect-Ratios des Zielbildes.
+            Ungültige Werte und Wert-Kombinationen führen zum Abbruch
+            Im Fall "fr" müssen beide Werte vom Typ fr sein. 0 oder 2.
         */
+            $this->targetByAR = 0;
             $dw = $this->decodeSize( $this->params['width'],$sw );
             $dh = $this->decodeSize( $this->params['height'],$sh );
             if ( empty($dw) && empty($dh) ) return;
+            if ( $this->targetByAR == 1 ) return;
         /*
             Fokuspunkt ermitteln: Fallback-Werte bzw. Werte für die Option "fp_inherit"
             Das sind immer Werte zwischen 0 und 100. Default ist 50 = Mitte
@@ -86,7 +96,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
                 $filename = $this->media->getMediaFilename();
                 if ( $im_image = rex_media::get($filename) )
                 {
-                    $focuspoint_data = trim( str_replace( '%','',$im_image ->getValue('med_focuspoint_css') ) );
+                    $focuspoint_data = trim( str_replace( '%','',$im_image->getValue('med_focuspoint_css') ) );
                     if ( $focuspoint_data )
                     {
                         $focuspoint_data = explode( ',',$focuspoint_data );
@@ -103,6 +113,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
             Den Zoom-Faktor auslesen und setzen
             Entweder soll nur der Auschnitt genommen werden (0%) oder möglichst viel vom
             Rest (best fit=100%) oder eben eine der Zwischenstufen 25,50 oder 75%.
+            Falls Breite/Höhe als AspectRatio (fr) angegeben wurden: immer 100%
         */
             switch ( $this->params['zoom'] )
             {
@@ -126,6 +137,18 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
             $dh = empty( $dh ) ? $dw / $sr : $dh;
             $dr = $dw / $dh;
             $too_wide = ( $sr >= $dr );
+
+        /*
+            Im Fall, dass die Bildgröße via AspectRatio angegeben wird, wie z.B. mit Breite 16fr
+            und  Höhe 9fr, was 16:9 entspricht), muss das Zielformat auf die Bildgröße
+            geändert werden. Zoom ist dann irrelevant.
+        */
+            if ( $this->targetByAR == 2)
+            {
+                $dw = $too_wide ? $hw * $dr : $sw;
+                $dh = $too_wide ? $sh : $sw / $dr;
+                $zoom = 0;
+            }
         /*
             Den Ausschnitt festlegen - Basisgröße
 
@@ -147,7 +170,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
 
                 Grade wenn große Bilder auf einen kleinen Ausschnitt treffen, wäre ein Zoom
                 sinnvoll. Der Zoom-Faktor sagt, wieviel % vom Abstand zwischen Originalbild und
-                Ausschnitt mit hineingenooen werden sollen. Faktscih wird der Ausschnitt um einen
+                Ausschnitt mit hineingenooen werden sollen. Faktisch wird der Ausschnitt um einen
                 entsprechenden Faktor vergrößert.
         */
             if ( $zoom )
@@ -195,18 +218,22 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
 
     public function getParams()
     {
+        $info = rex_i18n::msg('media_manager_effekt_focuspointfit_pattern');
+        $pattern = '\s*'.self::$inpPattern.'\s*';
         return [
             [
                 'label' => rex_i18n::msg('media_manager_effect_resize_width'),
                 'name' => 'width',
                 'type' => 'int',
                 'notice' => rex_i18n::msg('media_manager_effekt_resize_notice'),
+                'attributes' => [ 'pattern' => $pattern, 'title' => $info ],
              ],
             [
                 'label' => rex_i18n::msg('media_manager_effect_resize_height'),
                 'name' => 'height',
                 'type' => 'int',
                 'notice' => rex_i18n::msg('media_manager_effekt_resize_notice'),
+                'attributes' => [ 'pattern' => $pattern, 'title' => $info ],
             ],
             [
                 'label' => rex_i18n::msg('media_manager_effekt_focuspointfit_zoom'),
@@ -242,18 +269,25 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
         return ( empty($para) || !is_numeric($para) || $para < $low || $para > $high ) ? $default : (int)$para;
     }
 
-    private function decodeSize( $value, $ref=0 )
+    function decodeSize( $value, $ref=0 )
     {
         $value = trim( $value );
-        if ( !preg_match( '/^\d*[%]*$/',$value ) ) return NULL;
+        if ( !preg_match( '/^'.self::$inpPattern.'$/',$value ) ) return NULL;
         if ( strpos( $value,'%' ) )
         {
             $value = str_replace( '%','',$value);
-            if ( $value > 100 ) $value = 100;
             $value = $ref * $value / 100;
         }
-        return $value;
+        if ( strpos( $value,'px' ) )
+        {
+            $value = str_replace( 'px','',$value);
+        }
+        if ( strpos( $value,'fr' ) )
+        {
+            $value = str_replace( 'fr','',$value);
+            $this->targetByAR++;
+        }
+    return $value;
     }
-
 
 }
