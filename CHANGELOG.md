@@ -2,6 +2,10 @@
 
 ---
 
+**23.01.2018 Version 1.3.30**
+
+- Bildformat als Aspect-Ratio und input-check mit Pattern (#34)
+
 **17.12.2017 Version 1.3.20**
 
 - Vorschau für Mediatypen hinzugefügt (#30)

@@ -16,8 +16,9 @@ Das Changelog findet sich hier: [CHANGELOG.md](https://github.com/FriendsOfREDAX
 
 ---
 
-
 ## Hilfe
+
+
 
 Folgendes im Template einfügen:
 
@@ -81,6 +82,14 @@ $back = explode(",",$back);
 background-position: <?php echo $position; unset($position); ?>
 
 ```
+
+
+---
+
+Hier gibt es noch weitere Infos MM-Effekt Fokuspoint-Fit:  https://friendsofredaxo.github.io/tricks/addons_focuspoint_fpfit.html
+
+---
+
 
 
 ## Lizenz
