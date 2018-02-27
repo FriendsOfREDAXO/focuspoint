@@ -35,6 +35,7 @@ media_manager_effekt_focuspointfit_fp_inherit = Endast allmän fokuspunkt
 media_manager_effekt_focuspointfit_fp_pic = Bild-individuell fokuspunkt först, fallback till allmän fokuspunkt
 
 mediapool_focuspoint_reset = Aterställ focuspoint till standard
+mediapool_focuspoint_preview = förhandsvisning
 
 rex_effect_focuspoint_fit = Bild: Focuspoint fit
 rex_effect_focuspoint_resize = Bild: Focuspoint resize
