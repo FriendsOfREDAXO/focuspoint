@@ -2,6 +2,12 @@
 
 ---
 
+**06.03.2018 Version 1.4.0*
+
+- Nicht-Statische Methode nicht statisch aufrufen… Danke @tbaddade
+- initialize class outside of loop...
+- Eintrag "mediapool_focuspoint_preview" in den .lang-Dateien ergänzt
+
 **23.01.2018 Version 1.3.30**
 
 - Bildformat als Aspect-Ratio und input-check mit Pattern (#34)
