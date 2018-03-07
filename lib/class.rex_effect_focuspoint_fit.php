@@ -145,7 +145,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
         */
             if ( $this->targetByAR == 2)
             {
-                $dw = $too_wide ? $hw * $dr : $sw;
+                $dw = $too_wide ? $sh * $dr : $sw;
                 $dh = $too_wide ? $sh : $sw / $dr;
                 $zoom = 0;
             }
