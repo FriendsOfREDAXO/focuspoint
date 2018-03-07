@@ -2,7 +2,11 @@
 
 ---
 
-**06.03.2018 Version 1.4.0*
+**07.03.2018 Version 1.4.1**
+
+- Update class.rex_effect_focuspoint_fit.php #39
+
+**06.03.2018 Version 1.4.0**
 
 - Nicht-Statische Methode nicht statisch aufrufen… Danke @tbaddade
 - initialize class outside of loop...
