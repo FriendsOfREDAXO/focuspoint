@@ -153,47 +153,54 @@ class rex_focuspoint
         }
 
         $mediatypesArray = rex_sql::factory()->getArray('select name from ' . rex::getTable('media_manager_type'));
-        $html = '<div class="rex-mediapool-detail-image col-sm-4">';
-        $html .= '<div id="fwidth" class="helper-tool-target">';
-        $html .= '<img class="helper-tool-img" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file=' . rex_url::media($filename) . '" >';
-        $html .= '<img class="reticle" src="./../assets/addons/focuspoint/focuspoint-target.png">';
-        $html .= '<img class="target-overlay" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file=' . rex_url::media($filename) . '" >';
-        $html .= '</div>';
-        $html .= '<div class="btn-group" role="group">';
-        $html .= '<button type="button" class="btn btn-primary focuspoint-reset" id="focuspoint-reset"><i class="fa fa-undo"></i>&nbsp;&nbsp;' . rex_i18n::msg('mediapool_focuspoint_reset') . '</button>';
-        //focuspoint preview select
-        $html .= '<div class="btn-group" role="group">';
-        $html .= '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' . rex_i18n::msg("mediapool_focuspoint_preview") . '&nbsp;&nbsp;';
-        $html .= '<i class="fa fa-chevron-down"></i></button>';
-        $html .= '<ul class="dropdown-menu" id="focuspoint-preview-select"> ';
-        
         $media = rex_media::get($filename);
         $mediaPath = rex_path::media($filename);
         $managedMedia = new rex_managed_media($mediaPath);
         $mediaManager = new rex_media_manager($managedMedia);
+        $effectList = '';
         
         foreach ($mediatypesArray as $mediatype)
         {
             $mediatypeEffectsArray = $mediaManager->effectsFromType($mediatype["name"]);
             $hasFocusFit = in_array_r("focuspoint_fit", $mediatypeEffectsArray) ? true : false;
             $hasFocusResize = in_array_r("focuspoint_resize", $mediatypeEffectsArray) ? true : false;
-            $type = "css";
+            $type = "nativ";
             $name = $mediatype["name"];
             
             if($hasFocusFit || $hasFocusResize)
             {
-                $type = "nativ";
+                $effectList .= '<li><a href="#" data-name="' . $name . '" data-type="'. $type .'">' . $name . '</a></li>';
             }
-            
-            $html .= '<li><a href="#" data-name="' . $name . '" data-type="'. $type .'">' . $name . '</a></li>';
         }
-        $html .= '</ul> ';
+        
+        $html = '<div class="rex-mediapool-detail-image col-sm-4">';
+            $html .= '<div id="fwidth" class="helper-tool-target">';
+                $html .= '<img class="helper-tool-img" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file=' . rex_url::media($filename) . '" >';
+                $html .= '<img class="reticle" src="./../assets/addons/focuspoint/focuspoint-target.png">';
+                $html .= '<img class="target-overlay" src="index.php?rex_media_type=rex_mediapool_maximized&rex_media_file=' . rex_url::media($filename) . '" >';
+            $html .= '</div>';
+            
+            $html .= '<div class="btn-group" role="group">';
+                $html .= '<button type="button" class="btn btn-primary focuspoint-reset" id="focuspoint-reset"><i class="fa fa-undo"></i>&nbsp;&nbsp;' . rex_i18n::msg('mediapool_focuspoint_reset') . '</button>';
+
+            if($effectList !== '')
+            {
+                //focuspoint preview select
+                $html .= '<div class="btn-group" role="group">';
+                    $html .= '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">' . rex_i18n::msg("mediapool_focuspoint_preview") . '&nbsp;&nbsp;';
+                    $html .= '<i class="fa fa-chevron-down"></i></button>';
+                    $html .= '<ul class="dropdown-menu" id="focuspoint-preview-select"> ';
+                        $html .= $effectList;
+                    $html .= '</ul> ';
+                $html .= '</div>';
+            }
+
         $html .= '</div>';
-        $html .= '</div>';
+
         $html .= '<input type="hidden" name="updatepreview" id="updatepreview" value="false" />';
         $html .= '<div id="focuspoint-preview">';
-        $html .= '<div id="preview-container">';
-        $html .= '</div>';
+            $html .= '<div id="preview-container">';
+            $html .= '</div>';
         $html .= '</div>';
         
         echo "
