@@ -2,6 +2,10 @@
 
 ---
 
+**24.03.2018 Version 1.4.2**
+
+- Vorschau nur wenn Mediatyp einen Focuspoint-Effekt besitzt (thx @eaCe)
+
 **07.03.2018 Version 1.4.1**
 
 - Update class.rex_effect_focuspoint_fit.php #39
