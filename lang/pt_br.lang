@@ -17,6 +17,8 @@ media_manager_effect_crop_offset_width = Deslocamento horizontal
 media_manager_effect_crop_offset_height = Deslocamento vertical
 media_manager_effect_crop_position = Ponto de referência
 
+mediapool_focuspoint_preview_error = Nenhum ponto de foco detectado. Por favor, clique e selecione um ponto de foco.
+
 rex_effect_focuspoint_fit = Retrato: Focuspoint fit
 rex_effect_focuspoint_resize = Retrato: Focuspoint resize
 
