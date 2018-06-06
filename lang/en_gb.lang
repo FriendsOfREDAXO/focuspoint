@@ -17,6 +17,8 @@ media_manager_effect_crop_offset_width = Horizontal offset
 media_manager_effect_crop_offset_height = Vertical offset
 media_manager_effect_crop_position = Crop position
 
+mediapool_focuspoint_preview_error = No focuspoint detected. Please click and select a focuspoint.
+
 ########
 #
 # rex_effect_focuspoint_fit
