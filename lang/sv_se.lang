@@ -8,7 +8,7 @@ help = Hjälp
 changelog = Ändringar
 
 
-perm_general_focuspoint[] = Permissions for focuspoint addon
+perm_general_focuspoint[] = Tillstånd för fokuspunktstillägg
 
 
 media_manager_effect_crop_width = Målbredden
@@ -16,6 +16,8 @@ media_manager_effect_crop_height = Målhöjden
 media_manager_effect_crop_offset_width = Horisontell offset
 media_manager_effect_crop_offset_height = Vertikal offset
 media_manager_effect_crop_position = Referenspunkt
+
+mediapool_focuspoint_preview_error = Inga fokuspunkt upptäckt. Vänligen välj en
 
 ########
 #
