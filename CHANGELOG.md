@@ -2,6 +2,12 @@
 
 ---
 
+**06.06.2018 Version 1.4.3**
+
+- Einbinden in die Seitenleiste umgestellt (Kompatibilität mit EP MEDIA_DETAIL_SIDEBAR)
+- Bildvergrößerung kleiner Bilder im Effekt "focuspoint_fit" funktionierte nicht, behoben
+- kleinere Optimierungen zur Steigerung allgemeinen System-Performance (Code nur laden wenn nötig)
+
 **24.03.2018 Version 1.4.2**
 
 - Vorschau nur wenn Mediatyp einen Focuspoint-Effekt besitzt (thx @eaCe)

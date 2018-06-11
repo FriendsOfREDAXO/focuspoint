@@ -162,8 +162,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract
             if ( $sw < $cw || $sh < $ch )
             {
                 $scale = ( $too_wide ? $dh/$sh : $dw/$sw);
-                $cw = floor( $cw * $scale );
-                $ch = floor( $ch * $scale );
+                $cw = floor( $cw / $scale );
+                $ch = floor( $ch / $scale );
             }
         /*
             Den Ausschnitt festlegen - Zoomen

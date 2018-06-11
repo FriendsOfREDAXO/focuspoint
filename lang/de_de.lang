@@ -16,6 +16,8 @@ media_manager_effect_crop_offset_width = Horizontaler Versatz/Offset
 media_manager_effect_crop_offset_height = Vertikaler Versatz/Offset
 media_manager_effect_crop_position = Bezugspunkt
 
+mediapool_focuspoint_preview_error = Kein Fokuspunkt gewählt. Bitte zuerst einen Fokuspunkt anklicken
+
 ########
 #
 # rex_effect_focuspoint_fit
