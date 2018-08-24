@@ -2,7 +2,6 @@ package:  focuspoint
 version:  '2.0.0-dev'
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/focuspoint
-#load: late
 
 help:
     mode: docs
@@ -12,8 +11,8 @@ help:
     repository: https://github.com/FriendsOfREDAXO/focuspoint/%%
 
 pages:
-    # media_manager/overview wird zu einem Untermenü, wenn fp sich einklinkt
-    # daher den Originaltext zum ersten Menüpunkt machen.
+    # Seite "media_manager/overview" wird zu einem Untermenü, wenn fp sich einklinkt
+    # daher die Originalseite zum ersten Menüpunkt machen.
     media_manager/overview/overview:
         subPath: ../media_manager/pages/overview.php
         title: 'Media Manager'
