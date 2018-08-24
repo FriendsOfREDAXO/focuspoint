@@ -10,7 +10,7 @@ Die Bilder für die Ausgabe werden typischerweise mit Hilfe des REDAXO-Media-Man
 
 > Version 2 ist komplett neu geschrieben; Details stehen im [Changelog](https://github.com/FriendsOfREDAXO/focuspoint/blob/master/CHANGELOG.md); Speicherung der Daten und Parametrisierung der Media-Manager-Effekte sind geändert. Die Umstellung wird bei einem Update automatisch vorgenommen. Es wird dringend geraten, vor dem Update eine Datensicherung durchzufühen.
 
-Eine ausführliche Dokumentation steht im Backend zur Verfügung. Sie ist erreichbar über "Hauptmenü / Addons" und dort in der Zeile "focuspouínt" mit dem Button "Hilfe".
+Eine ausführliche Dokumentation steht im Backend zur Verfügung. Sie ist erreichbar über "Hauptmenü / Addons" und dort in der Zeile "focuspoint" mit dem Button "Hilfe".
 
 ___
 
