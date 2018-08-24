@@ -2,7 +2,7 @@
 
 Das Addon erweitert den Medienpool um die Fähigkeit, den inhaltlichen Mittelpunkt (Fokuspunkt) eines Bilds zu bestimmen, um es bei der Darstellung auf der Website daran auszurichten.
 
-<img src="../assets/addons/focuspoint/fp.png" style="width: 100%; max-width: 888px" />
+<img src="https://raw.githubusercontent.com/christophboecker/focuspoint/V2.0.0/assets/fp.png" style="width: 100%; max-width: 888px" />
 
 Die Fokuspunkte können interaktiv im Medienpool festgelegt werden. Die ermittelten Daten werden in der Medien-Datenbank hinterlegt und können bei der Bildausgabe berücksichtigt werden.
 
@@ -39,5 +39,5 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## Credits
 
 - [FriendsOfREDAXO](https://github.com/FriendsOfREDAXO)
-- Idee und Realisierung der ersten Version: [concedra.de / Oliver Kreischer](http://concedra.de)
+- Idee und Realisierung / Project Lead der ersten Version: [concedra.de / Oliver Kreischer](http://concedra.de)
 - Project Lead: [Christoph Böcker](https://github.com/christophboecker)
