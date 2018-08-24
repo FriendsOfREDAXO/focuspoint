@@ -1,0 +1,73 @@
+#   This file is part of the REDAXO-AddOn "focuspoint".
+#
+#   @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
+#   @version     2.0
+#   @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
+#
+#   For the full copyright and license information, please view the LICENSE
+#   file that was distributed with this source code.
+#
+# Install, Deinstall, Reinstall, Update, Config
+#
+focuspoint_field_label = Fokuspunkt
+focuspoint_update_error = Update-Fehler!
+focuspoint_doc = Fokuspunkt-AddOn
+focuspoint_install_field_exists = Das Feld "{0}" existiert, hat aber den falschen Feldtyp. Feldtyp ändern auf "{1}" oder Feld umbenennen/löschen.
+focuspoint_install_field_error = Fehler beim Anlegen des Metafeldes {0}: {1}
+focuspoint_install_type_error = Fehler beim Anlegen des Meta-Typs {0}: {1}
+focuspoint_uninstall_metafields = Zusätzliche Metafelder des Typs "{0}". Das AddOn kann erst gelöscht werden, wenn die Felder gelöscht sind oder auf einen anderen Datentyp (text) umgestellt.
+focuspoint_uninstall_external_effects = Zusätzliche Fokuspunkt-Effekte. Das AddOn kann erst gelöscht werden, wenn die Effekte deaktiviert sind.
+focuspoint_uninstall_effects_in_use = Betroffene Media-Manager-Typen:
+focuspoint_uninstall_dependencies = Abhängigkeiten zwischen dem Focuspoint-AddOn und anderen Bereichen!
+focuspoint_activate_dependencies = Fehlende Komponenten; Re-Install erforderlich!
+focuspoint_deactivate_dependencies = Abhängigkeiten zwischen dem Focuspoint-AddOn und anderen Bereichen!
+# update.php : taken from from previous version before 2.0.
+media_manager_effekt_focuspointfit_fp_inherit = Nur allgemeiner Bezugspunkt
+
+#
+# effekt-Names
+#
+focuspoint_effect_fit = Bild: Focuspoint fit
+focuspoint_effect_focuspoint_resize = Bild: Focuspoint resize
+
+#
+# page=media_manager/types -> effect-configuration
+#
+# - common fields or used with more than one effect
+focuspoint_edit_label_meta = Basisfeld (med_...)
+focuspoint_edit_label_focus = Koordinate / Ersatzwert
+focuspoint_edit_label_width = Zielgröße: Breite
+focuspoint_edit_label_heigth = Zielgröße: Höhe
+# - focuspoint_resize
+focuspoint_edit_notice_widthheigth_resize = Angabe in Pixel
+focuspoint_edit_label_style = Modus
+focuspoint_edit_label_allow_enlarge = Wenn Bild zu klein
+# - focuspoint_fit
+focuspoint_edit_label_zoom = Zoom-Faktor
+focuspoint_edit_notice_zoom = 0% = Zielgröße (kein Zoom) ... 100% = Ausschnitt größtmöglich wählen
+focuspoint_edit_notice_widthheigth_fit = absolut: n [px] | relativ: n % | Aspect-Ratio: n fr
+
+#
+# page=mediapool/media -> .focuspoint-panel
+#
+focuspoint_detail_header = Fokuspunkt-Auswahl
+focuspoint_detail_preview = Vorschau
+focuspoint_detail_reset = Zurücksetzen
+focuspoint_detail_initial = Ausgangswert
+focuspoint_detail_remove = Entfernen
+focuspoint_detail_select = Fokus-Feld
+
+#
+# page=metainfo/media -> is_in_use-check
+#
+focuspoint_isinuse_entry = Typ: "<a href="{1}">{0}</a>", Effekt: "<a href="{3}">{2}</a>"
+focuspoint_isinuse_message = Das Metafeld "{0}" ist im <a href="{1}">Media-Manager</a> in Benutzung und kann nicht gelöscht werden
+focuspoint_isinuse_dontdeletedefault = Das Feld "{0}" darf nicht gelöscht werden.
+
+#
+# documentation
+#
+focuspoint_docs_navigation = Navigation
+focuspoint_docs_content = Beschreibung
+focuspoint_docs_repository_button = GitHub
+focuspoint_docs_not_found = Ooops, Text nicht gefunden
