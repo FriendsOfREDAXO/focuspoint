@@ -8,7 +8,7 @@ Die Fokuspunkte können interaktiv im Medienpool festgelegt werden. Die ermittel
 
 Die Bilder für die Ausgabe werden typischerweise mit Hilfe des REDAXO-Media-Managers erzeugt. Die nötigen Effekte sind im Addon enthalten.
 
-> Version 2 ist komplett neu geschrieben; Details stehen im [Changelog](https://github.com/FriendsOfREDAXO/focuspoint/blob/master/CHANGELOG.md); Speicherung der Daten und Parametrisierung der Media-Manage-Effekte sind geändert. Die Umstellung wird bei einem Update automatisch vorgenommen. Es wird dringend geraten, vor dem Update eine Datensicherung durchzufühen.
+> Version 2 ist komplett neu geschrieben; Details stehen im [Changelog](https://github.com/FriendsOfREDAXO/focuspoint/blob/master/CHANGELOG.md); Speicherung der Daten und Parametrisierung der Media-Manager-Effekte sind geändert. Die Umstellung wird bei einem Update automatisch vorgenommen. Es wird dringend geraten, vor dem Update eine Datensicherung durchzufühen.
 
 Eine ausführliche Dokumentation steht im Backend zur Verfügung. Sie ist erreichbar über "Hauptmenü / Addons" und dort in der Zeile "focuspouínt" mit dem Button "Hilfe".
 
