@@ -1,12 +1,75 @@
-### Changelog ###
+# Changelog
 
----
+## **30.08.2018 Version 2.0.0**
 
-**06.06.2018 Version 1.4.3**
+**ein komplett neu entwickeltes Major-Release**
 
-- Einbinden in die Seitenleiste umgestellt (Kompatibilität mit EP MEDIA_DETAIL_SIDEBAR)
-- Bildvergrößerung kleiner Bilder im Effekt "focuspoint_fit" funktionierte nicht, behoben
-- kleinere Optimierungen zur Steigerung allgemeinen System-Performance (Code nur laden wenn nötig)
+## Wichtiger Hinweis
+
+> Sowohl die Datenfelder als auch Parameter der Effekte sind geändert. Im Rahmen des Update
+> werden frühere Versionen vor 2.0 automatisch umgestellt und die nicht mehr benötigten Felder gelöscht.
+> Wer die Fokuspunkt-Parameter direkt auswertet statt die Zielbilder via Media-Manager zu erzeugen,
+> muss die betroffenen Scripte anpassen. Informatioen dazu sind in der Dokumentation zu finden (siehe unten).
+
+## Features
+
+- Meta-Datenfelder für Medien
+
+    - Eigener Meta-Datentyp "Focuspoint (AddOn)" für Fokuspunkt-Metafelder
+    - Individuelle Fokuspunkt-Metafelder können angelegt werden
+    - **Die synchronen Felder 'med_focuspoint_data' und 'med_focuspoint_css' sind durch 'med_focuspoint' ersetzt**
+    - Das Koordinaten-Format ist nun ein Prozentsatz der Breite bzw. Höhe: 0.0 bis 100.0, Koordinatenursprung oben links.
+    - automatische Umstellung beim erstmaligen Update auf eine Version ab 2.0.0
+    - Metafelder, die in Effekten genutzt werden, können nicht gelöscht werden.
+
+- Fokuspunkt-Erfassung
+
+    - Eingabefelder
+
+        - neu gestaltet als Custom-Field.
+        - Interaktion zwischen Eingabefeld und der interaktiven Fokuspunkt-Auswahl
+        - Felder können ausgeblendet werden, so dass nur die interaktive Auswahl angeboten wird
+        - Der Button vor dem Eingabefeld dient als Umschalter zwischen mehreren Feldern und zeigt an, welches grade interaktiv angezeigt ist
+
+    - neu gestaltete interaktive Fokuspunkt-Zuweisung
+
+        - Reset auf den Ausgangswert, Reset auf "Bildmitte"
+        - Zoom für bessere Detailauswahl. Basisbild mit 1000px Breite statt 600px entsprehend der maximalen Koordinatenauflösung (100.0)
+        - Preview mit echten temporären Bildern; daher "Abbruch" der Eingabe möglich.
+        - Unterstützung mehrerer Fokuspunkt-Felder
+        - Cursorposition laufend angezeigt bei der Auswahl
+        - über EP MEDIA_DETAIL_SIDEBAR eingehängt
+
+- Media-Manager_Effekte
+
+    - Die mitgelieferten Effekte an die neue Datenstruktur angepasst
+    - Effekte basieren auf der Klasse `rex_effect_abstract_focuspoint`
+    - Default-Felder für alle Effekte:
+        - `meta`: anzuwendendes Fokuspunkt-Feld
+        - `focus`: Fallback-Koordinate
+    - **automatische Umstellung der Media-Manager-Typen bzw. deren Effekte auf die neuen Parameter beim erstmaligen Update auf eine Version ab 2.0.0**
+
+- JS und CSS
+
+    - wird nur auf Media-Detailseiten eingebunden
+
+- De-Installieren/Löschen/De-Aktivieren
+
+    - prüft auf Rückbezüge und verhindert ggf. die Aktion
+        (z.B. wenn auf der Klasse `rex_effect_abstract_focuspoint` beruhende Effekte im Media-Manager benutzt werden )
+
+- Entwicklersupport
+
+    - Basisklasse `rex_effect_abstract_focuspoint` als Ausgangspunkt eigene Effekte
+    - Media-Klasse `focuspoint_media` für Medien mit Fokuspunkt
+    - Abruf von Medien mit "on the fly"-Koordinaten (via rex-api-call)
+
+- Dokumentation
+
+    - komplett neu und umfangreich
+    - Aufruf via AddOn-Verwaltung (Hilfe-Button)
+    - Anleitung für den Umstieg
+    - Auszüge zum Fit-Effekt in den Media-Manager eingehängt
 
 **24.03.2018 Version 1.4.2**
 

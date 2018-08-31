@@ -1,10 +1,16 @@
-## Focuspoint für REDAXO 5
+# Focuspoint für REDAXO 5
 
-Das Addon erweitert den Medienpool um die Fähigkeit, den Fokuspunkt eines Bilds zu bestimmen, um es bei der Darstellung auf der Website daran auszurichten.
+Das Addon erweitert den Medienpool um die Fähigkeit, den inhaltlichen Mittelpunkt (Fokuspunkt) eines Bilds zu bestimmen, um es bei der Darstellung auf der Website daran auszurichten.
 
-<img src="https://raw.githubusercontent.com/eace/focuspoint/assets/focuspoint_02.jpg" style="width: 100%; max-width: 888px" />
+<img src="https://raw.githubusercontent.com/christophboecker/focuspoint/V2.0.0/assets/fp.png" style="width: 100%; max-width: 888px" />
 
-Die ermittelten Daten werden in der Datenbank hinterlegt und können bei der Bildausgabe berücksichtigt werden. Hierfür wird das jQuery-Plugin von [Jono Menz](https://github.com/jonom/jquery-focuspoint) benutzt.
+Die Fokuspunkte können interaktiv im Medienpool festgelegt werden. Die ermittelten Daten werden in der Medien-Datenbank hinterlegt und können bei der Bildausgabe berücksichtigt werden.
+
+Die Bilder für die Ausgabe werden typischerweise mit Hilfe des REDAXO-Media-Managers erzeugt. Die nötigen Effekte sind im Addon enthalten.
+
+> Version 2 ist komplett neu geschrieben; Details stehen im [Changelog](https://github.com/FriendsOfREDAXO/focuspoint/blob/master/CHANGELOG.md); Speicherung der Daten und Parametrisierung der Media-Manager-Effekte sind geändert. Die Umstellung wird bei einem Update automatisch vorgenommen. Es wird dringend geraten, vor dem Update eine Datensicherung durchzufühen.
+
+Eine ausführliche Dokumentation steht im Backend zur Verfügung. Sie ist erreichbar über "Hauptmenü / Addons" und dort in der Zeile "focuspoint" mit dem Button "Hilfe".
 
 ___
 
@@ -15,81 +21,6 @@ ___
 Das Changelog findet sich hier: [CHANGELOG.md](https://github.com/FriendsOfREDAXO/focuspoint/blob/master/CHANGELOG.md)
 
 ---
-
-## Hilfe
-
-
-
-Folgendes im Template einfügen:
-
-```php
-<link rel="stylesheet" href="/assets/addons/focuspoint/focuspoint.css" />
-
-<!-- jQuery Einbindung Anfang
-     Nur notwendig wenn jQuery nicht anders eingebunden wird ->
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js" /></script>
-<!-- // Query Einbindung Ende -->
-
-<script type="text/javascript" src="./assets/addons/focuspoint/jquery_focuspoint.js"></script>
-<script type="text/javascript">
-$( document ).ready(function() {
-  $('.focuspoint').focusPoint();
-});
-</script>
-```
-
-Bei der Installation wurde ein Effekt beim Media Manager AddOn hinzugefügt. Sollte dieser fehlen, bitte ein reinstall durchführen
-
-Diese Ausgabe dient als Beispiel für ein Modul:
-```php
-<?php
-
-if ('REX_MEDIA[1]') {
-
-  $file         = rex_media::get(REX_MEDIA[1]);
-  $filename     = $file->getFilename();
-  $titel        = $file->getTitle();
-  $width        = $file->getValue('width');
-  $height       = $file->getValue('height');
-  $focuspoint_css     = $file->getValue('focuspoint_css');
-  $focuspoint_data    = explode(",", $file->getValue('med_focuspoint_data'), 2);
-
-  if (count($focuspoint_data) == 2) {
-    echo '
-       <div class="focuspoint"
-          data-focus-x="'.$focuspoint_data[0].'"
-          data-focus-y="'.$focuspoint_data[1].'"
-          data-image-w="'.$width.'"
-          data-image-h="'.$height.'">
-          <img src="/media/'.$filename.'" alt="'.htmlspecialchars($titel).'" />
-        </div>
-        ';
-    } else {
-        echo '<img src="/media/'.$filename.'" alt="'.htmlspecialchars($titel).'" />';
-    }
-
-}
-?>
-```
-
-Diese Beispiel zeigt wie Daten via CSS im Modul benutzt werden könnten:
-```php
-// auslesen
-$media = rex_media::get("REX_MEDIA[id=1 output=1]");
-$back = $media->getValue('focuspoint_css');
-$back = explode(",",$back);
-// CSS Style:
-background-position: <?php echo $position; unset($position); ?>
-
-```
-
-
----
-
-Hier gibt es noch weitere Infos MM-Effekt Fokuspoint-Fit:  https://friendsofredaxo.github.io/tricks/addons_focuspoint_fpfit.html
-
----
-
 
 
 ## Lizenz
@@ -107,14 +38,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## Credits
 
-- [Jono Menz](https://github.com/jonom/jquery-focuspoint)
 - [FriendsOfREDAXO](https://github.com/FriendsOfREDAXO)
-
-<br/>
-
-**Projekt-Lead**
-
-- [Oliver Kreischer](https://github.com/olien)
-
-
-
+- Idee und Realisierung / Project Lead der ersten Version: [concedra.de / Oliver Kreischer](http://concedra.de)
+- Project Lead: [Christoph Böcker](https://github.com/christophboecker)

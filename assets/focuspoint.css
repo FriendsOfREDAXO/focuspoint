@@ -1,91 +1,56 @@
-/* !FOCUSED IMAGES */
-/*-----------------------------------------*/
-.focuspoint {
-  position: relative; /*Any position but static should work*/
-  overflow: hidden;
+/**
+ *  This file is part of the REDAXO-AddOn "focuspoint".
+ *
+ *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
+ *  @version     2.0
+ *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
+ *
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+.focuspoint-panel{
+    width: 100%;
 }
-.focuspoint img {
-  position: absolute;
-  left: 0;
-  top: 0;
-  margin: 0;
-  display: block;
-  /* fill and maintain aspect ratio */
-  width: auto; height: auto;
-  min-width: 100%; min-height: 100%;
-  max-height: none; max-width: none;
+.focuspoint-panel-select > * {
+    font-size: 70%;
 }
-
-/* transfered from rex_focuspoint */
-.helper-tool, .helper-tool * {
-    box-sizing:border-box;
-}
-.helper-tool {
-    padding:12px;
-    border:1px solid #fcfcfc;
-}
-.helper-tool input {
-    position:relative;
-    width:100%;
-}
-
-/* !HELPER TOOL TARGETING SYSTEM */
-.focuspoint img {
-    transition: all 500ms ease-in-out;
-    -webkit-transition: all 500ms ease-in-out;
-    -moz-transition: all 500ms ease-in-out;
-}
-
-/* !HELPER TOOL TARGETING SYSTEM */
-.helper-tool-target {
+.focuspoint-panel > .focuspoint-panel-image {
+    padding: 0;
     position: relative;
-    display: inline-block;
-    overflow: hidden;
-    margin-bottom:1em;
+    cursor: crosshair;
+    cursor: url('cross.png') 48 48, crosshair;
 }
-/* das eigentliche bild, sichtbar, unterhalb von reticle und overlay */
-.helper-tool-target img {
-    position: relative;
-    display: block;
+.focuspoint-panel  > .focuspoint-panel-image > img {
+    width: 100%;
+    z-index: -1;
+}
+.focuspoint-panel > div:last-child > img {
     max-width: 100%;
-    height:auto;
+    position: relative;
 }
-/* kopie des bildes zum klicken, oberhalb von reticle und eigentlichem bild */
-.helper-tool-target img.target-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    cursor: pointer;
-    opacity: 0.0;
-}
-/* fadenkreuz zwischen sichtbarem bild und klicklayer*/
-.helper-tool-target img.reticle {
-    width: 102px;
-    height: 102px;
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+.focuspoint-panel  > .focuspoint-panel-image > div {
+    height: 99px;
+    width: 99px;
+    background-image: url('cross.png');
     position: absolute;
     top: 50%;
     left: 50%;
-    transition: all 500ms ease-in-out;
-    -webkit-transition: all 500ms ease-in-out;
-    -moz-transition: all 500ms ease-in-out;
+    margin: -50px 49px 49px -50px;
+    transition: top,left, 300ms ease-in-out;
 }
-.focuspoint-reset {
-    cursor: pointer;
+.focuspoint-panel > small {
+    display: block;
+    text-align: center;
+}
+.focuspoint-panel > small > span {
     display: inline-block;
+    width: 17rem;
+    border: 1px solid darkgray;
+    border-top: 0;
+    border-radius: 0 0 1rem 1rem;
+    background-color: lightgray;
 }
-#focuspoint-preview {
-    padding: 20px 0;
-}
-#preview-container {
-    display: inline-block;
-    transition: all 300ms ease-in-out;
-    -webkit-transition: all 300ms ease-in-out;
-    -moz-transition: all 300ms ease-in-out;
-}
-#preview-container img {
-    max-width: 100%;
-    visibility: hidden;
-}
+
+.focuspoint-panel button[data-button="zoom"] .fa-search-minus { display:none; }
+.col-sm-12 .focuspoint-panel button[data-button="zoom"] .fa-search-plus { display:none; }
+.col-sm-12 .focuspoint-panel button[data-button="zoom"] .fa-search-minus { display:inline; }

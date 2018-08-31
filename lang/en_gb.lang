@@ -1,43 +1,73 @@
-focuspoint_title = Focuspoint
-focuspoint_info = Info
-focuspoint_help = Help
-focuspoint_license = Licence
-
-licence = Licence
-help = Help
-changelog = Changes
-
-
-perm_general_focuspoint[] = Permissions for focuspoint addon
-
-
-media_manager_effect_crop_width = Target width
-media_manager_effect_crop_height = Target height
-media_manager_effect_crop_offset_width = Horizontal offset
-media_manager_effect_crop_offset_height = Vertical offset
-media_manager_effect_crop_position = Crop position
-
-mediapool_focuspoint_preview_error = No focuspoint detected. Please click and select a focuspoint.
-
-########
+#   This file is part of the REDAXO-AddOn "focuspoint".
 #
-# rex_effect_focuspoint_fit
+#   @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
+#   @version     2.0
+#   @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
 #
-media_manager_effekt_resize_notice = Enter a number = target size in px / enter a %-number = target size in % of source-picture / suffix fr for aspect-ratio
-media_manager_effekt_focuspointfit_zoom = Zoom-factor for the viewframe
-media_manager_effekt_focuspointfit_modus_fit = maximum size for viewframe (100%)
-media_manager_effekt_focuspointfit_modus_excerpt = use target-size of viewframe (0%)
-media_manager_effekt_focuspointfit_vpos = general vertical focuspoint
-media_manager_effekt_focuspointfit_hpos = general horizontal focuspoint
-media_manager_effekt_focuspointfit_pattern = 1..., 1...px / 1..100%, 1..100fr
-media_manager_effekt_focuspointfit_vpos_notice = 0 = upper border, 50 = centered, 100 = lower border
-media_manager_effekt_focuspointfit_hpos_notice = 0 = left border, 50 = centered, 100 = right border
-media_manager_effekt_focuspointfit_fp = Align viewframe to ...
+#   For the full copyright and license information, please view the LICENSE
+#   file that was distributed with this source code.
+#
+# Install, Deinstall, Reinstall, Update, Config
+#
+focuspoint_field_label = Focalpoint
+focuspoint_update_error = Update-error!
+focuspoint_doc = Focuspoint-AddOn
+focuspoint_install_field_exists = Field "{0}" already exists, but with wrong type. Change type to "{1}" or remove/rename field.
+focuspoint_install_field_error = Error creating meta-field  {0}: {1}
+focuspoint_install_type_error = Error creating meta-type {0}: {1}
+focuspoint_uninstall_metafields = Additional meta-fields of type "{0}" found. First delete these fields or switch to another field-type ("text"), then try again to delete the Focuspoint-AddOn.
+focuspoint_uninstall_external_effects = Additional focuspoint-effects found. First deacticate these effects, then try again to delete the Focuspoint-AddOn..
+focuspoint_uninstall_effects_in_use = Affected Media-Manager-Types:
+focuspoint_uninstall_dependencies = Dependencies between Focuspoint-AddOn and other AddOns!
+focuspoint_activate_dependencies = Components missing; re-install required!
+focuspoint_deactivate_dependencies = Dependencies between Focuspoint-AddOn and other AddOns!
+# update.php : taken from from previous version before 2.0.
 media_manager_effekt_focuspointfit_fp_inherit = general focuspoint only
-media_manager_effekt_focuspointfit_fp_pic = picture-individual focuspoint first, fallback to general focuspoint
 
-mediapool_focuspoint_reset = reset Focuspoint
-mediapool_focuspoint_preview = Preview
+#
+# effekt-Names
+#
+focuspoint_effect_fit = Image: Focuspoint fit
+focuspoint_effect_focuspoint_resize = Image: Focuspoint resize
 
-rex_effect_focuspoint_fit = Image: Focuspoint fit
-rex_effect_focuspoint_resize = Image: Focuspoint resize
+#
+# page=media_manager/types -> effect-configuration
+#
+# - common fields or used with more than one effect
+focuspoint_edit_label_meta = Source (med_...)
+focuspoint_edit_label_focus = Coordinate / Fallback
+focuspoint_edit_label_width = Targetsize: Width
+focuspoint_edit_label_heigth = Targetsize: Height
+# - focuspoint_resize
+focuspoint_edit_notice_widthheigth_resize = Value as pixel
+focuspoint_edit_label_style = Mode
+focuspoint_edit_label_allow_enlarge = If picture is to small
+# - focuspoint_fit
+focuspoint_edit_label_zoom = Zoom-factor
+focuspoint_edit_notice_zoom = 0% = Targetsize (no zoom) ... 100% = maximum clipping-area
+focuspoint_edit_notice_widthheigth_fit = absolut: n [px] | relativ: n % | Aspect-Ratio: n fr
+
+#
+# page=mediapool/media -> .focuspoint-panel
+#
+focuspoint_detail_header = Pick the Focuspoint
+focuspoint_detail_preview = Preview
+focuspoint_detail_reset = Reset
+focuspoint_detail_initial = Initial value
+focuspoint_detail_remove = Remove
+focuspoint_detail_select = Focuspoint-Field
+
+#
+# page=metainfo/media -> is_in_use-check
+#
+focuspoint_isinuse_entry = Type: "<a href="{1}">{0}</a>", Effect: "<a href="{3}">{2}</a>"
+focuspoint_isinuse_message = Meta-field "{0}" is in use by <a href="{1}">Media-Manager</a> and cannot be deleted
+focuspoint_isinuse_dontdeletedefault = Meta-field "{0}" cannot be deleted
+
+##
+# documentation
+#
+focuspoint_docs_navigation = Navigation
+focuspoint_docs_content = Description
+focuspoint_docs_repository_button = GitHub
+focuspoint_docs_not_found = Ooops, Text not found
