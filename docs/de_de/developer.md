@@ -28,7 +28,7 @@ Die Parameter sind:
 - `true` zur Umrechnung der relativen in absolute Koordinaten auf Basis der Bildgröße. Vorgabe: `false`. Man kann statt `true` auch eine eigene Bildgröße als Array `[«breite»,«höhe»]` angeben.
 
 Falls das angegebene Fokuspunkt-Metafeld nicht existiert, wird nicht auf das Default-Feld
-zurückgegriffen, sondernn der Fallback-Wert herangezogen.
+zurückgegriffen, sondern der Fallback-Wert herangezogen.
 
 Die Klasse `focuspoint_media` kann z.B. in eigenen Effekten, die auf Fokuspunkten basieren,
 eingesetzt werden, aber auch in beliebigen anderen Zusammenhängen. Hier ein Beispiel :
@@ -155,7 +155,7 @@ auf den Fallback-Wert verwiesen wird (`default`), wird ein leerer String zurück
 
 Die Funktion ermittelt den für das Bild relevanten Fokuspunkt direkt aus dem Bild.
 Das mit getMetaField() ermittelte Metafeld wird aus dem Bild abgefragt.
-Wenn das Feld nicht gelesenwerrden kann bzw. nicht gefunden wird oder wenn der Wert im Feld keine
+Wenn das Feld nicht gelesen werden kann bzw. nicht gefunden wird oder wenn der Wert im Feld keine
 gültige Koordinate ist, wird `$default` zurückgegeben. Wenn `$default` nicht angegeben ist, wird
 `[50,50]` zurückgegeben (also Bildmitte).
 
@@ -168,10 +168,10 @@ if ( $fpMedia )
 ```
 
 ### array function **getParams**()
-Die Methode iefert für den Parametrisierungsdialog eines Fokuspunkt-Effektes das
+Die Methode liefert für den Parametrisierungsdialog eines Fokuspunkt-Effektes das
 Grundgerüst mit zwei Feldern:
 
-- Auswahl des heranzuziehenden Meta-Feldes (`meta`)
+- Auswahl des heranzuziehenden Metafeldes (`meta`)
 - Default-Koordinate (`focus`)
 
 Eigene, weitergehende Parameter-Felder könne per `array_merge` hinzugefügt werden:
