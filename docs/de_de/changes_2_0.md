@@ -39,7 +39,7 @@ $fp = "$x%,$y%";                                // Verwendung
 
 ### Feld: med_focuspoint_data
 
-Für dieses Feld lag der Koordinatenursprung genau in der Bildmitte, die Koordinaten waren ein
+Für dieses Feld lag der Koordinatenursprung genau in der Bildmitte; die Koordinaten waren ein
 Wert zwischen -1 (links bzw. unten) und 1 (rechts bzw. oben).
 
 - alt: 0.0,-0.2
