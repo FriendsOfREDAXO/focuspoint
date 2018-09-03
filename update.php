@@ -132,6 +132,14 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<'))
                                 : rex_effect_abstract_focuspoint::MED_DEFAULT;
                             unset( $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_fp'] );
                         }
+                        if( isset($v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom']) &&
+                            preg_match( '(0%|25%|50%|75%|100%)', $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'], $match )  &&
+                            count($match) > 0 )
+                        {
+                            $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'] = $match[0];
+                        } else {
+                            $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'] = '0%';
+                        }
                     }
                     if( isset($v['rex_effect_focuspoint_resize'] ) )
                     {

@@ -5,7 +5,7 @@ erfolgt in der Detailansicht des Medienpools:
 
 ![medianpool](edit01.jpg)
 
-Rechts neben dem Eingabereiche wird das Bid angezeigt (roter Rahmen). Im und um das Bild sind
+Rechts neben dem Eingabereich wird das Bid angezeigt (roter Rahmen). Im und um das Bild sind
 Bedienelemente, mit denen der Fokuspunkt bequem [interaktiv](#media_edit_interactive.md) ausgewählt werden kann.
 
 Die Datenfelder für Fokuspunkte (mit einem roten Pfeil markiert) sind zudem im linken Eingebereich

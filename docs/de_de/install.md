@@ -27,7 +27,7 @@ Sollte es bereits ein Meta-Feld `med_focuspoint` geben, das einen anderen Feldty
 Installation abgebrochen. Das Feld muss zuerst gelöscht oder umbenannt werden.
 
 Sollte es bereits einen Media-Manager-Typ `focuspoint_media_detail` geben, wird lediglich der
-demit verbundene Effekt reinitialisiert.
+damit verbundene Effekt reinitialisiert.
 
 <a name="manage-reinstall"></a>
 ## Re-Installieren
