@@ -15,12 +15,22 @@
  *  Die Klasse "focuspoint_media" ist von "rex_media" abgeleitet und erleichetrt den
  *  Umgang mit Medien, deren Darstellung auf Fokuspunkten basiert.
  *
+ *  @method __construct( )
  *  @method focuspoint_media get( string $name )
  *  @method array getFocus( string $metafield = null, array $default = null, $wh=false )
  */
 
 class focuspoint_media extends rex_media
 {
+
+
+    /**
+     * Necessary for PHP 5.6
+     */
+    public function __construct()
+    {
+    }
+
 
     /**
      *  Gibt die Bildinstanz zurück und prüft dabei ab, ob es ein Bild ist (isImage).

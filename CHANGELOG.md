@@ -1,5 +1,9 @@
 # Changelog
 
+## **08.09.2018 Version 2.0.2**
+
+- Bugfix: Kompatibilität von "focuspoint_media" zu PHP 5.6 hergestellt (Danke @schuer)
+
 ## **03.09.2018 Version 2.0.1**
 
 - Bugfix: Update-Fehler behoben (Zoom-Faktor des Fit-Effekt wurde nicht übernommen).
