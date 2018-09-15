@@ -114,7 +114,7 @@ class focuspoint
             if( $hidden ) $fragment->setVar( 'fieldselect', $feldauswahl );
         }
 
-        return substr_replace( $text, $fragment->parse('fp_panel.php'), $p1, $p2 - $p1 +1 );
+        return substr_replace( $text, $fragment->parse('fp_panel.php'), $p1, $p2 - $p1 );
     }
 
 
