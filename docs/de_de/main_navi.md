@@ -20,7 +20,7 @@
     - [Aktivieren](install.md#manage-activate)  
     - [De-Aktivieren](install.md#manage-deactivate)
     - [De-Installieren](install.md#manage-uninstall)
-    - [Löchen](install.md#manage-delete)
+    - [Löschen](install.md#manage-delete)
 - Für Entwickler (API)
     - [Übersicht](developer.md)
     - [Klasse `focuspoint_media`](developer.md#api-rfm)
