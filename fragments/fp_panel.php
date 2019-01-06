@@ -50,7 +50,7 @@ if( isset( $this->fieldselect ) && is_array( $this->fieldselect ) )
         <img src="index.php?rex_media_type=<?=rex_effect_abstract_focuspoint::MM_TYPE ?>&rex_media_file=<?=$this->mediafile ?>">
         <div class="focuspoint-panel-enabler hidden"></div>
     </div>
-    <small class="focuspoint-panel-enabler hidden"><span><span></small>
+    <small class="focuspoint-panel-enabler hidden"><span></span></small>
     <div class="btn-toolbar btn-sm focuspoint-panel-enabler hidden" role="toolbar">
         <div class="btn-group">
             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?= rex_i18n::msg('focuspoint_detail_reset') ?> <span class="caret"></span></button>

@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     2.0.3
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -14,7 +14,7 @@
  *  Die abstrakte Klasse "rex_effect_abstract_focuspoint" erweitert die Basisklasse
  *  "rex_effect_abstract" um spezielle Methoden und Konstanten zum Umgang mit Fokuspunkten
  *
- *  Außerdem stellt die diverse Konstanten und statische Variablen zur Verfügung.
+ *  Außerdem stellt sie diverse Konstanten und statische Variablen zur Verfügung.
  *
  *  Eigene Fokuspunkt-Effekte sollten unbedingt hiervon abgeleitet werden, nie direkt von
  *  "rex_effect_abstract"!
@@ -23,7 +23,7 @@
  *  @method array rel2px( array $xy, array $wh )
  *  @method array getDefaultFocus( array $default=null, array $wh=null )
  *  @method string getMetaField()
- *  @method array getFocus( focuspoint_media $media, array $default=null, array $wh=null )
+ *  @method array getFocus( focuspoint_media|null $media, array $default=null, array $wh=null )
  *  @method array getParams()
  */
 
@@ -37,7 +37,7 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
     const PATTERN = '/^(?<x>(100|[1-9]?\d)\.\d),(?<y>(100|[1-9]?\d)\.\d)$/';
     const STRING = '%3.1F,%3.1F';
     static $mitte = [50,50];
-    static $internalEffects = [ 'focuspoint_fit', 'focuspoint_resizer' ];
+    static $internalEffects = [ 'focuspoint_fit', 'focuspoint_resize' ];
 
     /**
      *  Wandelt einen Fokuspunkt-Koordinaten-String in eine numerische Darstellung um.
@@ -90,7 +90,7 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      */
     public function getDefaultFocus( array $default=null, array $wh=null )
     {
-        $xy = $this->str2fp( $this->params['focus'] );
+        $xy = self::str2fp( $this->params['focus'] );
         if( !$xy ) {
             $xy = $default === null ? self::$mitte : $default;
         }
@@ -121,35 +121,41 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *  Vorgeschaltet ist die Auswertung der URL. Über den REX_API_CALL "focuspoint"
      *  können ebenfalls bearbeitete Bilder erzeugt werden. Die Fokuspunkt-Effekte
      *  werten hier die URL aus und nutzen den Wert bevorzugt.
+     *  Falls $media kein gültiges Objekt aus dem Medienpool ist (z.B. wenn der Medienpfad mit dem
+     *  vorgeschalteten Effekt "mediapath" geändert wurde), werden die Defaultwerte herangezogen.
      *
-     *  @param  focuspoint_media $media     Media-Objekt
-     *  @param  array                $default   Default-Koordinaten falls auf anderem Wege keine
-     *                                          gültigen Koordinaten ermittelt werden können
-     *  @param  array                $wh        Array [breite,höhe] mit den Referenzwerten, auf die
-     *                                          sich die Prozentwerte der Koordinaten beziehen.
+     *  @param  focuspoint_media | null $media     Media-Objekt oder null
+     *  @param  array                   $default   Default-Koordinaten falls auf anderem Wege keine
+     *                                             gültigen Koordinaten ermittelt werden können
+     *  @param  array                   $wh        Array [breite,höhe] mit den Referenzwerten, auf die
+     *                                             sich die Prozentwerte der Koordinaten beziehen.
      *
      *  @return array   [x,y] als Koordinaten-Array
      */
-    function getFocus( focuspoint_media $media, array $default=null, array $wh=null )
+    function getFocus( $media=null, array $default=null, array $wh=null )
     {
-        // nur relevant für temporäre Bilder; funktioniert nicht mit Cache!
-        // hier eingebaut zur Funktionsfähigkeit von focuspoint_api
         if( $xy = rex_request( self::URL_KEY, 'string', null) )
         {
-            if( $fp = $this->str2fp( $xy, $wh ) ) // $xy = Koordinaten-String?
-            {
-                return $fp;
-            }
-            $fp = $media->getFocus( $xy, $default ); // $xy = Meta-Feld-Name??
-            return $wh ? self::rel2px( $fp,$wh ) : $fp;
-        }
-        //ende
-        $fp = $media->getFocus( $this->getMetaField(), $default );
+			// nur relevant für temporäre Bilder; funktioniert nicht mit Cache!
+			// hier eingebaut zur Funktionsfähigkeit von focuspoint_api
+			$fp = self::str2fp( $xy );
+			if( !$fp ) {
+				$fp = $media !== null && is_a($media,'focuspoint_media')
+					? $media->getFocus( $xy, $default ) // $xy = Meta-Feld-Name??
+					: $this->getDefaultFocus( $default );
+			}
+		} else {
+			// Standard
+			$fp = $media !== null && is_a($media,'focuspoint_media')
+				? $media->getFocus( $this->getMetaField(), $default )
+				: $this->getDefaultFocus( $default );
+		}
         return $wh ? self::rel2px( $fp,$wh ) : $fp;
+
     }
 
     /**
-     *  Stellt die BAsis-Felder für eine Effekt-Parametriesierung zur Verfügung.
+     *  Stellt die Basis-Felder für eine Effekt-Parametriesierung zur Verfügung.
      *
      *  Konkret:
      *      * Auswahl des genutzten Meta-Feldes oder "default" für "Default-Koordinaten"

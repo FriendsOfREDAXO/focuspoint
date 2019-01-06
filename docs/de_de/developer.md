@@ -135,7 +135,7 @@ $fp1 = $this->getDefaultFocus( [50,65],[1291,855] );  // Ergebnis: [646,556]
 
 ### string function **getMetaField**()
 
-Die Funktion ermittelt das für den Effekt heranzuziehende Metafeld. Dabei wird nicht überprüft,
+Die Funktion ermittelt das für den Effekt heranzuziehende Metafeld im Medianpool. Dabei wird nicht überprüft,
 ob das Feld tatsächlich (noch) existiert. Sofern in der Effekt-Parametrisierung statt auf ein Metafeld
 auf den Fallback-Wert verwiesen wird (`default`), wird ein leerer String zurückgeliefert.
 
@@ -151,20 +151,23 @@ auf den Fallback-Wert verwiesen wird (`default`), wird ein leerer String zurück
 
 
 
-### array function **getFocus**( focuspoint_media $media, array $default=null, array $wh=null )
+### array function **getFocus**( focuspoint_media $media=null, array $default=null, array $wh=null )
 
-Die Funktion ermittelt den für das Bild relevanten Fokuspunkt direkt aus dem Bild.
-Das mit getMetaField() ermittelte Metafeld wird aus dem Bild abgefragt.
-Wenn das Feld nicht gelesen werden kann bzw. nicht gefunden wird oder wenn der Wert im Feld keine
-gültige Koordinate ist, wird `$default` zurückgegeben. Wenn `$default` nicht angegeben ist, wird
-`[50,50]` zurückgegeben (also Bildmitte).
+Die Funktion ermittelt den für das Bild relevanten Fokuspunkt. Dabei werden unterschiedliche Quellen in folgender Reihenfolge herangezogen:
+1. Falls in der URL der Parameter xy=«koordinate» enthalten ist, wird der angegebene Wert genutzt. Zum Einsatz kommt
+	dieser Mechanismus bei den Fokuspunkt-Vorschaubildern im Medienpool. Falls der URL-Parameter keine gültige Koordinate ist, 
+	greift Variante 2.
+2. Falls in der URL der Parameter xy=«metafeld» enthalten ist, wird statt des in der Effekt-Konfiguration ausgewählten
+	Focuspoint-Metafeldes das hier angegebene Feld benutzt. Für $media gelten die Regeln aus Punkt 3.
+3. Wenn $media ein Objekt vom Typ focuspoint_media (oder davon abgeleitet) ist, wird darüber der Fokuspunkt  
+	direkt aus den Bilddaten im Medienpool abgerufen. Basis ist das in der Effekt-Konfiguration ausgewählte Metafeld.
+4) Wenn die obigen Varianten auf einen Fehler laufen bzw. keine Daten finden, wird `$default` zurückgegeben. 
+5) Wenn `$default` nicht angegeben ist, wird `[50,50]` zurückgegeben (also Bildmitte).
+
 
 ```
-$fpMedia = focuspoint_media::get( $this->media->getMediaFilename() );
-
-if ( $fpMedia )
-{
-    $focuspoint = $this->getFocus( $fpMedia, [ 50,60 ] );
+    $focuspoint = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ), [ 50,60 ] );
+	...
 ```
 
 ### array function **getParams**()
@@ -246,38 +249,34 @@ class rex_effect_focuspoint_myeffect extends rex_effect_abstract_focuspoint
 
     function execute()
     {
-        $fpMedia = focuspoint_media::get( $this->media->getMediaFilename() );
+ 
+		$focuspoint = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ) );
 
-        if ( $fpMedia )
-        {
+		$this->media->asImage();
+		$gdimage = $this->media->getImage();
 
-            $focuspoint = $this->getFocus( $fpMedia, [ 50,60 ] );
+		- - -
+			Bildbearbeitung: Parameter berechnen
+		- - -
 
-            $this->media->asImage();
-            $gdimage = $this->media->getImage();
+		if (function_exists('ImageCreateTrueColor')) {
+			$des = @imagecreatetruecolor( «zielbreite», «zielhöhe» );
+		} else {
+			$des = @imagecreate( «zielbreite», «zielhöhe» );
+		}
 
-            - - -
-                Bildbearbeitung: Parameter berechnen
-            - - -
+		if (!$des) {
+			return;
+		}
 
-            if (function_exists('ImageCreateTrueColor')) {
-                $des = @imagecreatetruecolor( «zielbreite», «zielhöhe» );
-            } else {
-                $des = @imagecreate( «zielbreite», «zielhöhe» );
-            }
+		$this->keepTransparent($des);
 
-            if (!$des) {
-                return;
-            }
+		- - -
+			Bildbearbeitung: Zielbild in $des erstellen
+		- - -
 
-            $this->keepTransparent($des);
-
-            - - -
-                Bildbearbeitung: Zielbild in $des erstellen
-            - - -
-
-            $this->media->setImage($des);
-            $this->media->refreshImageDimensions();
+		$this->media->setImage($des);
+		$this->media->refreshImageDimensions();
     }
 
     public function getParams()

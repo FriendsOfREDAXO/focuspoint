@@ -1,5 +1,14 @@
 # Changelog
 
+## **01.12.2018 Version 'in Vorbereitung'**
+
+- Kleinere Schreibfehler korrgiert (danke @claudihey)
+- In den Media-Manager-Effekten unterstützt die Koordinatenermittlung
+    auch den Fall, dass das Bild nicht aus dem Medienpol kommt, sondern per 'effect_mediapath' aus
+    einem anderen Verzeichnis. Als Koordinaten werden url (xy=..), Effektkonfiguration (Fallback) und
+    der allgemeine Fallback "Bildmitte" herangezogen.
+
+
 ## **08.09.2018 Version 2.0.2**
 
 - Bugfix: Kompatibilität von "focuspoint_media" zu PHP 5.6 hergestellt (Danke @schuer)

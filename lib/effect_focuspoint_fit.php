@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     2.0.3
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -33,7 +33,7 @@
  *  ungefragt vergrößert.
  *
  *  Kleine Aufweichung des Prinzips:
- *      Dimensionen können auch als % (vom Quellbild) oder als Ziel-Aspect-ratio (fr)
+ *      Dimensionen können auch als % (vom Quellbild) oder als Ziel-Aspect-Ratio (fr)
  *      angegeben werden. Dann hängt die Zielgröße ganz oder teilweise vom Quellbild ab
  *      und ist eben nicht mehr genau vorhersehbar. Details siehe Doku.
  *
@@ -51,12 +51,14 @@
  */
 
 
+
 class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 {
-    private $optionsZoom = ['0%','25%', '50%', '75%','100%'];
+    private $optionsZoom = ['0%','25%', '50%', '755%','100%'];
     private $targetByAR;
+    private $dummy = '##';
 
-    const PATTERN = '^([1-9]\d*\s*(px)?|(100|[1-9]?\d)\.\d\s*%|[1-9]\d*\s*fr)$';
+    const PATTERN = '^([1-9]\d*\s*(px)?|(100|[1-9]?\d)(\.\d)?\s*%|[1-9]\d*\s*fr)$';
 
     /**
      *  Gibt den Namen des MM-Effektes zurück
@@ -75,156 +77,149 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
      */
     public function execute()
     {
+		/*
+			Bilddaten
+		*/
+		$this->media->asImage();
+		$gdimage = $this->media->getImage();
+		$sw = $this->media->getWidth();
+		$sh = $this->media->getHeight();
+		$sr = $sw / $sh;
 
-        $fpMedia = focuspoint_media::get( $this->media->getMediaFilename() );
+		/*
+			Fokuspunkt ermitteln:
+				zuerst den Fallback-Wert bzw. Default-Wert des Effekts
+				dann den FP des Bildes.
+				Umrechnen in absolute Bildkoordinaten (Pixel)
+		*/
+		list( $fx,$fy ) = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ), $this->getDefaultFocus( ), [$sw,$sh] );
 
-        if ( $fpMedia )
-        {
+		/*--------------------------
 
-            /*
-                Bilddaten
-            */
-            $this->media->asImage();
-            $gdimage = $this->media->getImage();
-            $sw = $this->media->getWidth();
-            $sh = $this->media->getHeight();
-            $sr = $sw / $sh;
+		Parameter überprüfen und ungültige Werte korrigieren
 
-            /*
-                Fokuspunkt ermitteln:
-                    zuerst den Fallback-Wert bzw. Default-Wert des Effekts
-                    dann den FP des Bildes.
-                    Umrechnen in absolute Bildkoordinaten (Pixel)
-            */
-            list( $fx,$fy ) = $this->getFocus( $fpMedia, $this->getDefaultFocus( ), [$sw,$sh] );
+			Zielhöhe und/oder Zielbreite müssen angegeben sein. Akzeptiert werden Zahlen und
+			Zahlen mit %, px und fr.
+			Ungültige Werte führen zum Abbruch
+				1111 => Größe in Pixel,
+				1111px => Größe in Pixel
+				11% => % der Originalgröße
+				11fr => "Anteil/fraction" zur Eingabe von Aspect-Ratios des Zielbildes.
+			Ungültige Werte und Wert-Kombinationen führen zum Abbruch
+			Im Fall "fr" müssen beide Werte vom Typ fr sein. 0 oder 2.
+		*/
+			$this->targetByAR = 0;
+			$dw = $this->decodeSize( $this->params['width'],$sw );
+			$dh = $this->decodeSize( $this->params['height'],$sh );
+			if ( empty($dw) && empty($dh) ) return;
+			if ( $this->targetByAR == 1 ) return;
 
-            /*--------------------------
+		/*
+			Den Zoom-Faktor auslesen und setzen
+			Entweder soll nur der Auschnitt genommen werden (0%) oder möglichst viel vom
+			Rest (best fit=100%) oder eben eine der Zwischenstufen 25,50 oder 75%.
+			Falls Breite/Höhe als AspectRatio (fr) angegeben wurden: immer 100%
+		*/
+			switch ( $this->params['zoom'] )
+			{
+				case $this->optionsZoom[1]: $zoom = 0.25; break;
+				case $this->optionsZoom[2]: $zoom = 0.5; break;
+				case $this->optionsZoom[3]: $zoom = 0.75; break;
+				case $this->optionsZoom[4]: $zoom = 1; break;
+				default: $zoom = 0;
+			}
 
-            Parameter überprüfen und ungültige Werte korrigieren
+		/*--------------------------
+		An die Arbeit ... :
 
-                Zielhöhe und/oder Zielbreite müssen angegeben sein. Akzeptiert werden Zahlen und
-                Zahlen mit %, px und fr.
-                Ungültige Werte führen zum Abbruch
-                    1111 => Größe in Pixel,
-                    1111px => Größe in Pixel
-                    11% => % der Originalgröße
-                    11fr => "Anteil/fraction" zur Eingabe von Aspect-Ratios des Zielbildes.
-                Ungültige Werte und Wert-Kombinationen führen zum Abbruch
-                Im Fall "fr" müssen beide Werte vom Typ fr sein. 0 oder 2.
-            */
-                $this->targetByAR = 0;
-                $dw = $this->decodeSize( $this->params['width'],$sw );
-                $dh = $this->decodeSize( $this->params['height'],$sh );
-                if ( empty($dw) && empty($dh) ) return;
-                if ( $this->targetByAR == 1 ) return;
+			Das Zielformat bestimmen:
 
-            /*
-                Den Zoom-Faktor auslesen und setzen
-                Entweder soll nur der Auschnitt genommen werden (0%) oder möglichst viel vom
-                Rest (best fit=100%) oder eben eine der Zwischenstufen 25,50 oder 75%.
-                Falls Breite/Höhe als AspectRatio (fr) angegeben wurden: immer 100%
-            */
-                switch ( $this->params['zoom'] )
-                {
-                    case $this->optionsZoom[1]: $zoom = 0.25; break;
-                    case $this->optionsZoom[2]: $zoom = 0.5; break;
-                    case $this->optionsZoom[3]: $zoom = 0.75; break;
-                    case $this->optionsZoom[4]: $zoom = 1; break;
-                    default: $zoom = 0;
-                }
+				Breite x Höhe angegeben => wie angegeben nehmen
+				Nur Breite angegeben    => Höhe über den AspectRatio des Originals bestimmen
+				Nur Höhe angegeben      => Breite über den AspectRatio des Originals bestimmen
+		*/
+			$dw = empty( $dw ) ? $dh * $sr : $dw;
+			$dh = empty( $dh ) ? $dw / $sr : $dh;
+			$dr = $dw / $dh;
+			$too_wide = ( $sr >= $dr );
 
-            /*--------------------------
-            An die Arbeit ... :
+		/*
+			Im Fall, dass die Bildgröße via AspectRatio angegeben wird, wie z.B. mit Breite 16fr
+			und  Höhe 9fr, was 16:9 entspricht), muss das Zielformat auf die Bildgröße
+			geändert werden. Zoom ist dann irrelevant.
+		*/
+			if ( $this->targetByAR == 2)
+			{
+				$dw = $too_wide ? $sh * $dr : $sw;
+				$dh = $too_wide ? $sh : $sw / $dr;
+				$zoom = 0;
+			}
+		/*
+			Den Ausschnitt festlegen - Basisgröße
 
-                Das Zielformat bestimmen:
+				Das Zielformat und das Auschnittsformat ist identisch. Aber beide Dimensionen dürfen
+				nicht größer sein als die Bildgröße. Ist eine Dimension zu klein wird das
+				Ausschnittsformat entsprechend reduziert.
+				(anders gesagt: das Bild wird vergrößert)
+		*/
+			$cw = $dw;
+			$ch = $dh;
+			if ( $sw < $cw || $sh < $ch )
+			{
+				$scale = ( $too_wide ? $sh/$dh : $sw/$dw  );
+				$cw = floor( $cw * $scale );
+				$ch = floor( $ch * $scale );
+			}
+		/*
+			Den Ausschnitt festlegen - Zoomen
 
-                    Breite x Höhe angegeben => wie angegeben nehmen
-                    Nur Breite angegeben    => Höhe über den AspectRatio des Originals bestimmen
-                    Nur Höhe angegeben      => Breite über den AspectRatio des Originals bestimmen
-            */
-                $dw = empty( $dw ) ? $dh * $sr : $dw;
-                $dh = empty( $dh ) ? $dw / $sr : $dh;
-                $dr = $dw / $dh;
-                $too_wide = ( $sr >= $dr );
+				Grade wenn große Bilder auf einen kleinen Ausschnitt treffen, wäre ein Zoom
+				sinnvoll. Der Zoom-Faktor sagt, wieviel % vom Abstand zwischen Originalbild und
+				Ausschnitt mit hineingenooen werden sollen. Faktisch wird der Ausschnitt um einen
+				entsprechenden Faktor vergrößert.
+		*/
+			if ( $zoom )
+			{
+				$faktor = $too_wide ? (($sh-$ch) * $zoom + $ch) / $ch : (($sw-$cw) * $zoom + $cw) / $cw;
+				$cw = floor( $cw * $faktor );
+				$ch = floor( $ch * $faktor );
+			}
+		/*
+			Den Bildauschnitt positionieren:
 
-            /*
-                Im Fall, dass die Bildgröße via AspectRatio angegeben wird, wie z.B. mit Breite 16fr
-                und  Höhe 9fr, was 16:9 entspricht), muss das Zielformat auf die Bildgröße
-                geändert werden. Zoom ist dann irrelevant.
-            */
-                if ( $this->targetByAR == 2)
-                {
-                    $dw = $too_wide ? $sh * $dr : $sw;
-                    $dh = $too_wide ? $sh : $sw / $dr;
-                    $zoom = 0;
-                }
-            /*
-                Den Ausschnitt festlegen - Basisgröße
+				Der Bildausschnitt wird so gelegt, dass der Fokuspunkt in der Mitte liegt.
+				Falls dann der Ausschnitt irgendwo über die Ränder ragt, wird er in das Bild
+				zurückgeschoben. Der Fokuspunkt ist dann natürlich nicht mehr in der Mitte.
+				Das Ergebnis ist die Offset-Position des Auschnitts im Originalbild.
+		*/
+			$cx = $fx - floor( $cw/2 );
+			$cy = $fy - floor( $ch/2 );
+			$cx = min( $sw-$cw, max( 0,$cx ) );
+			$cy = min( $sh-$ch, max( 0,$cy ) );
 
-                    Das Zielformat und das Auschnittsformat ist identisch. Aber beide Dimensionen dürfen
-                    nicht größer sein als die Bildgröße. Ist eine Dimension zu klein wird das
-                    Ausschnittsformat entsprechend reduziert.
-                    (anders gesagt: das Bild wird vergrößert)
-            */
-                $cw = $dw;
-                $ch = $dh;
-                if ( $sw < $cw || $sh < $ch )
-                {
-                    $scale = ( $too_wide ? $sh/$dh : $sw/$dw  );
-                    $cw = floor( $cw * $scale );
-                    $ch = floor( $ch * $scale );
-                }
-            /*
-                Den Ausschnitt festlegen - Zoomen
+		/*--------------------------
 
-                    Grade wenn große Bilder auf einen kleinen Ausschnitt treffen, wäre ein Zoom
-                    sinnvoll. Der Zoom-Faktor sagt, wieviel % vom Abstand zwischen Originalbild und
-                    Ausschnitt mit hineingenooen werden sollen. Faktisch wird der Ausschnitt um einen
-                    entsprechenden Faktor vergrößert.
-            */
-                if ( $zoom )
-                {
-                    $faktor = $too_wide ? (($sh-$ch) * $zoom + $ch) / $ch : (($sw-$cw) * $zoom + $cw) / $cw;
-                    $cw = floor( $cw * $faktor );
-                    $ch = floor( $ch * $faktor );
-                }
-            /*
-                Den Bildauschnitt positionieren:
+			Ausgabe der Grafik
+		*/
+		if (function_exists('ImageCreateTrueColor')) {
+			$des = @imagecreatetruecolor($dw, $dh);
+		} else {
+			$des = @imagecreate($dw, $dh);
+		}
 
-                    Der Bildausschnitt wird so gelegt, dass der Fokuspunkt in der Mitte liegt.
-                    Falls dann der Ausschnitt irgendwo über die Ränder ragt, wird er in das Bild
-                    zurückgeschoben. Der Fokuspunkt ist dann natürlich nicht mehr in der Mitte.
-                    Das Ergebnis ist die Offset-Position des Auschnitts im Originalbild.
-            */
-                $cx = $fx - floor( $cw/2 );
-                $cy = $fy - floor( $ch/2 );
-                $cx = min( $sw-$cw, max( 0,$cx ) );
-                $cy = min( $sh-$ch, max( 0,$cy ) );
+		if (!$des) {
+			return;
+		}
 
-            /*--------------------------
+		$this->keepTransparent($des);
+		imagecopyresampled($des, $gdimage,
+						   0, 0, $cx, $cy,
+						   $dw, $dh, $cw, $ch);
 
-                Ausgabe der Grafik
-            */
-            if (function_exists('ImageCreateTrueColor')) {
-                $des = @imagecreatetruecolor($dw, $dh);
-            } else {
-                $des = @imagecreate($dw, $dh);
-            }
+		$this->media->setImage($des);
+		$this->media->refreshImageDimensions();
 
-            if (!$des) {
-                return;
-            }
-
-            $this->keepTransparent($des);
-            imagecopyresampled($des, $gdimage,
-                               0, 0, $cx, $cy,
-                               $dw, $dh, $cw, $ch);
-
-            $this->media->setImage($des);
-            $this->media->refreshImageDimensions();
-
-        }
-    }
+	}
 
 
     /**
