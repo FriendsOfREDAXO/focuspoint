@@ -17,9 +17,54 @@
 
 Die neue Klasse `focuspoint_media` erleichtert die Nutzung von Medien mit Fokuspunkt-Datenfeldern.
 
-Konkret stellt die Klasse eine zusätzliche Methode bereit:
+Konkret stellt die Klasse zwei zusätzliche Methoden bereit:
 
+- `hasFocus`    prüft ab, ob das Fokuspunkt-Metafeld belegt ist oder nicht
 - `getFocus`    liefert ein gültiges Fokuspunkt-Koordinatenpaar als Array
+
+### bool function hasFocus( string $metafield = null )
+
+Die Funktion liefert `true` zurück, wenn das als Parameter angegebene Metafeld existiert und eine
+formal gültige Koordinate enthält. In allen anderen Fällen wird `false` zurückgegemeldet.
+
+Hier ein Anwendungsbeispiel, bei dem der gesetzte Fokuspunkt bereits in der Kategorieübersicht
+(Liste der Medien) des Medienpools angezeigt wird. An geeigneter Stelle, z.B. in der `boot.php`
+eines Addons wird der Extension-Point MEDIA_LIST_FUNCTIONS belegt. Abgefragt wird das Default-Feld "med_focuspoint":
+
+```
+if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') ) {
+    rex_extension::register( 'MEDIA_LIST_FUNCTIONS', function( rex_extension_point $ep )
+    {
+        $image = focuspoint_media::get( $ep->getParams()['file_name'] );
+        if( $image && $image->hasValue() {
+            list( $x, $y) = $image->getFocus();
+            return $ep->getSubject() ."<div class=\"text-left\">FP: $x%, $y%</div>";
+        }
+    });    
+}
+```
+Falls zusätzlich individuelle Fokuspunkt-Metafelder definiert sind, kann man dieser Variante der
+komplette Satz überprüft werden:
+```
+if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') ) {
+    rex_extension::register( 'MEDIA_LIST_FUNCTIONS', function( rex_extension_point $ep )
+    {
+        $image = focuspoint_media::get( $ep->getParams()['file_name'] );
+        if( $image ) {
+            $content = [];
+            foreach( focuspoint::getMetafieldList() as $fpFeld ) {
+                if( $image->hasFocus(fpFeld) ){
+                    list( $x, $y) = $image->getFocus(fpFeld);
+                    $content[] = "$fpFeld: $x%, $y%";
+                }
+            }
+            if($content) return $ep->getSubject() .'<div class="text-left">'.implode( '<br>',$content ).'</div>';
+        }
+    });    
+}
+```
+
+### array function getFocus( string $metafield = null, array $default = null, $wh=false )
 
 Die Parameter sind:
 
@@ -135,7 +180,7 @@ $fp1 = $this->getDefaultFocus( [50,65],[1291,855] );  // Ergebnis: [646,556]
 
 ### string function **getMetaField**()
 
-Die Funktion ermittelt das für den Effekt heranzuziehende Metafeld. Dabei wird nicht überprüft,
+Die Funktion ermittelt das für den Effekt heranzuziehende Metafeld im Medianpool. Dabei wird nicht überprüft,
 ob das Feld tatsächlich (noch) existiert. Sofern in der Effekt-Parametrisierung statt auf ein Metafeld
 auf den Fallback-Wert verwiesen wird (`default`), wird ein leerer String zurückgeliefert.
 
@@ -151,20 +196,23 @@ auf den Fallback-Wert verwiesen wird (`default`), wird ein leerer String zurück
 
 
 
-### array function **getFocus**( focuspoint_media $media, array $default=null, array $wh=null )
+### array function **getFocus**( focuspoint_media $media=null, array $default=null, array $wh=null )
 
-Die Funktion ermittelt den für das Bild relevanten Fokuspunkt direkt aus dem Bild.
-Das mit getMetaField() ermittelte Metafeld wird aus dem Bild abgefragt.
-Wenn das Feld nicht gelesen werden kann bzw. nicht gefunden wird oder wenn der Wert im Feld keine
-gültige Koordinate ist, wird `$default` zurückgegeben. Wenn `$default` nicht angegeben ist, wird
-`[50,50]` zurückgegeben (also Bildmitte).
+Die Funktion ermittelt den für das Bild relevanten Fokuspunkt. Dabei werden unterschiedliche Quellen in folgender Reihenfolge herangezogen:
+1. Falls in der URL der Parameter xy=«koordinate» enthalten ist, wird der angegebene Wert genutzt. Zum Einsatz kommt
+	dieser Mechanismus bei den Fokuspunkt-Vorschaubildern im Medienpool. Falls der URL-Parameter keine gültige Koordinate ist,
+	greift Variante 2.
+2. Falls in der URL der Parameter xy=«metafeld» enthalten ist, wird statt des in der Effekt-Konfiguration ausgewählten
+	Focuspoint-Metafeldes das hier angegebene Feld benutzt. Für $media gelten die Regeln aus Punkt 3.
+3. Wenn $media ein Objekt vom Typ focuspoint_media (oder davon abgeleitet) ist, wird darüber der Fokuspunkt  
+	direkt aus den Bilddaten im Medienpool abgerufen. Basis ist das in der Effekt-Konfiguration ausgewählte Metafeld.
+4) Wenn die obigen Varianten auf einen Fehler laufen bzw. keine Daten finden, wird `$default` zurückgegeben.
+5) Wenn `$default` nicht angegeben ist, wird `[50,50]` zurückgegeben (also Bildmitte).
+
 
 ```
-$fpMedia = focuspoint_media::get( $this->media->getMediaFilename() );
-
-if ( $fpMedia )
-{
-    $focuspoint = $this->getFocus( $fpMedia, [ 50,60 ] );
+    $focuspoint = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ), [ 50,60 ] );
+	...
 ```
 
 ### array function **getParams**()
@@ -246,38 +294,34 @@ class rex_effect_focuspoint_myeffect extends rex_effect_abstract_focuspoint
 
     function execute()
     {
-        $fpMedia = focuspoint_media::get( $this->media->getMediaFilename() );
 
-        if ( $fpMedia )
-        {
+		$focuspoint = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ) );
 
-            $focuspoint = $this->getFocus( $fpMedia, [ 50,60 ] );
+		$this->media->asImage();
+		$gdimage = $this->media->getImage();
 
-            $this->media->asImage();
-            $gdimage = $this->media->getImage();
+		- - -
+			Bildbearbeitung: Parameter berechnen
+		- - -
 
-            - - -
-                Bildbearbeitung: Parameter berechnen
-            - - -
+		if (function_exists('ImageCreateTrueColor')) {
+			$des = @imagecreatetruecolor( «zielbreite», «zielhöhe» );
+		} else {
+			$des = @imagecreate( «zielbreite», «zielhöhe» );
+		}
 
-            if (function_exists('ImageCreateTrueColor')) {
-                $des = @imagecreatetruecolor( «zielbreite», «zielhöhe» );
-            } else {
-                $des = @imagecreate( «zielbreite», «zielhöhe» );
-            }
+		if (!$des) {
+			return;
+		}
 
-            if (!$des) {
-                return;
-            }
+		$this->keepTransparent($des);
 
-            $this->keepTransparent($des);
+		- - -
+			Bildbearbeitung: Zielbild in $des erstellen
+		- - -
 
-            - - -
-                Bildbearbeitung: Zielbild in $des erstellen
-            - - -
-
-            $this->media->setImage($des);
-            $this->media->refreshImageDimensions();
+		$this->media->setImage($des);
+		$this->media->refreshImageDimensions();
     }
 
     public function getParams()
