@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     2.1
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -18,6 +18,7 @@
  *  @method __construct( )
  *  @method focuspoint_media get( string $name )
  *  @method array getFocus( string $metafield = null, array $default = null, $wh=false )
+ *  @method bool hasFocus( string $metafield = null )
  */
 
 class focuspoint_media extends rex_media
@@ -94,4 +95,24 @@ class focuspoint_media extends rex_media
         return $fp;
     }
 
+    /**
+     *  Ermittelt, ob ein Fokuspunkt gesetzt ist
+     *
+     *  Liefert true zurück, wenn
+     *  (1) das angegebene Fokuspunkt-Metafeld existiert und
+     *  (2) das Feld einen formal gültigen Wert liefert.
+     *
+     *  @param  string $metafield   Metafeld, aus dem die Koordinaten entnommen werden.
+     *                              default: med_focuspoint
+     *
+     *  @return bool   true, false
+     */
+    function hasFocus( $metafield = null )
+    {
+        // read the field
+        if(  $metafield == null ) $metafield = rex_effect_abstract_focuspoint::MED_DEFAULT;
+        $xy = (string) $this->getValue( (string)$metafield );
+        // check for a valid entry
+        return rex_effect_abstract_focuspoint::str2fp( $xy ) !== false;
+    }
 }
