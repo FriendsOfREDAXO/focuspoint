@@ -7,7 +7,8 @@
     auch den Fall, dass das Bild nicht aus dem Medienpol kommt, sondern per 'effect_mediapath' aus
     einem anderen Verzeichnis. Als Koordinaten werden url (xy=..), Effektkonfiguration (Fallback) und
     der allgemeine Fallback "Bildmitte" herangezogen.
-
+- die Klasse `focuspoint_media` hat eine zusätzliche Methode `hasFocus`bekommen,
+  mit der abgeprüft wird, ob das Fokuspunkt-Metafeld gesetzt ist. 
 
 ## **08.09.2018 Version 2.0.2**
 
