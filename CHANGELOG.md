@@ -1,14 +1,28 @@
 # Changelog
 
-## **01.12.2018 Version 'in Vorbereitung'**
+## **30.06.2019 Version 2.1**
 
-- Kleinere Schreibfehler korrgiert (danke @claudihey)
+- Kleinere Schreibfehler korrigiert (danke @claudihey)
 - In den Media-Manager-Effekten unterstützt die Koordinatenermittlung
-    auch den Fall, dass das Bild nicht aus dem Medienpol kommt, sondern per 'effect_mediapath' aus
+    auch den Fall, dass das Bild nicht aus dem Medienpool kommt, sondern per 'effect_mediapath' aus
     einem anderen Verzeichnis. Als Koordinaten werden url (xy=..), Effektkonfiguration (Fallback) und
     der allgemeine Fallback "Bildmitte" herangezogen.
-- die Klasse `focuspoint_media` hat eine zusätzliche Methode `hasFocus`bekommen,
-  mit der abgeprüft wird, ob das Fokuspunkt-Metafeld gesetzt ist. 
+- die Klasse `focuspoint_media` hat eine zusätzliche Methode `hasFocus` bekommen,
+    mit der abgeprüft wird, ob das Fokuspunkt-Metafeld gesetzt ist (also eine gültige Koordinate enthält).
+- Im AddOn "Metainfo" wurde die Bearbeitung von Feldern, die den Metainfo-Datentyp "Focuspoint (AddOn)"
+    haben, beschränkt. Das Default-Feld "med_focuspoint" kann nicht gelöscht werden; Feldname und
+    Datentyp können nicht geändert werden.
+    Gleiches gilt für selbst angelegte Metainfo-Felder des Typs "Focuspoint (AddOn)", sobald sie in einem
+    Media-Manager-Effekt eingesetzt werden, der auf der Klasse `rex_effect_abstract_focuspoint` basiert.
+- Im AddOn "Media-Manager" ist Bearbeiten und Löschen des Typs "focuspoint_media_detail" gesperrt.
+    (Hinweis von @tbaddade)
+- Die `boot.php` wurde entschlackt, um die Initialisierung der REDAXO-Instanz zu entlasten; die
+    entprechenden Codeböcke sind nach `focuspoint_boot.php` ausgelagert und werden nur bei Bedarf
+    geladen.
+- Der Effekt 'focuspoint_resize' für den Media-Manager ist seit Release 2.0 auf "deprecated" gesetzt.
+    Wie angekündigt ist der Effekt ab Version 2.1 noch im Addon enthalten, er wird aber nicht mehr
+    in der `boot.php` aktiviert. (Siehe Dokumentation). Wer den Effekt noch benötigt, muss in
+    an anderer Stelle selbst aktivieren (`rex_media_manager::addEffect('rex_effect_focuspoint_resize');`).
 
 ## **08.09.2018 Version 2.0.2**
 
