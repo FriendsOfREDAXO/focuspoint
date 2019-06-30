@@ -82,7 +82,6 @@
                     });
                 }
             });
-            return;
         }
         // limit changing the default-focuspoint-metafield: fieldname, fieldtype, no delete
         if( rex_request('func', 'string') == 'edit' )
@@ -126,7 +125,6 @@
                     }
                 }
             });
-            return;
         }
         // don´t remove the default-Metafield from the list
         rex_extension::register( 'REX_LIST_GET', function( rex_extension_point $ep ){
