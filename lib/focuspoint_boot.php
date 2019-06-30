@@ -97,7 +97,6 @@
                         $message .= '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.rex_i18n::msg('focuspoint_edit_msg_inuse2',$fpField).'<br>';
                     } elseif ( $effects=focuspoint::getFocuspointMetafieldInUse( $fpField ) ) {
                         $message .= '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.rex_i18n::msg('focuspoint_edit_msg_inuse1',$fpField).'<ul>';
-                        dump($effects);
                         foreach( $effects as $v ) {
                             $message .= '<li><a href="'
                                      . rex_url::backendController
