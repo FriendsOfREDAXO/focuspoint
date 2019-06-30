@@ -95,21 +95,12 @@
                     $message = '';
                     $allCategories = '';
                     if( $fpField == rex_effect_abstract_focuspoint::MED_DEFAULT ) {
-                        $message .= '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.rex_i18n::msg('focuspoint_edit_msg_inuse2',$fpField).'<br>';
+                        $message = '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.rex_i18n::msg('focuspoint_edit_msg_inuse2',$fpField).'<br>';
                         $allCategories = '$(\'#enable-restrictions-checkbox\').prop( "disabled", true );';            
                     } elseif ( $effects=focuspoint::getFocuspointMetafieldInUse( $fpField ) ) {
-                        $message .= '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.rex_i18n::msg('focuspoint_edit_msg_inuse1',$fpField).'<ul>';
-                        foreach( $effects as $v ) {
-                            $message .= '<li><a href="'
-                                     . rex_url::backendController
-                                             ([
-                                                'page' => 'media_manager/types',
-                                                'type_id' => $v['type_id'],
-                                                'effects' => 1,
-                                             ])
-                                     . '">'.$v['name'].'</a></li>';
-                        }
-                        $message .= '</ul>';
+                         $message = '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>' .
+                            rex_i18n::msg('focuspoint_edit_msg_inuse1', $fpField) .
+                            '<br>' . focuspoint::getFocuspointEffectsInUseMessage( $effects );
                     }
                     if( $message ) {
                         $message .= rex_i18n::msg('focuspoint_edit_msg_inuse3',rex_i18n::msg('minfo_field_label_name'),rex_i18n::msg('minfo_field_label_type'));
