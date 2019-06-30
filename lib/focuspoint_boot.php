@@ -93,8 +93,10 @@
                 if( array_key_exists( $field_id, $fpMetafields ) ) {
                     $fpField = $fpMetafields[ $field_id ];
                     $message = '';
+                    $allCategories = '';
                     if( $fpField == rex_effect_abstract_focuspoint::MED_DEFAULT ) {
                         $message .= '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.rex_i18n::msg('focuspoint_edit_msg_inuse2',$fpField).'<br>';
+                        $allCategories = '$(\'#enable-restrictions-checkbox\').prop( "disabled", true );';            
                     } elseif ( $effects=focuspoint::getFocuspointMetafieldInUse( $fpField ) ) {
                         $message .= '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.rex_i18n::msg('focuspoint_edit_msg_inuse1',$fpField).'<ul>';
                         foreach( $effects as $v ) {
@@ -118,6 +120,7 @@
                         $id = rex_string::normalize(rex_i18n::msg('minfo_field_fieldset'),'-');
                         echo '<script type="text/javascript">$(document).ready(function(){',
                              '$(\'#rex-metainfo-field-',$id,'-name\').prop( "disabled", true );',
+                             $allCategories,
                              '$(\'#rex-metainfo-field-',$id,'-delete\').remove();',
                              '$(\'#rex-metainfo-field-',$id,'-type-id option:not([selected])\').hide().remove();',
                              '});</script>';
