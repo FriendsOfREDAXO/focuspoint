@@ -33,7 +33,6 @@ if (rex::isBackend())
             break;
 
         case 'metainfo/media':
-        dump($this);
             // prevent deletion of meta-fields still in use by effects
             // limit changing the default-focuspoint-metafield: fieldname, fieldtype, no delete
             // don´t remove the default-Metafield
