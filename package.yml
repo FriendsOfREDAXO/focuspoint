@@ -14,8 +14,8 @@ pages:
     # Seite "media_manager/overview" wird zu einem Untermenü, wenn fp sich einklinkt
     # daher die Originalseite zum ersten Menüpunkt machen.
     media_manager/overview/overview:
-        subPath: ../media_manager/pages/overview.php
-        title: 'Media Manager'
+        subPath: ../media_manager/README.md
+        title: ''translate:media_manager_subpage_desc'
         icon: rex-icon fa-info-circle
     media_manager/overview/focuspoint:
         subPath: help.php
