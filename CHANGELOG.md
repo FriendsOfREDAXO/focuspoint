@@ -1,5 +1,11 @@
 # Changelog
 
+## **xx.08.2019 Version 2.1.1**
+
+- Maintanence-version, no functional changes
+Injection of focuspoint-help into Media-Manager is changed in REX 5.8.0 with respect to the new was, the Media-Manager-help (overview) is provided
+- Requirements-section in package.yml changed to reflect REX 5.8.0
+
 ## **30.06.2019 Version 2.1**
 
 - Kleinere Schreibfehler korrigiert (danke @claudihey)
