@@ -1,5 +1,5 @@
 package:  focuspoint
-version:  '2.1.0'
+version:  '2.1.1'
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/focuspoint
 
@@ -16,7 +16,6 @@ pages:
     media_manager/overview/overview:
         subPath: ../media_manager/README.md
         title: ''translate:media_manager_subpage_desc'
-        icon: rex-icon fa-info-circle
     media_manager/overview/focuspoint:
         subPath: help.php
         title: 'translate:focuspoint_doc'
@@ -24,9 +23,7 @@ pages:
         help: { mode: docs, navigation: mm_navi.md, content: mm_effect_fit.md }
 
 requires:
-    php:
-        version: '>=5.6'
-    redaxo: '^5.6.0'
+    redaxo: '^5.8.0'
     packages:
-        metainfo: '^2.3.1'
-        media_manager: '^2.5.4'
+        metainfo: '^2.5.0'
+        media_manager: '^2.7.0'
