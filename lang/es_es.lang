@@ -38,6 +38,9 @@ focuspoint_edit_label_meta = Campo básico (med _...)
 focuspoint_edit_label_focus = Valor coordinado / sustitutivo
 focuspoint_edit_label_width = Tamaño objetivo: ancho
 focuspoint_edit_label_heigth = Tamaño objetivo: altura
+focuspoint_edit_msg_inuse1 = Metafeld "{0}" se usa en uno o más tipos de gestores de medios.
+focuspoint_edit_msg_inuse2 = Metafeld "{0}" está en el campo del sistema.
+focuspoint_edit_msg_inuse3 = "{0}" y "{1}" no se pueden cambiar; el metacampo no se puede eliminar.
 # - focuspoint_resize
 focuspoint_edit_notice_widthheigth_resize = Indicación en píxeles
 focuspoint_edit_label_style = modo
