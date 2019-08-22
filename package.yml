@@ -15,7 +15,7 @@ pages:
     # daher die Originalseite zum ersten Menüpunkt machen.
     media_manager/overview/overview:
         subPath: ../media_manager/README.md
-        title: ''translate:media_manager_subpage_desc'
+        title: 'translate:media_manager_subpage_desc'
     media_manager/overview/focuspoint:
         subPath: help.php
         title: 'translate:focuspoint_doc'
