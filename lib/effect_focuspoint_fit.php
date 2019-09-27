@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0.3
+ *  @version     2.1.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -54,7 +54,7 @@
 
 class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 {
-    private $optionsZoom = ['0%','25%', '50%', '755%','100%'];
+    private $optionsZoom = ['0%','25%', '50%', '75%','100%'];
     private $targetByAR;
     private $dummy = '##';
 

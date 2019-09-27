@@ -1,9 +1,14 @@
 # Changelog
 
+## **27.09.2019 Version 2.1.2**
+
+- Maintenance-version, no functional changes
+    Zoom-factors corrected (wrong 755% replaced by correct 75%). Thanks to @rkemmere
+
 ## **22.08.2019 Version 2.1.1**
 
-- Maintanence-version, no functional changes
-Injection of focuspoint-help into Media-Manager is changed in REX 5.8.0 with respect to the new was, the Media-Manager-help (overview) is provided
+- Maintenance-version, no functional changes
+- Injection of focuspoint-help into Media-Manager is changed in REX 5.8.0 with respect to the new way, the Media-Manager-help (overview) is provided
 - Requirements-section in package.yml changed to reflect REX 5.8.0
 - Traducción en castellano - thanks to @nandes2062
 
