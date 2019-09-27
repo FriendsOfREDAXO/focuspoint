@@ -3,7 +3,7 @@
 ## **27.09.2019 Version 2.1.2**
 
 - Maintenance-version, no functional changes
-    Zoom-factors corrected (wrong 755% replaced by correct 75%)
+    Zoom-factors corrected (wrong 755% replaced by correct 75%). Thanks to @rkemmere
 
 ## **22.08.2019 Version 2.1.1**
 

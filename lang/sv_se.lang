@@ -38,6 +38,9 @@ focuspoint_edit_label_meta = Basfält (med_...)
 focuspoint_edit_label_focus = Koordinat / ersättningsvärde
 focuspoint_edit_label_width = Målstorlek: bredd
 focuspoint_edit_label_heigth = Målstorlek: höjd
+focuspoint_edit_msg_inuse1 = Metafield "{0}" används i en eller flera typer av medihanterare.
+focuspoint_edit_msg_inuse2 = Metafield "{0}" finns i systemfältet.
+focuspoint_edit_msg_inuse3 = "{0}" och "{1}" kan inte ändras; metafältet kan inte raderas.
 # - focuspoint_resize
 focuspoint_edit_notice_widthheigth_resize = Värde i pixlar
 focuspoint_edit_label_style = Modus
