@@ -23,4 +23,6 @@ pages:
         help: { mode: docs, navigation: mm_navi.md, content: mm_effect_fit.md }
 
 requires:
+    packages:
+        media_manager: '^2.7.0'
     redaxo: '^5.8.0'
