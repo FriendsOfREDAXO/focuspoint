@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.1
+ *  @version     2.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -12,7 +12,7 @@
  *  ------------------------------------------------------------------------------------------------
  *
  *  In der boot.php wird überprüft, ob eine Backend-Seite aufgerufen wird, innerhalb derer
- *  besondetr Einstellungen z.B. mittels Extension-Points vorzunehmen sind.
+ *  besondere Einstellungen z.B. mittels Extension-Points vorzunehmen sind.
  *  Die Aktivitäten wurden in eine separate Datei ausgelagert, um für den Normalbetrieb der
  *  REDAXO-Instanz eine schlanke boot.php mit geringen Kompilieraufwand zu haben.
  *
@@ -22,9 +22,10 @@
  *  @method void function metainfoMedia()
  *  @method void function media_managerTypes()
  *  @method void function packages( rex_addon $fpAddon )
+
  */
 
- class focuspoint_boot {
+class focuspoint_boot {
 
     /**
      *  page=mediapool/media
@@ -50,9 +51,29 @@
     {
         if( rex_request('func', 'string') != 'delete' )
         {
-            rex_extension::register( 'METAINFO_TYPE_FIELDS', function( rex_extension_point $ep ){
-                echo '<script type="text/javascript">$(document).ready(function(){ $("select[name$=\'[type_id]\'] option:contains(\'',rex_effect_abstract_focuspoint::META_FIELD_TYPE,'\')").detach();});</script>';
+            rex_extension::register( 'REX_FORM_GET', function( rex_extension_point $ep ){
+                try {
+                    // provide access to the form-elements
+                    $formReflection = new focuspoint_reflection( $ep->getSubject() );
+                    $fieldset = $formReflection->getPropertyValue( 'fieldset' );
+                    // search the type-select
+                    $typeid = $formReflection->executeMethod ( 'getElement', [$fieldset,'type_id'] );
+                    $typeidReflection = new focuspoint_reflection( $typeid );
+                    // get access to the internal REX_SELECT-element
+                    $selectReflection = new focuspoint_reflection( $typeidReflection->getPropertyValue('select') );
+                    $options = $selectReflection->getPropertyValue('options');
+                    foreach( $options[0][0] as $i=>$o ){
+                        if( $o[0] != rex_effect_abstract_focuspoint::META_FIELD_TYPE ) continue;
+                        array_splice( $options[0][0], $i, 1, [] );
+                        $selectReflection->setPropertyValue( 'options',$options );
+                        $selectReflection->setPropertyValue( 'optCount',$selectReflection->getPropertyValue('optCount') - 1 );
+                        return;
+                    }
+                } catch (\ReflectionException $e) {
+                    return;
+                }
             });
+
         }
     }
 
@@ -83,7 +104,8 @@
                 }
             });
         }
-        // limit changing the default-focuspoint-metafield: fieldname, fieldtype, no delete
+
+        // limit changing the default-focuspoint-metafield and fields in use: fieldname, fieldtype, no delete
         if( rex_request('func', 'string') == 'edit' )
         {
             rex_extension::register( 'REX_FORM_GET', function( rex_extension_point $ep ){
@@ -93,40 +115,73 @@
                 if( array_key_exists( $field_id, $fpMetafields ) ) {
                     $fpField = $fpMetafields[ $field_id ];
                     $message = '';
-                    $allCategories = '';
-                    if( $fpField == rex_effect_abstract_focuspoint::MED_DEFAULT ) {
-                        $message = '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.rex_i18n::msg('focuspoint_edit_msg_inuse2',$fpField).'<br>';
-                        $allCategories = '$(\'#enable-restrictions-checkbox\').prop( "disabled", true );';            
-                    } elseif ( $effects=focuspoint::getFocuspointMetafieldInUse( $fpField ) ) {
-                         $message = '<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>' .
-                            rex_i18n::msg('focuspoint_edit_msg_inuse1', $fpField) .
-                            '<br>' . focuspoint::getFocuspointEffectsInUseMessage( $effects );
-                    }
-                    if( $message ) {
-                        $message .= rex_i18n::msg('focuspoint_edit_msg_inuse3',rex_i18n::msg('minfo_field_label_name'),rex_i18n::msg('minfo_field_label_type'));
-                        $message = $form->getMessage() . "\n" . $message;
-                        $l = strlen( rex_request($form->getName() . '_msg', 'string') );
-                        if( $l ) $message = substr( $message, $l + 1 );
-                        $form->setMessage( $message );
-                        $id = rex_string::normalize(rex_i18n::msg('minfo_field_fieldset'),'-');
-                        echo '<script type="text/javascript">$(document).ready(function(){',
-                             '$(\'#rex-metainfo-field-',$id,'-name\').prop( "disabled", true );',
-                             $allCategories,
-                             '$(\'#rex-metainfo-field-',$id,'-delete\').remove();',
-                             '$(\'#rex-metainfo-field-',$id,'-type-id option:not([selected])\').hide().remove();',
-                             '});</script>';
+
+                    try {
+                        // provide access to the form-elements
+                        $formReflection = new focuspoint_reflection( $ep->getSubject() );
+                        $fieldset = $formReflection->getPropertyValue( 'fieldset' );
+                        $elements = $formReflection->getPropertyValue( 'elements' );
+                        $fselements = $elements[$fieldset] ?? [];
+
+                        // the default-field is not restrictable to mediapool-categories
+                        if( $fpField == rex_effect_abstract_focuspoint::MED_DEFAULT ) {
+                            $message .= rex_i18n::msg('focuspoint_edit_msg_inuse2',$fpField).'<br>';
+                        }
+                        // focuspoint-fields in use will get restrictions
+                        if ( $effects=focuspoint::getFocuspointMetafieldInUse( $fpField ) ) {
+                             $message .= rex_i18n::msg('focuspoint_edit_msg_inuse1', $fpField) .
+                                '<br>' . focuspoint::getFocuspointEffectsInUseMessage( $effects );
+                        }
+                        if( $message ) {
+                            $message .= rex_i18n::msg('focuspoint_edit_msg_inuse3',rex_i18n::msg('minfo_field_label_name'),rex_i18n::msg('minfo_field_label_type'));
+                            echo rex_view::info('<u><b>'.rex_i18n::msg('focuspoint_doc').'</b></u><br>'.$message) . "\n";
+                            foreach( $fselements as $k=>$e ) {
+                                if( $e->getFieldName() == 'name' ) {
+                                    // prevent the name from being changed by turning the field in a hidden one.
+                                    // Don´t use type=hidden due to rex_form-behavior
+                                    $e->setPrefix( '<p class="form-control-static">'.$form->stripPrefix($e->getValue()).'</p>' );
+                                    $e->setAttribute('class','hidden');
+                                    continue;
+                                }
+                                if( $e->getFieldName() == 'type_id' ) {
+                                    // replace by a simple hidden input to preserve the value
+                                    // Don´t use type=hidden due to rex_form-behavior
+                                    $x = $form->addInputField( 'input','type_id',null,[],false );
+                                    $x->setLabel( $e->getLabel() );
+                                    $x->setPrefix( '<p class="form-control-static">'.rex_effect_abstract_focuspoint::META_FIELD_TYPE.'</p>' );
+                                    $x->setAttribute( 'class','hidden' );
+                                    $fselements[$k] = $x;
+                                    continue;
+                                }
+                                if( get_class($e) == 'rex_form_control_element' ) {
+                                    // don´t delete the default-field or fields in use
+                                    // so remove the delete-button
+                                    $controlReflection = new focuspoint_reflection($e);
+                                    $controlReflection->setPropertyValue( 'deleteElement',null );
+                                    continue;
+                                }
+                            }
+                        }
+                        $elements[$fieldset] = $fselements;
+                        $formReflection->setPropertyValue( 'elements',$elements );
+                    } catch (\ReflectionException $e) {
+                        return;
                     }
                 }
             });
         }
-        // don´t remove the default-Metafield from the list
+        // don´t remove the default-Metafield from the list,
         rex_extension::register( 'REX_LIST_GET', function( rex_extension_point $ep ){
             $list = $ep->getSubject();
-            $list->setColumnFormat('delete', 'custom', function ($params) {
+            $effectsInUse = focuspoint::getFocuspointEffectsInUse();
+            $list->setColumnFormat('delete', 'custom', function ($params) use($effectsInUse) {
                 $list = $params['list'];
                 if( $list->getValue('name') == rex_effect_abstract_focuspoint::MED_DEFAULT ) {
                     return '<small class="text-muted">' . rex_i18n::msg('focuspoint_doc') . '</small>';
                 }
+                # planned with V3.0 because it is a breaking change:
+                #   show detailed in-use-information insteag of a "blocked"
+                # if( $inUse = focuspoint::metafield_is_in_use( $list->getValue('id') ) ) return '<small class="text-muted">'.$inUse.'</small>';
                 if( $presetValue = $params['params'][0] ) return $list->formatValue('', $presetValue, false, 'delete');
                 return $list->getColumnLink('delete', $list->getValue('delete'));
             }, [$list->getColumnFormat('delete')]);
