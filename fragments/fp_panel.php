@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     2.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -17,7 +17,7 @@
  *  $this->mediafile        muss        Name der Mediendatei im Medianpool
  *  $this->mediatypes       optional    Mediatypes mit Fokuspunkt-Effekten.
  *                                      Wenn angegeben wird ein Auswahlbutton und die Preview angelegt
- *                                      ..[typ] = [ liste der felder ]
+ *                                      ..[typ] = [ 'label'=>typ, 'meta'=>'liste der felder' ]
  *  $this->fieldselect      optional    key/pair aus feldname/feldtitel falls es mehr als ein
  *                                      Fokuspunkt-Metafeld gibt und mindestens eines "hidden" ist
  *                                      Dann wird ein Select eingebaut.
@@ -30,7 +30,7 @@ $mediatypes = '';
 if( isset( $this->mediatypes ) && is_array( $this->mediatypes ) )
 {
     $mediatypes = $this->mediatypes;
-    array_walk( $mediatypes, function(&$t, $k) { $t = "<li data-ref=\"$k\" data-field=\"".implode(' ',$t)."\"><a href=\"#\" >$k</a></li>"; });
+    array_walk( $mediatypes, function(&$t, $k) { $t = '<li data-ref="'.$k.'" data-field="'.implode(' ',$t['meta']).'"><a href="#" >'.$t['label'].'</a></li>'; });
     $mediatypes = implode('',$mediatypes);
 }
 if( isset( $this->fieldselect ) && is_array( $this->fieldselect ) )
