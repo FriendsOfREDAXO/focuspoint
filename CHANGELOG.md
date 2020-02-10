@@ -1,5 +1,27 @@
 # Changelog
 
+## **10.02.2020 Version 2.2.0**
+
+Enhancements:
+
+- Extension-Point "FOCUSPOINT_PREVIEW_SELECT": the preview-dropdown in the media-editor uses the
+    meta-types´s name-field as item-label. While this name tends be a more technically one, but
+    not self-explaining for editors, the EP offers a way to change the label. For details take a
+    look into the documentation-section "Für Entwickler (API)".
+    You can find the documentation via the addon-administration-page
+    (requested by @DanielWeitenauer)
+
+Bugfixes:
+
+- Requirements-section in package.yml with enhanced explicit mention of dependencies to
+    media_manager, mediapool and PHP (thanks to @skerbis, @staabm)
+- Focuspoint restricts the AddOn "Metainfo" in changing meta-fields of fieldtype "Focuspoint (AddOn)"
+    (no delete, no rename, no change of fieldtype on "med_focuspoint" or fields in use)
+    Saving other allowed changes was not possible in some situations. The blocking mechanismen
+    is rewritten. (reported by @pschuchmann)
+- typo-corrections in language- and documentation-files
+
+
 ## **27.09.2019 Version 2.1.2**
 
 - Maintenance-version, no functional changes
@@ -53,7 +75,7 @@
 > Sowohl die Datenfelder als auch Parameter der Effekte sind geändert. Im Rahmen des Update
 > werden frühere Versionen vor 2.0 automatisch umgestellt und die nicht mehr benötigten Felder gelöscht.
 > Wer die Fokuspunkt-Parameter direkt auswertet statt die Zielbilder via Media-Manager zu erzeugen,
-> muss die betroffenen Scripte anpassen. Informatioen dazu sind in der Dokumentation zu finden (siehe unten).
+> muss die betroffenen Scripte anpassen. Informationen dazu sind in der Dokumentation zu finden (siehe unten).
 
 ## Features
 
