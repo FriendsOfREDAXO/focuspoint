@@ -23,6 +23,7 @@
     - [Löschen](install.md#manage-delete)
 - Für Entwickler (API)
     - [Übersicht](developer.md)
+    - [Extension-Point `FOCUSPOINT_PREVIEW_SELECT`](developer.md#api-ep)
     - [Klasse `focuspoint_media`](developer.md#api-rfm)
     - [Klasse `rex_effect_abstract_focuspoint`](developer.md#api-refa)
     - [rex_api_call `focuspoint`](developer.md#api-racf)
