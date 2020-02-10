@@ -7,10 +7,62 @@
 >
 > Hier die wichtigsten Hilfsmittel:
 >
+> - [Extension-Point `FOCUSPOINT_PREVIEW_SELECT`](#api-ep)
 > - [Klasse `focuspoint_media`](#api-rfm)
 > - [Klasse `rex_effect_abstract_focuspoint`](#api-refa)
 > - [rex_api_call `focuspoint`](#api-racf)
 > - [Eigene Fokuspunkt-Effekte entwickeln](#api-mofe)
+
+<a name="api-ep"></a>
+## Extension-Point `FOCUSPOINT_PREVIEW_SELECT`
+
+Die Focuspunkt-Erfassung zu einem Bild im Mediapool beinhaltet eine Vorschaufunktion für jeweils einen
+Media-Manager-Typen. Im Auswahl-Dropdown-Feld werden die Namen der Media-Manager-Typen angegeben,
+die für einen Redakteur u.U. nicht hinreichend aussagefähig sind.
+
+Über den Extension-Point `FOCUSPOINT_PREVIEW_SELECT` kann der Text frei bestimmt werden.
+
+![Auswahl](edit04.jpg)
+
+Der EP erhält als Parameter ( `$ep->getParams()` ) Informationen zum Bild sowie zu den in Benutzung
+befindlichen Typen und Effekten. Es werden alle Media-Manager-Effekte herangezogen, die auf der
+Klasse `rex_effect_abstract_focuspoint` beruhen.
+
+Als Subject ( `$ep->getSubject()` ) wird ein Array mit Daten je relevantem Media-Manager-Typ
+bereitgestellt, das zu ändern und zurückzugeben wäre:
+
+
+```
+    [ '«media-manager-type-name»' ] =>
+        [
+            'label'=>'«media-manager-type-name»',
+            'meta'=> [‘«meta-info-focuspoint-field»’,...]
+        ],
+    ...
+```
+
+Hier ein Anwendungsbeispiel, bei dem als Label die `description` des Media-Manager-Typs den `name`
+ersetzt:
+```
+rex_extension::register('FOCUSPOINT_PREVIEW_SELECT', function($ep){
+    $mediatypes = $ep->getSubject();
+    foreach( $ep->getParams()['effectsInUse'] as $eiu ) {
+        if( $eiu['description'] && isset( $mediatypes[$eiu['name']] ) ) {
+            $mediatypes[$eiu['name']]['label'] = $eiu['description'];
+        }
+    }
+    uasort( $mediatypes, function($a,$b){ return strcasecmp($a['label'],$b['label']); } );
+    return $mediatypes;
+});
+```
+
+> **Hinweis:**  
+>
+> Die Daten im Array `mediatypes` bzw. `$ep->getSubject()` sind auch zur Steuerung der Zusammenspiels
+> zwischen den Metafeldern und der interaktiven Fokuspunkt-Auswahl. Veränderungen über Label hinaus
+> sollten mit Vorsicht angegangen werden!
+
+
 
 <a name="api-rfm"></a>
 ## Klasse `focuspoint_media`
