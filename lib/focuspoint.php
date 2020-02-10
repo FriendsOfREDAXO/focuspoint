@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     2.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -54,12 +54,13 @@ class focuspoint
 
     public static function show_sidebar( rex_extension_point $ep )
     {
-        // Abbruch wenn kein Bild
         $params = $ep->getParams();
 
+        // Abbruch wenn kein Bild; Metafelder ausblenden
+        // der Flag focuspoint_no_image wird in customfield ausgewertet, da dort keine passenden Informationen verfügbar sind.
         if( !$params['is_image'] )
         {
-            echo '<script>$(document).ready(function() {$(".focuspoint-form-group").addClass("hidden");});</script>';
+            rex::setProperty('focuspoint_no_image',true);
             return;
         }
 
@@ -91,12 +92,15 @@ class focuspoint
         // relevante Media-Typen abrufen (nur Mediatypes, die Fokuspoint-Effekte beinhalten)
         // benutze Felder zuordnen
         // array[typ] = [ feld1, feld2, ...]
-        $typen = array_unique( array_column( self::getFocuspointEffectsInUse(), 'name', 'type_id' ) );
-        sort( $typen );
+        $typen = array_unique( array_column( $params['effectsInUse']=self::getFocuspointEffectsInUse(), 'name' ) );
+        asort( $typen );
         $typen = array_combine($typen,array_fill(0,count($typen),[]));
         foreach( self::getMetafieldList( ) as $f ) {
             foreach( self::getFocuspointMetafieldInUse( $f ) as $e ) $typen[$e['name']][] = $f;
         }
+        array_walk( $typen, function(&$t, $k) { $t = ['label'=>$k,'meta'=>$t]; });
+
+        $typen = rex_extension::registerPoint(new rex_extension_point('FOCUSPOINT_PREVIEW_SELECT', $typen, $params));
         $fragment->setVar( 'mediatypes', $typen );
 
         // Option-Liste der Felder aufbauen - falls es mindestens zwei Felder und davon mindestens ein hidden-Feld gibt.
@@ -142,13 +146,20 @@ class focuspoint
             $default = '';
         }
 
+        // in the timeline previously called EP MEDIA_DETAIL_SIDEBAR reports, that the file is not an
+        // image, the fopuspoint-meta-fields don´t make any sense and will be flagged as hidden.
+        // as of V2.2 the fields are still available just for not cousing a BC.
+        // A future V3.0 will instead stop generating the HTML.
+        $hidden = rex::getProperty('focuspoint_no_image',false) === true;
+        # V3.0: if( rex::getProperty('focuspoint_no_image',false) === true ) return;
+
         $feld = new rex_fragment();
         $feld->setVar( 'label', $subject[4], false );
         $feld->setVar( 'id', $subject[3] );
         $feld->setVar( 'name', str_replace('rex-metainfo-','',$subject[3]) );
         $feld->setVar( 'value', $subject['values'][0] );
         $feld->setVar( 'default', $default );
-        $feld->setVar( 'hidden', strtolower(trim($subject['sql']->getValue('params'))) == 'hidden' );
+        $feld->setVar( 'hidden', $hidden || strtolower(trim($subject['sql']->getValue('params'))) == 'hidden' );
 
         return [ $feld->parse('fp_metafield.php'), $subject[1], $subject[2], $subject[3], $subject[4], $subject[5] ];
     }
@@ -389,7 +400,7 @@ class focuspoint
     {
         if( $effects = self::getFocuspointEffects() )
         {
-            $qry = 'SELECT name, effect, parameters, type_id, a.id as id FROM '.
+            $qry = 'SELECT name, effect, parameters, type_id, a.id as id, description FROM '.
                     rex::getTable('media_manager_type_effect').' as a, '.rex::getTable('media_manager_type').
                     ' as b WHERE effect IN ("'.implode( '","',$effects ).'") AND b.id = a.type_id';
             return rex_sql::factory()->getArray( $qry );
@@ -433,8 +444,7 @@ class focuspoint
         }
         if( $message )
         {
-            $message = rex_i18n::msg( 'focuspoint_uninstall_effects_in_use' ) .
-                       "<ul>$message</ul>";
+            $message = "<ul>$message</ul>";
         }
         return $message;
     }
