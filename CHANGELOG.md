@@ -1,5 +1,11 @@
 # Changelog
 
+## **06.03.2020 Version 2.2.1**
+
+The URL used to identify and replace the standard-file-view in a Media-Edit-Window was not
+correctly identified in REDAXO 5.10 due to changes in rex_media_manager::getUrl. The corrected code
+is backward compatible (tested with REX 5.9).
+
 ## **10.02.2020 Version 2.2.0**
 
 Enhancements:
