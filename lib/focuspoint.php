@@ -161,7 +161,8 @@ class focuspoint
         $feld->setVar( 'default', $default );
         $feld->setVar( 'hidden', $hidden || strtolower(trim($subject['sql']->getValue('params'))) == 'hidden' );
 
-        return [ $feld->parse('fp_metafield.php'), $subject[1], $subject[2], $subject[3], $subject[4], $subject[5] ];
+        $subject[0] = $feld->parse('fp_metafield.php');
+        return $subject;
     }
 
     /**
