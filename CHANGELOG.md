@@ -1,5 +1,11 @@
 # Changelog
 
+## **09.03.2020 Version 2.2.2**
+
+Bugfix: the method focuspoint::customfield did return only a partial set of values.
+This could lead to problems on subsequent calls to EP "METAINFO_CUSTOM_FIELD". Now the full set
+is returned.
+
 ## **06.03.2020 Version 2.2.1**
 
 The URL used to identify and replace the standard-file-view in a Media-Edit-Window was not
