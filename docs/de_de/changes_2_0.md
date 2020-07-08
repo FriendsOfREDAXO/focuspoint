@@ -33,7 +33,7 @@ Einzelwerten abgerufen werden. Man kann die Einzelwerte nach Bedarf weiterverarb
 
 ```
 $fpMedia = focuspoint_media::get( $filename );  // statt rex_media::get( $filename )
-list( $x, $y) = fpMedia->getFocus();            // Abruf von "med_focuspoint" als [$x,$y]
+list( $x, $y) = $fpMedia->getFocus();            // Abruf von "med_focuspoint" als [$x,$y]
 $fp = "$x%,$y%";                                // Verwendung
 ```
 
