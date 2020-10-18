@@ -1,26 +1,18 @@
 package:  focuspoint
-version:  '2.2.2'
+version:  '2.x.0'
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/focuspoint
-
-help:
-    mode: docs
-    fallback: de_de
-    navigation: main_navi.md
-    content: main_intro.md
-    repository: https://github.com/FriendsOfREDAXO/focuspoint/%%
 
 pages:
     # Seite "media_manager/overview" wird zu einem Untermenü, wenn fp sich einklinkt
     # daher die Originalseite zum ersten Menüpunkt machen.
     media_manager/overview/overview:
         subPath: ../media_manager/README.md
-        title: 'translate:media_manager_subpage_desc'
+        title: translate:media_manager_subpage_desc
     media_manager/overview/focuspoint:
         subPath: help.php
-        title: 'translate:focuspoint_doc'
-        icon: rex-icon fa-info-circle
-        help: { mode: docs, navigation: mm_navi.md, content: mm_effect_fit.md }
+        title: translate:focuspoint_doc
+        icon: rex-icon rex-icon-info
 
 requires:
     packages:
@@ -29,3 +21,38 @@ requires:
     redaxo: '^5.8.0'
     php:
         version: '^7.1'
+
+help:
+    # Default-View, für page=packages (Aufruf aus der Addon-Verwaltung)
+    default:
+        initial: docs/overview.md
+        0:
+            title: translate:focuspoint_docs_overview
+            icon: fa fa-book
+            path: docs/overview.md
+        1:
+            title: translate:focuspoint_docs_edit
+            icon: fa fa-book
+            path: docs/edit.md
+        2:
+            title: translate:focuspoint_docs_mm
+            icon: fa fa-book
+            path: docs/media_manager.md
+        3:
+            title: translate:focuspoint_docs_install
+            icon: fa fa-book
+            path: docs/install.md
+        4:
+            title: translate:focuspoint_docs_api
+            icon: fa fa-book
+            path: docs/developer.md
+    # menu-structure für media_manager (siehe Sektion "pages:")
+    media_manager/overview/focuspoint:
+        0:
+            title: translate:focuspoint_effect_fit
+            icon: fa fa-book
+            path: docs/media_manager.md
+        1:
+            title: translate:focuspoint_doc
+            icon: fa fa-book
+            href: ?page=packages&subpage=help&package=focuspoint

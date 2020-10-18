@@ -1,5 +1,11 @@
 # Changelog
 
+## **xx.xx.xxxx Version 2.x.0**
+
+Documentation reworked for proper dual-use on Github and in the REDAXO backend.
+HELP.PHP is rewritten accordingly. Supporting css/js added (help.min.xxx).
+(https://github.com/christophboecker/help.php)
+
 ## **09.03.2020 Version 2.2.2**
 
 Bugfix: the method focuspoint::customfield did return only a partial set of values.

@@ -1,122 +1,19 @@
 <?php
-/*
-
-Zeigt komplexe, auf Markdown basierte Dokumentationen im REDAXO-Backend an.
-
-Zulässige Dateien:
-    «addon_root»/README.md
-    «addon_root»/LICENSE.md
-    «addon_root»/CHANGELOG.md
-    «addon_root»/docs/*
-
-Die Dateien müssen im Wesentlichen so aufbereitet sein, dass sie auf Github korrekt angezeigt
-werden. Für das REDAXO-Backend werden die Links durch help.php so verändert, dass sie einen
-korrekten Aufruf der Backend-Seite ergeben.
-
-Es gilt:
-
-*   Github first; die Texte sollten zuerst auf Github funktionieren
-*   Links müssen relativ sein (readme.md: -> docs/xyz.md, docs/xyz.md: ->../readme.md)
-*   Es werden nur Markdown-Links "[label](link)" bzw. "![label](link)" umgebaut,
-    keine HTML-Tags (A, IMG)
-*   Links "?..." funktionieren in Redaxo, aber nicht auf Github.
-*   Das mit help.php mögliche Navigations-Menü wird auf Github simuliert durch eine Linkliste am
-    Anfang der Dateien. Die Linkliste ab Zeile 1 und die nachfolgende Leerzeile wird in der
-    REDAXO-Anzeige entfernt.
-        > - [nav1](link1)
-        > - [nav2](link2)
-        ...
-*   Innerhalb von Code-Blöcken (``` bzw. `) findet keine Ersetzung statt.
-
-Die Konfiguration für REDAXO erfolgt über die package.yml des Addons.
-
-    In der Sektion "help" können Dokumenten-Profile für Seiten (page=..) angelegt werden.
-    Sofern die Seite "help.php" für die Seitenaufbau nutzt, wird die zugehörige Parametrisierung
-    der page herangezogen. Hat die page kein eigenes Profil, wird nach dem Profil "default" gesucht.
-
-    help:
-        default:
-            profildaten
-        pagename:
-            profildaten
-        ....
-
-Die Profildaten je Page sind
-    initial: docs/overview              Die inital anzuzeigende Seite wenn es keinen URL-Parameter
-                                        gibt.
-    0:                                  Erster Navigationseintrag, 1: zweiter Eintrag etc.
-        title: ....                     Titel des Eintrags translate:xxx oder Text
-        path: docs/page.md              Das zugehörige Dokument. Pfad relativ zum «addon_root»
-        href: ?page=.. oder http://..   (opt.) Link statt «path». Wenn beide angegeben sind hat «path» Vorrang
-        active: true                    (opt.) Falls «initial» fehlt wird das die Initialseite
-        icon: fa fa-book                (opt.) Icon-Klassen
-
-Beispiel aus der package.yml von Focuspoint:
-
-help:
-    default:
-        0:
-            title: translate:focuspoint_docs_overview
-            icon: fa fa-book
-            path: docs/overview.md
-        1:
-            title: translate:focuspoint_docs_edit
-            icon: fa fa-book
-            path: docs/edit.md
-        2:
-            title: translate:focuspoint_docs_mm
-            icon: fa fa-book
-            path: docs/media_manager.md
-        3:
-            title: translate:focuspoint_docs_install
-            icon: fa fa-book
-            path: docs/install.md
-        4:
-            title: translate:focuspoint_docs_api
-            icon: fa fa-book
-            path: docs/developer.md
-    media_manager/overview/focuspoint:
-        0:
-            title: translate:focuspoint_effect_fit
-            icon: fa fa-book
-            path: docs/media_manager.md
-        1:
-            title: translate:focuspoint_doc
-            icon: fa fa-book
-            href: ?page=packages&subpage=help&package=focuspoint
-
-In der package.yml kann eine Hilfesete über die normale Seitendefinitoon eingebaut werden. Wichtig
-ist die richtige Seitenangabe mit "subPath: help.php":
-
-    page:
-        ....
-        subpages:
-            ....
-            docs:
-                title: translate:geolocation_manpage
-                icon: fa fa-book
-                pjax: false
-                subPath: help.php
-
-Extension-Points:
-
-    HELP_NAVIGATION
-        Bevor die Navigation in HTML gegossen wird, kann das Navigationsmenü noch via Extension-Point
-        bearbeitet werden.
-
-        $subject ist das Array mit den Navigationsdaten.
-
-    HELP_HREF
-        Jeder im Text gefundene Link kann vor der Ersetzung im Text noch bearbeitet werden:
-
-        $subject ist der neu aufgebaute Markdown-Link [label](link), die einzelnen
-        Original-Bestandteile sind in $params
-
-*/
-
 /**
+ *  HELP.PHP für REDAXO-Addons
+ *
+ *  @author     Christoph Böcker <https://github.com/christophboecker>
+ *  @version    2.0
+ *  @copyright  Christoph Böcker <https://github.com/christophboecker>
+ *  @license    MIT
+ *  @see        https://github.com/christophboecker/help.php  Repository on Github
+ *  @see        https://github.com/christophboecker/help.php/blob/master/manual.md  Manual/Documentation
+ *
+ *  für REDAXO ab V5.7
+ *
  *  @var rex_addon $this
-*/
+ */
+
 if( !class_exists('help_documentation') )
 {
     class help_documentation {
@@ -127,6 +24,7 @@ if( !class_exists('help_documentation') )
         public $dir = '';
         public $dirLen = 0;
         public $filename = '';
+        public $filetype = '';
         public $targetfile = '';
         public $context = null;
 
@@ -167,6 +65,7 @@ if( !class_exists('help_documentation') )
             }
             $this->filename = rex_request( 'doc','string',$this->initialPage ?: $this->activePage ?: 'README.md' );
             $this->filename =  mb_ereg_replace('\\\\|/', DIRECTORY_SEPARATOR, $this->filename, 'msr');
+            $this->filetype = pathinfo( $this->filename,PATHINFO_EXTENSION );
 
             $this->targetfile = $this->getDocumentName( );
         }
@@ -180,6 +79,7 @@ if( !class_exists('help_documentation') )
         //      «addon_root»/README.md
         //      «addon_root»/LICENSE.md
         //      «addon_root»/CHANGELOG.md
+        //      «addon_root»/CREDITS.md
         //      «addon_root»/docs/*
         //
         //  Als Nebeneffekt wird geprüft, ob die DAtei überhaupt exisitert bzw. ob sie in einer
@@ -187,14 +87,23 @@ if( !class_exists('help_documentation') )
 
         function getDocumentName( )
         {
-            $pathinfo = pathinfo( $this->dir . $this->filename );
+            // Zerlege den Pfadnamen in path, name, lang und suffix.
+            // lang ist optional. Ohne suffix => NO_GO
+            $filepath = $this->dir . $this->filename;
+            $pattern = '/^(?<path>(.*?\/)*)(?<name>.*?)(?<lang>\.[a-zA-Z]{2})?(?<suffix>\.\w+)$/';
+            if( !preg_match( $pattern, $filepath, $pathinfo ) ) {
+                return false;
+            }
+            $pathinfo = array_filter( $pathinfo, 'is_string', ARRAY_FILTER_USE_KEY );
 
-            //  Pfad normieren, Suche nach sprachspezifischer Datei
-            $real_path = realpath( $pathinfo['dirname'] . DIRECTORY_SEPARATOR . $pathinfo['filename']  . '.'.rex_i18n::getLanguage().'.' . $pathinfo['extension'] );
+            // Suche zunächst die Datei mit dem aktuellen Sprachcode
+            $pathinfo['lang'] = '.' . rex_i18n::getLanguage();
+            $real_path = realpath( implode('',$pathinfo) );
             if( !$real_path)
             {
                 //  Pfad normieren, Suche nach normaler Datei
-                $real_path = realpath( $pathinfo['dirname'] . DIRECTORY_SEPARATOR . $pathinfo['filename'] . '.' . $pathinfo['extension'] );
+                $pathinfo['lang'] = '';
+                $real_path = realpath( implode('',$pathinfo) );
             }
 
             if( $real_path )
@@ -206,6 +115,7 @@ if( !class_exists('help_documentation') )
                     if( 0 == strcasecmp(substr($filename,0,5),'docs'.DIRECTORY_SEPARATOR)
                      || 0 == strcasecmp($filename,'readme.md')
                      || 0 == strcasecmp($filename,'changelog.md')
+                     || 0 == strcasecmp($filename,'credits.md')
                      || 0 == strcasecmp($filename,'license.md') )
                     {
                         return $filename;
@@ -222,16 +132,22 @@ if( !class_exists('help_documentation') )
 
         function isAsset( )
         {
-            return '.md' !== substr($this->filename,-3);
+            return 'md' !== $this->filetype;
         }
 
         //  Nicht-Markdown-Dateien (meist Bilder), werden direkt ausgegeben.
         //  Danach abbrechen.
+        //  Non-Images als Download-Anhang senden
 
         function sendAsset( ){
             rex_response::cleanOutputBuffers();
-            if ( $path = $this->getFilePath() ) {
-                rex_response::sendFile( $path, rex_file::mimeType( $path ) );
+            if ( ($path = $this->getFilePath()) && rex_media::isDocType($this->filetype) ) {
+                $mime = rex_file::mimeType( $path );
+                if( 'image/' === substr($mime,0,6) ) {
+                    rex_response::sendFile( $path, $mime );
+                } else {
+                    rex_response::sendFile( $path, $mime, 'attachment', basename($path) );
+                }
             } else {
                 header( 'HTTP/1.1 Not Found' );
             }
@@ -243,10 +159,7 @@ if( !class_exists('help_documentation') )
 
         function stripGithubNavigation( $text )
         {
-            if( preg_match( '/^(\>\s+\-\s?.*?\\n)*\s*\\n/', $text, $matches ) ){
-                $text = substr( $text, strlen($matches[0]));
-            }
-            return $text;
+            return preg_replace( '/^(\>\s+\-\s?.*?\\n)*\s*\\n/', '', $text );
         }
 
         //  Im Text werden alle Links, die nicht Datei-intern (#...) und nicht URIs (z.B. http://...)
@@ -258,26 +171,21 @@ if( !class_exists('help_documentation') )
         function replaceLinks( $text )
         {
             $request = $_REQUEST;
-            unset( $request['doc'] );
-            $baseurl = rex_url::currentBackendPage( $request,false ) . '&doc=' . dirname($this->targetfile) . DIRECTORY_SEPARATOR;
+            $request['doc'] = dirname($this->targetfile);
 
             # Code-Blöcke identifizieren und herauslösen, damit keine darin enthaltenen Links geändert werden.
 
-            $marker = md5( time() );
-            $count = 0;
             $original = [];
-            $text = preg_replace_callback( '/(```.*?```|`.*?`)/s', function( $matches) use( $marker, &$count, &$original){
-                    $count++;
-                    $marker = "##$marker-$count##";
+            $text = preg_replace_callback( '/(```.*?```|`.*?`)/s', function( $matches) use(&$original){
+                    $marker = '<!--' . md5($matches[0]) . '-->';
                     $original["/$marker/"] = $matches[0];
                     return $marker;
                 }, $text );
 
             # Links umbauen; nur Markdown! [label](link) bzw. ![label](link)
-
             $text = preg_replace_callback (
                 '/((!?)\[(.*?)\]\()\s*(.*?)\s*(\))/',
-                function( $matches ) use( $baseurl )
+                function( $matches ) use( $request )
                 {
                     $link = $matches[4];
                     //  leere Links ignorieren
@@ -290,16 +198,18 @@ if( !class_exists('help_documentation') )
                      || preg_match( '/^.*?\:\/\/.*?$/',$link) )
                     {
                         $term = $matches[0];
+                        $href = $link;
                     }
                     //  alle anderen Varianten umbauen
                     else
                     {
-                        $term = $matches[1] . $baseurl . $link . $matches[5];
+                        $href = help_documentation::getLink( $request, $link );
+                        $term = $matches[1] . $href . $matches[5];
                     }
                     return rex_extension::registerPoint(new rex_extension_point(
                         'HELP_HREF',
                         $term,
-                        ['label'=>$matches[3],'href'=>$matches[4],'isImageLink'=>($matches[2]>''),'context'=>$this->context]
+                        ['source'=>$matches[0],'label'=>$matches[3],'link'=>$matches[4],'href'=>$href,'isImageLink'=>($matches[2]>''),'context'=>$this->context]
                     ));
                 },
                 $text );
@@ -310,6 +220,17 @@ if( !class_exists('help_documentation') )
             }
 
             return $text;
+        }
+
+        static function getLink( $request, $link )
+        {
+            $url = '';
+            if( preg_match('/^(?<link>.*?)(#(?<hook>.*?))?$$/',$link,$linkinfo) ){
+                if( $linkinfo['link'] ?? '' ) $request['doc'] .= DIRECTORY_SEPARATOR . $linkinfo['link'];
+                $url = rex_url::currentBackendPage( $request,false );
+                if( $linkinfo['hook'] ?? '' ) $url .= '#' . $linkinfo['hook'];
+            }
+            return $url;
         }
 
         //  Falls angefordert wird ein Tab-Menü mit den Hauptseiten eines Hilfe-Systems gebaut.
@@ -365,6 +286,27 @@ if( !class_exists('help_documentation') )
             return $fragment->parse('core/page/docs.php');
         }
 
+        //  Wenn es im Addon-Asset-Verzeichnis Ressourcen-Dateien gibt, werden sie geladen
+        //  /assests/addons/myaddon/help.min.js bzw. /assests/addons/myaddon/help.min.css
+
+        function getJsCss( )
+        {
+            $HTML = '';
+            $path = $this->context->getAssetsPath('help.min.js');
+            if( file_exists($path) ){
+                $file = $this->context->getAssetsUrl('help.min.js');
+                $url = rex_url::backendController(['asset' => $file, 'buster' => filemtime($path)]);
+                $HTML .= '<script type="text/javascript" src="' . $url .'"></script>';
+            }
+            $path = $this->context->getAssetsPath('help.min.css');
+            if( file_exists($path) ){
+                $file = $this->context->getAssetsUrl('help.min.css');
+                $url = rex_url::backendController(['asset' => $file, 'buster' => filemtime($path)]);
+                $HTML .= '<link rel="stylesheet" type="text/css" media="all" href="' . $url .'" />';
+            }
+            return $HTML;
+        }
+
     }
 }
 
@@ -376,8 +318,7 @@ if( $publish->isAsset() ) {
     $publish->sendAsset();
 }
 
-$content = $publish->getNavigation( );
-
+$text = '';
 if( $path = $publish->getFilePath() ) {
 
     $text = rex_file::get( $path );
@@ -385,8 +326,12 @@ if( $path = $publish->getFilePath() ) {
     $text = $publish->stripGithubNavigation( $text );
     $text = $publish->replaceLinks( $text );
 
-    $content .= $publish->getDocument( $text );
+    $text = $publish->getDocument( $text );
 
 }
-
-echo $content;
+?>
+<?=$publish->getJsCss()?>
+<div class="help-documentation">
+    <?=$publish->getNavigation( )?>
+    <?=$text?>
+</div>
