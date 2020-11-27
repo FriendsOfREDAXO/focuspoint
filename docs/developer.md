@@ -1,11 +1,16 @@
-# Für Entwickler - Fokuspunkt-Erweiterungen (API)
+> - [Grundlagen](#overview)
+> - [Bildern Fokuspunkte zuweisen](edit.md)
+> - [Media-Manager: der Effekt "focuspoint-fit"](media_manager.md)
+> - [Addon-Verwaltung](install.md)
+> - Hinweise für Entwickler (API)
 
-> ## Inhalt
+# Für Entwickler
+
 >
 > Neben der beschriebenen Funktionsweise können auf Basis des Focuspoint-AddOn auch eigene
 > Anwendungen bzw. Lösungen abseits des vorgesehenen Weges entworfen werden.
 >
-> Hier die wichtigsten Hilfsmittel:
+> Dies sind die wichtigsten Hilfsmittel:
 >
 > - [Extension-Point `FOCUSPOINT_PREVIEW_SELECT`](#api-ep)
 > - [Klasse `focuspoint_media`](#api-rfm)
@@ -14,7 +19,7 @@
 > - [Eigene Fokuspunkt-Effekte entwickeln](#api-mofe)
 
 <a name="api-ep"></a>
-## Extension-Point `FOCUSPOINT_PREVIEW_SELECT`
+## Extension-Point **FOCUSPOINT_PREVIEW_SELECT**
 
 Die Focuspunkt-Erfassung zu einem Bild im Mediapool beinhaltet eine Vorschaufunktion für jeweils einen
 Media-Manager-Typen. Im Auswahl-Dropdown-Feld werden die Namen der Media-Manager-Typen angegeben,
@@ -22,7 +27,7 @@ die für einen Redakteur u.U. nicht hinreichend aussagefähig sind.
 
 Über den Extension-Point `FOCUSPOINT_PREVIEW_SELECT` kann der Text frei bestimmt werden.
 
-![Auswahl](edit04.jpg)
+![Auswahl](assets/edit04.jpg)
 
 Der EP erhält als Parameter ( `$ep->getParams()` ) Informationen zum Bild sowie zu den in Benutzung
 befindlichen Typen und Effekten. Es werden alle Media-Manager-Effekte herangezogen, die auf der
@@ -32,18 +37,18 @@ Als Subject ( `$ep->getSubject()` ) wird ein Array mit Daten je relevantem Media
 bereitgestellt, das zu ändern und zurückzugeben wäre:
 
 
-```
-    [ '«media-manager-type-name»' ] =>
-        [
-            'label'=>'«media-manager-type-name»',
-            'meta'=> [‘«meta-info-focuspoint-field»’,...]
-        ],
-    ...
+```php
+[ '«media-manager-type-name»' ] =>
+    [
+        'label'=>'«media-manager-type-name»',
+        'meta'=> [‘«meta-info-focuspoint-field»’,...]
+    ],
+...
 ```
 
 Hier ein Anwendungsbeispiel, bei dem als Label die `description` des Media-Manager-Typs den `name`
 ersetzt:
-```
+```php
 rex_extension::register('FOCUSPOINT_PREVIEW_SELECT', function($ep){
     $mediatypes = $ep->getSubject();
     foreach( $ep->getParams()['effectsInUse'] as $eiu ) {
@@ -74,23 +79,27 @@ Konkret stellt die Klasse zwei zusätzliche Methoden bereit:
 - `hasFocus`    prüft ab, ob das Fokuspunkt-Metafeld belegt ist oder nicht
 - `getFocus`    liefert ein gültiges Fokuspunkt-Koordinatenpaar als Array
 
-### bool function hasFocus( string $metafield = null )
+### hasFocus()
+
+```php
+bool function hasFocus( string $metafield = null )
+```
 
 Die Funktion liefert `true` zurück, wenn das als Parameter angegebene Metafeld existiert und eine
-formal gültige Koordinate enthält. In allen anderen Fällen wird `false` zurückgegemeldet.
+formal gültige Koordinate enthält. In allen anderen Fällen wird `false` zurückgemeldet.
 
 Hier ein Anwendungsbeispiel, bei dem der gesetzte Fokuspunkt bereits in der Kategorieübersicht
 (Liste der Medien) des Medienpools angezeigt wird. An geeigneter Stelle, z.B. in der `boot.php`
 eines Addons wird der Extension-Point `MEDIA_LIST_FUNCTIONS` belegt.
 Abgefragt wird das Default-Feld "med_focuspoint":
 
-```
+```php
 if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') )
 {
     rex_extension::register( 'MEDIA_LIST_FUNCTIONS', function( rex_extension_point $ep )
     {
         $image = focuspoint_media::get( $ep->getParams()['file_name'] );
-        if( $image && $image->hasValue()
+        if( $image && $image->hasValue() )
         {
             list( $x, $y) = $image->getFocus();
             return $ep->getSubject() ."<div class=\"text-left\">FP: $x%, $y%</div>";
@@ -98,9 +107,11 @@ if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id'
     });    
 }
 ```
+
 Falls zusätzlich individuelle Fokuspunkt-Metafelder definiert sind, kann mit dieser Variante der
 komplette Satz überprüft werden:
-```
+
+```php
 if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') )
 {
     rex_extension::register( 'MEDIA_LIST_FUNCTIONS', function( rex_extension_point $ep )
@@ -123,7 +134,11 @@ if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id'
 }
 ```
 
-### array function getFocus( string $metafield = null, array $default = null, $wh=false )
+### getFocus()
+
+```php
+array function getFocus( string $metafield = null, array $default = null, $wh=false )
+```
 
 Die Parameter sind:
 
@@ -136,19 +151,20 @@ zurückgegriffen, sondern der Fallback-Wert herangezogen.
 
 Die Klasse `focuspoint_media` kann z.B. in eigenen Effekten, die auf Fokuspunkten basieren,
 eingesetzt werden, aber auch in beliebigen anderen Zusammenhängen. Hier ein Beispiel :
+```php
+$fpMedia = focuspoint_media::get( $filename );
 
-    $fpMedia = focuspoint_media::get( $filename );
+if ( $fpMedia )
+{
+    list( $fx,$fy ) = fpMedia->getFocus( 'med_focuspoint_face', [50,60], true );
 
-    if ( $fpMedia )
-    {
-        list( $fx,$fy ) = fpMedia->getFocus( 'med_focuspoint_face', [50,60], true );
+    ....
 
-        ....
-
-    }
+}
+```
 
 Im Beispiel wird versucht, für das Metafeld `med_focuspoint_face` die Koordinaten abzurufen. Sollte der Abruf
-kein [formal gültiges Koordinatenpaar](coordinates.md) liefern, wird statt dessen der Fokuspunkt auf `[50,60]`
+kein [formal gültiges Koordinatenpaar](overlay.md#coordinate) liefern, wird statt dessen der Fokuspunkt auf `[50,60]`
 gesetzt. `true` bewirkt, dass der Rückgabewert in absolute Bildpunkte umgerechnet wird.
 Ein Bild mit den Abmessungen `1291px / 855px` ergibt auf Basis des Fallback-Wertes die Rückgabe
 `[646,513]`.
@@ -181,7 +197,11 @@ Es stehen sechs Methoden zur Verfügung:
 Die Methoden `str2fp` und `rel2px` sind statisch deklariert.
 
 
-### mixed function **str2fp**( string $xy, array $wh=null )
+### str2fp()
+
+```php
+mixed function str2fp( string $xy, array $wh=null )
+```
 
 Der angegebene Text `$xy` wird in ein Array mit einer gültigen Fokuspunkt-Koordinate umgewandelt.
 Die Überprüfung und Aufschlüsselung erfolgt mittels eines Regulären Ausdrucks. Ist der Text formal
@@ -192,7 +212,7 @@ ein Array sein mit zwei Zahlen: `$wh = [ 0 => «bildbreite», 1 => «bildhöhe»
 
 Die Funktion ist "static" deklariert und kann auch außerhalb des Klassen-Kontext aufgerufen werden.
 
-```
+```php
 $fp1 = rex_effect_abstract_focuspoint::str2fp( '50,60');                 // Ergebnis: false
 $fp1 = rex_effect_abstract_focuspoint::str2fp( '50.0,60.0');             // Ergebnis: [50,60]
 
@@ -201,19 +221,27 @@ $fp1 = rex_effect_abstract_focuspoint::str2fp( '50.0,60.0',[1291,855]);  // Erge
 ```
 
 
-### array function **rel2px**( array $xy, array $wh )
+### rel2px()
+
+```php
+array function rel2px( array $xy, array $wh )
+```
 
 Die Funktion wandelt die relativen Koordinaten (`$xy`) in absolute Bildkoordinaten um. Das Array `$wh`
 enthält die Breite bzw. Höhe.
 
 Die Funktion ist "static" deklariert und kann auch außerhalb des Klassen-Kontext aufgerufen werden.
 
-```
+```php
 $fp = rex_effect_abstract_focuspoint::rel2px( [50,60], [1291,855] );     // Ergebnis: [646,513]
 ```
 
 
-### array function **getDefaultFocus**( array $default=null, array $wh=null )
+### getDefaultFocus()
+
+```php
+array function getDefaultFocus( array $default=null, array $wh=null )
+```
 
 `getDefaultFocus` ermittelt den Fallback-Wert für den Fokuspunkt. Zunächst wird der Wert des Feldes
 'Koordinate (default)' in der Fokus-Parametrisierung ausgewertet. Ist er ungültig
@@ -222,7 +250,7 @@ oder leer wird der angegebene `$default` ohne weitere Prüfung übernommen. Ist
 
 Falls `$wh` angegeben ist, erfolgt die Umrechnung und Rückgabe in absoluten Bildwerten.
 
-```
+```php
 // rex_effect_«effektname»_focus = '50.0,60.0'
 
 $fp1 = $this->getDefaultFocus(  );                    // Ergebnis: [50,60]
@@ -236,26 +264,31 @@ $fp1 = $this->getDefaultFocus( [50,65] );             // Ergebnis: [50,65]
 $fp1 = $this->getDefaultFocus( [50,65],[1291,855] );  // Ergebnis: [646,556]
 ```
 
+### getMetaField()
 
-### string function **getMetaField**()
+```php
+string function getMetaField()
+```
 
-Die Funktion ermittelt das für den Effekt heranzuziehende Metafeld im Medianpool. Dabei wird nicht überprüft,
+Die Funktion ermittelt das für den Effekt heranzuziehende Metafeld im Medienpool. Dabei wird nicht überprüft,
 ob das Feld tatsächlich (noch) existiert. Sofern in der Effekt-Parametrisierung statt auf ein Metafeld
 auf den Fallback-Wert verwiesen wird (`default`), wird ein leerer String zurückgeliefert.
 
+```php
+// rex_effect_«effektname»_meta = 'default'
+
+$x = $this->getMetaField(  );                     // Ergebnis: ''
+
+// rex_effect_«effektname»_meta = 'med_focuspoint'
+
+$x = $this->getMetaField(  );                     // Ergebnis: 'med_focuspoint'
 ```
-    // rex_effect_«effektname»_meta = 'default'
 
-    $x = $this->getMetaField(  );                     // Ergebnis: ''
+### getFocus()
 
-    // rex_effect_«effektname»_meta = 'med_focuspoint'
-
-    $x = $this->getMetaField(  );                     // Ergebnis: 'med_focuspoint'
+```php
+array function getFocus( focuspoint_media $media=null, array $default=null, array $wh=null )
 ```
-
-
-
-### array function **getFocus**( focuspoint_media $media=null, array $default=null, array $wh=null )
 
 Die Funktion ermittelt den für das Bild relevanten Fokuspunkt. Dabei werden unterschiedliche Quellen in folgender Reihenfolge herangezogen:
 1. Falls in der URL der Parameter xy=«koordinate» enthalten ist, wird der angegebene Wert genutzt. Zum Einsatz kommt
@@ -265,16 +298,21 @@ Die Funktion ermittelt den für das Bild relevanten Fokuspunkt. Dabei werden unt
 	Focuspoint-Metafeldes das hier angegebene Feld benutzt. Für $media gelten die Regeln aus Punkt 3.
 3. Wenn $media ein Objekt vom Typ focuspoint_media (oder davon abgeleitet) ist, wird darüber der Fokuspunkt  
 	direkt aus den Bilddaten im Medienpool abgerufen. Basis ist das in der Effekt-Konfiguration ausgewählte Metafeld.
-4) Wenn die obigen Varianten auf einen Fehler laufen bzw. keine Daten finden, wird `$default` zurückgegeben.
-5) Wenn `$default` nicht angegeben ist, wird `[50,50]` zurückgegeben (also Bildmitte).
+4. Wenn die obigen Varianten auf einen Fehler laufen bzw. keine Daten finden, wird `$default` zurückgegeben.
+5. Wenn `$default` nicht angegeben ist, wird `[50,50]` zurückgegeben (also Bildmitte).
 
 
+```php
+$focuspoint = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ), [ 50,60 ] );
+...
 ```
-    $focuspoint = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ), [ 50,60 ] );
-	...
+
+### getParams()
+
+```php
+array function getParams()
 ```
 
-### array function **getParams**()
 Die Methode liefert für den Parametrisierungsdialog eines Fokuspunkt-Effektes das
 Grundgerüst mit zwei Feldern:
 
@@ -283,7 +321,7 @@ Grundgerüst mit zwei Feldern:
 
 Eigene, weitergehende Parameter-Felder könne per `array_merge` hinzugefügt werden:
 
-```
+```php
 public function getParams()
 {
     return array_merge( parent::getParams(),
@@ -297,13 +335,11 @@ public function getParams()
 }
 ```
 
-
-
 <a name="api-racf"></a>
-## rex_api_call `focuspoint`
+## rex_api_call "focuspoint"
 
 Focuspoint erweitert das Media-Manager-AddOn. Bilder werden durch den Media-Manager erzeugt - nach
-_dessen_ Regeln. Der Media-Manager cached einmal erstellte Bilder. Damit in der [Vorschau](media_edit_interactive.md#preview)
+_dessen_ Regeln. Der Media-Manager cached einmal erstellte Bilder. Damit in der [Vorschau](edit.md#preview)
 auch das jeweilige Bild als "temporäre" Version angezeigt werden kann, ist ein Trick notwendig.
 Das Bild wird nicht auf regulärem Weg abgerufen, sondern über einen rex-api-call, der die
 temporäre Datei des Media-Managers löscht und so den Neuaufbau des Bildes mit den temporären Koordinaten erzwingt.
@@ -315,7 +351,7 @@ immer neu generiert werden.
 
 Der Vollständigkeit halber ist hier der Aufbau der URL:
 
-```
+```html
 index.php?page=structure&file=«mediafilname»&type=«mediamanagertype»&xy=«koordinaten»
 ```
 
@@ -343,7 +379,7 @@ Eine neue Effekt-Klasse sollte drei Methoden bereitstellen:
 
 Eine rudimentäre Effekt-Klasse würde so aussehen:
 
-```
+```php
 class rex_effect_focuspoint_myeffect extends rex_effect_abstract_focuspoint
 {
     function getName()

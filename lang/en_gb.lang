@@ -1,7 +1,7 @@
 #   This file is part of the REDAXO-AddOn "focuspoint".
 #
 #   @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
-#   @version     2.1
+#   @version     2.x.0
 #   @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
 #
 #   For the full copyright and license information, please view the LICENSE
@@ -67,9 +67,16 @@ focuspoint_isinuse_entry = Type: "<a href="{1}">{0}</a>", Effect: "<a href="{3}"
 focuspoint_isinuse_message = Meta-field "{0}" is in use by <a href="{1}">Media-Manager</a> and cannot be deleted
 focuspoint_isinuse_dontdeletedefault = Meta-field "{0}" cannot be deleted
 
-##
+#
 # documentation
 #
+focuspoint_docs_overview = Basics/Overview
+focuspoint_docs_edit = Editing Focslpoints
+focuspoint_docs_mm = Media-Manager
+focuspoint_docs_install = Addon-Administration
+focuspoint_docs_api = Developers only (API)
+
+# deprecated
 focuspoint_docs_navigation = Navigation
 focuspoint_docs_content = Description
 focuspoint_docs_repository_button = GitHub

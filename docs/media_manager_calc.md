@@ -1,5 +1,7 @@
 # Wie **Focuspoint-Fit** rechnet
 
+(zurück zu [Focuspoint-Fit konfigurieren](media_manager.md))
+
 > ## Inhalt
 >
 > - [Den Engpass ermitteln](#efc-engpass)
@@ -11,14 +13,14 @@ Ausgangspunkt ist ein Beispielbild in den Abmessungen 3072x2304 mit einem AR von
 Der Fokuspunkt ist gelb
 markiert und liegt bei 46% horizontal und 81% vertikal (string: `'46.0,81.0'`, array: `[46,81]`).
 
-![Demo-Bild](demo_fp.jpg)
+![Demo-Bild](assets/demo_fp.jpg)
 
 Das Beispiel erzeugt quadratische Teaser-Bilder im Format 300x300 mit einem AR von 1:1 (also 1).
 Die Einzelheiten werden jetzt Schritt für Schritt erklärt.
 
 Hier die Konfiguration des Effektes:
 
-![Eingabemaske](mm_fit_config.jpg)
+![Eingabemaske](assets/mm_fit_config.jpg)
 
 
 <a name="efc-engpass"></a>
@@ -39,14 +41,14 @@ Im zweiten Rechenschritt wird der Ausschnittsrahmen genau in der Größe des Zie
 also hier 300 x 300 groß. Zur Visualisierung legen wir
 ihn erst einmal oben links in die Ecke des Originalbildes (roter Rahmen):
 
-![Step 2: Ausschnitt einfügen](demo_step2.jpg)
+![Step 2: Ausschnitt einfügen](assets/demo_step2.jpg)
 
 Der gelbe senkrechte Strich markiert in der Engpass-Dimension den Platz, der zwischen Ausschnittshöhe und Originalhöhe verbleibt.
 Dieser Restplatz, im Beispiel 2004px, kann mit der Einstellung __"Zoom-Faktor"__ in das Zielbild genommen weren.
 Die jeweils andere Dimension des Ausschnitts wird auch neu berechnet werden, denn der AR des Zielbildes
 ist unbedingt einzuhalten.
 
-![Eingabemaske Zoom](mm_fit_zoom.jpg)
+![Eingabemaske Zoom](assets/mm_fit_zoom.jpg)
 
 | Auswahl | Auswirkung | Beispiel |
 | ------- | ---------- | -------- |
@@ -58,7 +60,7 @@ ist unbedingt einzuhalten.
 
 Im weiteren Verlauf des Beispiels rechnen wir mit der Variante "50%" weiter.
 
-![Ausschnitt auf 50%](demo_50.jpg)
+![Ausschnitt auf 50%](assets/demo_50.jpg)
 
 <a name="efc-rahmen"></a>
 ## Den Auschnittsrahmen um den Fokuspunkt positionieren
@@ -66,7 +68,7 @@ Im weiteren Verlauf des Beispiels rechnen wir mit der Variante "50%" weiter.
 Im vierten Rechenschritt wird der Ausschnittsrahmen genau mittig auf den Fokuspunkt geschoben. Da der Fokuspunkt relativ weit
 in der unteren Bildhälfte liegt, ragt der Rahmen folgerichtig über die Bildabmessungen hinaus.
 
-![Ausschnitt am Fokuspunkt](demo_fp50.jpg)
+![Ausschnitt am Fokuspunkt](assets/demo_fp50.jpg)
 
 Das entstandene Problem lässt sich - es soll unbedingt der AR des Zielbildes eingehalten werden - nur auf zwei Arten lösen:
 
@@ -77,7 +79,7 @@ des Zielbildes.
 Die erste Variante kommt sehr schnell an Grenzen, wenn der Fokuspunkt nah am Bildrand liegt. Daher geht Focuspoint-Fit
 den zweiten Weg. Nach dem fünften Rechenschritt haben wir also folgende Ausschnittsposition:
 
-![Ausschnitt final](demo_target.jpg)
+![Ausschnitt final](assets/demo_target.jpg)
 
 > **Achtung - Nebenwirkung "Vergrößerung"**: Was passiert eigentlich, wenn schon der ursprüngliche Ausschnittsrahmen (=Zielgröße)
 größer ist als das Originalbild?
@@ -90,4 +92,4 @@ Die Wirkung wäre also faktisch die Vergrößerung des Originalbildes. Der Zoom-
 Zum Schluß wird per **imagecopyresampled** in nur einem Transformations-Schritt aus dem Originalbild
 (Ausschnitt der Größe 1302x1302 ab Koordinate [763,1003]) das Zielbild (Größe 300x300) errechnet.
 
-![Zielbild](demo_final.jpg){.nozoom}
+![Zielbild](assets/demo_final.jpg)

@@ -1,5 +1,9 @@
 # Änderungen in Version 2.0
 
+(zurück zur [Übersicht](overview.md))
+
+## Übersicht
+
 Version 2.0 ist komplett neu entwickelt. Am Grundprinzip hat sich nichts geändert.
 Allerdings sind einige Erweiterungen hinzugekommen, die die Nutzung erweitern und erleichtern, sowie
 strukturelle Änderungen.
@@ -23,7 +27,7 @@ direkt genutzt werden, sind Anpassungen im Script erforderlich.
 ### Feld: med_focuspoint_css
 
 Das Feld stellte die Koordinate als ganzzahligen Prozenzsatz von Breite und Höhe dar. Nullpunkt ist die Bildecke oben links.
-Mit Ausnahme des enthaltenen Prozentzeichen sind die Werte grundsätzlich vergleichbar mit dem neuen [Feldformat](coordinates.md).
+Mit Ausnahme des enthaltenen Prozentzeichen sind die Werte grundsätzlich vergleichbar mit dem neuen [Feldformat](overview.md#coordinate).
 
 - alt: 50%,60%
 - neu: 50.0,60.0
@@ -33,7 +37,7 @@ Einzelwerten abgerufen werden. Man kann die Einzelwerte nach Bedarf weiterverarb
 
 ```
 $fpMedia = focuspoint_media::get( $filename );  // statt rex_media::get( $filename )
-list( $x, $y) = $fpMedia->getFocus();            // Abruf von "med_focuspoint" als [$x,$y]
+list( $x, $y) = $fpMedia->getFocus();           // Abruf von "med_focuspoint" als [$x,$y]
 $fp = "$x%,$y%";                                // Verwendung
 ```
 
@@ -47,7 +51,7 @@ Wert zwischen -1 (links bzw. unten) und 1 (rechts bzw. oben).
 
 ```
 $fpMedia = focuspoint_media::get( $filename );  // statt rex_media::get( $filename )
-list( $x_neu, $y_neu) = fpMedia->getFocus();    // Abruf von "med_focuspoint" als [$x,$y]
+list( $x_neu, $y_neu) = $fpMedia->getFocus();    // Abruf von "med_focuspoint" als [$x,$y]
 $x_alt = $x_neu / 50 - 1;                       // X-Koordinate umrechnen
 $y_alt = 1 - $y_neu / 50;                       // Y-Koordinate umrechnen
 ```

@@ -1,13 +1,10 @@
-# Addon-Verwaltung
+> - [Grundlagen](#overview)
+> - [Bildern Fokuspunkte zuweisen](edit.md)
+> - [Media-Manager: der Effekt "focuspoint-fit"](media_manager.md)
+> - Addon-Verwaltung
+> - [Hinweise für Entwickler (API)](developer.md)
 
-> ## Inhalt
-> Die Erläuterungen beziehen sich auf die [Addon-Verwaltung](index.php?page=packages) im Hauptmenü:
-> - [Installieren](#manage-install)
-> - [Re-Installieren](#manage-reinstall)
-> - [Aktivieren](#manage-activate)  
-> - [De-Aktivieren](#manage-deactivate)
-> - [De-Installieren](#manage-uninstall)
-> - [Löchen](#manage-delete)
+# Addon-Verwaltung
 
 <a name="manage-install"></a>
 ## Installieren

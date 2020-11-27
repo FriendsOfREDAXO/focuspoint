@@ -1,3 +1,9 @@
+> - [Grundlagen](#overview)
+> - [Bildern Fokuspunkte zuweisen](edit.md)
+> - Media-Manager: der Effekt "focuspoint-fit"
+> - [Addon-Verwaltung](install.md)
+> - [Hinweise für Entwickler (API)](developer.md)
+
 # Focuspoint-Fit konfigurieren
 
 > - [Übersicht](#a)
@@ -20,14 +26,30 @@ Der Fit-Effekt ist somit eine intelligente Mischung aus Resize und Crop mit den 
 - verlässliches Ziel-Format, also kein zerschossenes Layout
 - geringer Qualitätsverlust, da nur eine Bildumwandlung nötig ist
 
-Wie das funktioniert zeigt ein [ausführliches Beispiel](mm_effect_fit_calc.md).
+Wie das funktioniert zeigt ein [ausführliches Beispiel](media_manager_calc.md).
+
+Fokuspunkt-orientierte Bilder sollten über den Media-Manager und entsprechende Effekte erzeugt werden.
+Erstens wird der Client von Bildoperationen auf JS-Basis entlastet und zweitens sind die Bilder
+gecached.
+
+Dabei ist unbedingt zu beachten:
+
+- Fokuspunkt-basierte Effekte setzen voraus, dass das Seitenverhältnis (Aspect-Ratio) des Originalbildes vorliegt.
+- Ein "Resize" ohne Änderung des Seitenverhältnisses ist unkritisch, denn die Fokuspunkt-Koordinaten sind ein Prozentsatz der Bildabmessungen.
+- Die Reihenfolge mit Bildeffekten (blur, sharpen, etc.), die bezogen auf das Seitenverhältnis keine Änderung durchführen, ist unkritisch
+- Formatneutrale Fokuspunkt-Effekte müssen vor (einem) formatverändernden Effekt ausgeführt werden.
+- Nicht jeder Grafiktyp wird vom Media-Manager klaglos verarbeitet. SVG ist z.B. nicht unterstützt.
+
+Media-Manager-Typen, die Effekte auf Basis der Klasse `rex_effect_abstract_focuspoint` aufweisen (z.B. 'focuspoint_fit'), können in der
+interaktiven [Fokuspunkt-Festlegung](edit.md#f-vorschau) in der Vorschau genutzt werden.
+
 
 <a name="b"></a>
 ## Den Effekt konfigurieren
 
 Mit wenigen Parametern lässt sich der Effekt flexibel konfigurieren:
 
-![Konfiguration](mm_fit_config.jpg)
+![Konfiguration](assets/mm_fit_config.jpg)
 
 | Parameter | Hinweis |
 | - | - |
@@ -90,7 +112,7 @@ In der Variante 4 ist die Zoom-Option 100% sinnlos, da am Ende wieder das Origin
 Im ersten Schritt wird stets angenommen, dass um den Fokuspunkt ein Ausschnitt in der Zielgröße ausgeschnitten wird.
 Über den Zoom-Faktor kann festgelegt werden, wie viel vom Rest des Quellbildes in das Zielbild kommen soll.
 
-![Eingabemaske Zoom](mm_fit_zoom.jpg)
+![Eingabemaske Zoom](assets/mm_fit_zoom.jpg)
 
 Hier ein Beispiel für ein Quellbild der Größe 3072x2304 und einem Zielformat von 300x300. Der Restplatz in der
 Engpassdimension (Höhe) ist 2004 px.
@@ -103,7 +125,7 @@ Engpassdimension (Höhe) ist 2004 px.
 | 75% | 75% vom Rest wird mit in das Zielbild genommen | 1803x1803 |
 | 100% | Der komplette Rest wird mit in das Zielbild genommen | 2304x2304 |
 
-Dazu gibt es eine [bebilderte Beschreibung](mm_effect_fit_calc.md) des Berechnungsverfahrens.
+Dazu gibt es eine [bebilderte Beschreibung](media_manager_calc.md) des Berechnungsverfahrens.
 
 > Wenn das Zielbld (ohne Zoom) bereits größer ist als das Quellbild, wird das Original so vergrößert, dass es in das
 Zielformat passt (automatische Vergrößerung).
@@ -118,7 +140,7 @@ Breite und Höhe werden fest vorgegeben und der Zoom-Faktor auf 100% gestellt, u
 
 Das obige Beispiel mit Zoom = 100% ergibt
 
-![Zielbild maximiert](demo_final_100.jpg)
+![Zielbild maximiert](assets/demo_final_100.jpg)
 
 ### Bilder für Kopfzeilen/Banner erstellen
 
@@ -127,7 +149,7 @@ Die Bilder werden breit, aber nicht hoch mit einem AR von z.B. 4:1 oder 5:1. Zur
 - Ein Bild fester Größe erzeugen, indem die Abmessungen vorgegeben und der Zoomfaktor z.B. auf 75% oder 100% gestellt wird.
 - Alternativ kann auch nur der Aspect-Ratio angegeben werden. Die Breite wäre z.B. als 4fr und die Höhe als 1fr anzugeben.
 
-![Zielbild für Header](demo_header.jpg)
+![Zielbild für Header](assets/demo_header.jpg)
 
 ### Details herausheben
 
@@ -148,11 +170,11 @@ Der Bildausschnitt ist also 900x900. Der verbleibende Rest von 300 px
 in der Höhe muss gekappt werden. Oben werden 10% des Bildes gekappt = 120px. Der Rest (180px) wird unten gekappt.
 Das entspricht einem Fokuspunkt vertikal von 47%; der horizontale ist 50%.
 
-![Fallback-Parameter](mm_fit_config_def.jpg)
+![Fallback-Parameter](assets/mm_fit_config_def.jpg)
 
 | Original | Ziel |
-| -------- | ---- |
-| ![Kopf](head_1.jpg) | ![Kopf](head_2.jpg)  |
+| :--------: | :----: |
+| ![Kopf](assets/head_1.jpg) | ![Kopf](assets/head_2.jpg)  |
 
 ### Gleich breite Bilder für Spalten, bzw. gleich hohe Bilder für Zeilen
 
@@ -162,4 +184,4 @@ am Ende kein verlässliches Zielformat zu erzeugen. Dennoch kann es tricky sein,
 Setze man die Zielbreite fest und gibt keine Zielhöhe an, wird ein Zielbild erzeugt, dass eben genau die Zielbreite
 aufweist. Der Aspect-Ratio ergibt sich aus dem AR des Originalbildes. Alle Bilder haben also unabhängig vom Original-AR immer die gleiche Breite. Nur die Höhe variiert.
 
-Analog mit vorgegebener Höhe variiert die Breite; das ist nüztlich für Bilder in einer Zeile.
+Analog mit vorgegebener Höhe variiert die Breite; das ist nützlich für Bilder in einer Zeile.
