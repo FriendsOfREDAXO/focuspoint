@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.1
+ *  @version     3.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -54,5 +54,3 @@ if (rex::isBackend())
 }
 
 rex_media_manager::addEffect('rex_effect_focuspoint_fit');
-// deprecated:
-// rex_media_manager::addEffect('rex_effect_focuspoint_resize');
