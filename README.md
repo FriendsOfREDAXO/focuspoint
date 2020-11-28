@@ -25,7 +25,7 @@ Schreibt doch bitte auftretende Fehler, Notices und Wünsche als Issue auf [Gith
 
 ___
 
-Das Changelog findet sich hier: [CHANGELOG.md](docs/CHANGELOG.md)
+Das Changelog findet sich hier: [CHANGELOG.md](CHANGELOG.md)
 
 ---
 
