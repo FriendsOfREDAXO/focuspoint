@@ -1,10 +1,12 @@
 # Changelog
 
-## **xx.xx.xxxx Version 2.x.0**
+## **28.03.2020 Version 3.0.0**
 
-Documentation reworked for proper dual-use on Github and in the REDAXO backend.
-HELP.PHP is rewritten accordingly. Supporting css/js added (help.min.xxx).
-(https://github.com/christophboecker/help.php)
+- Documentation reworked for proper dual-use on Github and in the REDAXO backend.
+  HELP.PHP is rewritten accordingly. Supporting css/js added (help.min.xxx).
+- Media-manager-effect "focuspoint_resize", deprecated since 30.08.2018 (2.0.0), is finally removed.
+  Save the file `lib/focuspoint_resize.php` to a save location bevor updating to 3.0.0 if you need the effect
+- Editing the addon-internal media-manager-type `focuspoint_media_detail` is partly enabled. Deletion and renaming is still prohibited.
 
 ## **09.03.2020 Version 2.2.2**
 
