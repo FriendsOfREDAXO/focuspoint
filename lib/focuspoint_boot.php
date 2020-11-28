@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.2.0
+ *  @version     3.0.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -14,7 +14,7 @@
  *  In der boot.php wird überprüft, ob eine Backend-Seite aufgerufen wird, innerhalb derer
  *  besondere Einstellungen z.B. mittels Extension-Points vorzunehmen sind.
  *  Die Aktivitäten wurden in eine separate Datei ausgelagert, um für den Normalbetrieb der
- *  REDAXO-Instanz eine schlanke boot.php mit geringen Kompilieraufwand zu haben.
+ *  REDAXO-Instanz eine schlanke boot.php mit geringem Kompilieraufwand zu haben.
  *
  *
  *  @method void function mediaDetailPage( rex_addon $fpAddon )
@@ -191,17 +191,18 @@ class focuspoint_boot {
     /**
      *  page=media_manager/types
      *
-     *  Verhindert in der Liste der verfügbaren Media-Manager-typen, dass der von Focuspoint selbst
-     *  benötigte Media-Manager-Typ "focuspoint" gelöscht oder verändert wird.
-     *  Falls es sich nicht um die Zeile für "focuspoint" handelt, wird der ursprünglich
-     *  vorgesehene Zellinhalt ausgegeben.
+     *  Verhindert in der Liste der verfügbaren Media-Manager-Typen bzw. im Edit-Formular,
+     *  dass der von Focuspoint selbst benötigte Media-Manager-Typ "rex_effect_abstract_focuspoint::MM_TYPE"
+     *  gelöscht oder sein Name verändert wird.
      */
     static public function media_managerTypes()
     {
         if( rex_request('effects', 'int') != 1 ) {
-            rex_extension::register( 'REX_LIST_GET', function( rex_extension_point $ep ){
 
-                $function = function ($params) {
+            // Listenansicht anpassen und hier schon unzulässige Button deaktivieren
+            rex_extension::register( 'REX_LIST_GET', function( rex_extension_point $ep ){
+                $list = $ep->getSubject();
+                $list->setColumnFormat('deleteType', 'custom', function($params){
                     $list = $params['list'];
                     if( $list->getValue('name') == rex_effect_abstract_focuspoint::MM_TYPE ) {
                         return '<small class="text-muted">' . rex_i18n::msg('focuspoint_doc') . '</small>';
@@ -211,14 +212,58 @@ class focuspoint_boot {
                         return $list->formatValue($list->getValue($field), $presetValue, false, $field);
                     }
                     return $list->getColumnLink($field, $list->getValue($field));
-                };
-
-                $list = $ep->getSubject();
-                $list->setColumnFormat('deleteType', 'custom', $function, [$list->getColumnFormat('deleteType')]);
-                $list->setColumnFormat('editType', 'custom', $function, [$list->getColumnFormat('editType')]);
-                $label = rex_i18n::msg('media_manager_type_functions');
-                $list->setColumnFormat($label, 'custom', $function, [$list->getColumnFormat($label)]);
+                }, [$list->getColumnFormat('deleteType')]);
             });
+
+
+        }
+
+        // Verhindert beim Editieren des Support-Media-Types im Medienpool dass der Name überschrieben wird.
+        // Außerdem darf der Eintrag nicht gelöscht werden, daher muss der Löschbutton unterdrückt werden.
+        if( 'edit' == rex_request('func', 'string') ) {
+
+            rex_extension::register( 'REX_FORM_CONTROL_FIELDS', function( rex_extension_point $ep ){
+                $sql = rex_sql::factory();
+                $qry = 'SELECT * FROM ' . rex::getTable('media_manager_type') . ' WHERE id=? and name=?';
+                $sql->setQuery($qry, [rex_request('type_id', 'int'),rex_effect_abstract_focuspoint::MM_TYPE]);
+                if( $sql->getRows() ) {
+                    $cf = $ep->getSubject();
+                    $cf['delete'] = '';
+                    $ep->setSubject( $cf );
+                    rex_extension::register( 'REX_FORM_GET', function( rex_extension_point $ep ){
+                        $form = $ep->getSubject();
+                        // provide access to the form-elements
+                        $formReflection = new focuspoint_reflection( $form );
+                        $fieldset = $formReflection->getPropertyValue( 'fieldset' );
+                        $elements = $formReflection->getPropertyValue( 'elements' );
+                        $fselements = $elements[$fieldset] ?? [];
+                        foreach( $fselements as $k=>$e ) {
+                            if( 'name' == $e->getFieldName() ) {
+                                // prevent the name from being changed by turning the field in a hidden one.
+                                // Don´t use type=hidden due to rex_form-behavior
+                                $e->setPrefix( '<p class="form-control-static">'.$e->getValue().'</p>' );
+                                $e->setAttribute('class','hidden');
+                                break;
+                            }
+                        }
+                    });
+                }
+            });
+
+        }
+
+        // Falls doch ein "delete" ankommt und den Default-Type betrifft: abblocken
+        if( 'delete' == rex_request('func', 'string') ) {
+            $sql = rex_sql::factory();
+            $qry = 'SELECT * FROM ' . rex::getTable('media_manager_type') . ' WHERE id=? and name=?';
+            $sql->setQuery($qry, [rex_request('type_id', 'int'),rex_effect_abstract_focuspoint::MM_TYPE]);
+            if( $sql->getRows() ) {
+                $_REQUEST['func'] = '';
+                rex_extension::register('PAGE_TITLE_SHOWN', function(rex_extension_point $ep) use ($result) {
+                    $result = rex_i18n::msg('focuspoint_isinuse_dontdeletedefault',rex_effect_abstract_focuspoint::MM_TYPE);
+                    $ep->setSubject(rex_view::error($result) . $ep->getSubject());
+                });
+            };
         }
     }
 
