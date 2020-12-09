@@ -1,6 +1,10 @@
 # Changelog
 
-## **28.03.2020 Version 3.0.0**
+## **09.12.2020 Version 3.0.1**
+
+- PHP version-dependency in package.yml changed to enable installation with PHP 8 as well as PHP 7
+
+## **28.11.2020 Version 3.0.0**
 
 - Documentation reworked for proper dual-use on Github and in the REDAXO backend.
   HELP.PHP is rewritten accordingly. Supporting css/js added (help.min.xxx).

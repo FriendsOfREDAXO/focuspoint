@@ -1,5 +1,5 @@
 package:  focuspoint
-version:  '3.0.0'
+version:  '3.0.1'
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/focuspoint
 
@@ -20,7 +20,7 @@ requires:
         mediapool: '^2.6.0'
     redaxo: '^5.8.0'
     php:
-        version: '^7.1'
+        version: '>=7.1'
 
 help:
     # Default-View, für page=packages (Aufruf aus der Addon-Verwaltung)
