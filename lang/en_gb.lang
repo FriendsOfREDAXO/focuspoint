@@ -1,7 +1,7 @@
 #   This file is part of the REDAXO-AddOn "focuspoint".
 #
 #   @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
-#   @version     2.x.0
+#   @version     3.0.2
 #   @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
 #
 #   For the full copyright and license information, please view the LICENSE
@@ -15,6 +15,14 @@ focuspoint_doc = Focuspoint-AddOn
 focuspoint_install_field_exists = Field "{0}" already exists, but with wrong type. Change type to "{1}" or remove/rename field.
 focuspoint_install_field_error = Error creating meta-field  {0}: {1}
 focuspoint_install_type_error = Error creating meta-type {0}: {1}
+focuspoint_install_media_exists = Column "{0}" of table "{1}" already exists; rename or delete column
+focuspoint_install_field_ok = Metainfo-field "{0}" created
+focuspoint_install_type_ok = Metainfo-type "{0}" created
+focuspoint_install_media_ok = Missing column "{0}" in table "{1}" added
+focuspoint_install_link_ok = Metainfo-type "{0}" and metainfo-field "{1}" connection repaired
+focuspoint_install_media_error = Error creating column {0} of table {1}
+focuspoint_install_mmtype_ok = Media-Manager-Type "{0}" created
+focuspoint_install_mmeffect_ok = Default-Effects of Media-Manager-type "{0}" created
 focuspoint_uninstall_metafields = Additional meta-fields of type "{0}" found. First delete these fields or switch to another field-type ("text"), then try again to delete the Focuspoint-AddOn.
 focuspoint_uninstall_external_effects = Additional focuspoint-effects found. First deacticate these effects, then try again to delete the Focuspoint-AddOn..
 focuspoint_uninstall_effects_in_use = Affected Media-Manager-Types:
