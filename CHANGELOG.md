@@ -1,5 +1,12 @@
 # Changelog
 
+## **01.03.2021 Version 3.0.2**
+
+- Bugfix: PHP8 fixed an error in MySQL transaction handling regarding DDL-statements, with now can
+  results  properly in an exception during installation. The new installation routine works without
+  transactions.
+- A successfull installation now provides detailed information (available since REDAXO 5.12).
+
 ## **09.12.2020 Version 3.0.1**
 
 - PHP version-dependency in package.yml changed to enable installation with PHP 8 as well as PHP 7
@@ -10,7 +17,8 @@
   HELP.PHP is rewritten accordingly. Supporting css/js added (help.min.xxx).
 - Media-manager-effect "focuspoint_resize", deprecated since 30.08.2018 (2.0.0), is finally removed.
   Save the file `lib/focuspoint_resize.php` to a save location bevor updating to 3.0.0 if you need the effect
-- Editing the addon-internal media-manager-type `focuspoint_media_detail` is partly enabled. Deletion and renaming is still prohibited.
+- Editing the addon-internal media-manager-type `focuspoint_media_detail` is partly enabled.
+  Deletion and renaming is still prohibited.
 
 ## **09.03.2020 Version 2.2.2**
 
@@ -54,7 +62,8 @@ Bugfixes:
 ## **22.08.2019 Version 2.1.1**
 
 - Maintenance-version, no functional changes
-- Injection of focuspoint-help into Media-Manager is changed in REX 5.8.0 with respect to the new way, the Media-Manager-help (overview) is provided
+- Injection of focuspoint-help into Media-Manager is changed in REX 5.8.0 with respect to the new
+  way, the Media-Manager-help (overview) is provided
 - Requirements-section in package.yml changed to reflect REX 5.8.0
 - Traducción en castellano - thanks to @nandes2062
 
