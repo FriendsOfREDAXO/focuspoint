@@ -204,4 +204,6 @@ if( $message ) {
     return;
 }
 
-$this->setProperty('successmsg', '<ul><li>'.implode('</li><li>',$successMsg).'</ul>' );
+if( $successMsg ) {
+    $this->setProperty('successmsg', '<ul><li>'.implode('</li><li>',$successMsg).'</ul>' );
+}
