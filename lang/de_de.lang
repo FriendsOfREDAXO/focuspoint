@@ -1,7 +1,7 @@
 #   This file is part of the REDAXO-AddOn "focuspoint".
 #
 #   @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
-#   @version     2.x.0
+#   @version     3.0.2
 #   @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
 #
 #   For the full copyright and license information, please view the LICENSE
@@ -15,6 +15,14 @@ focuspoint_doc = Fokuspunkt-AddOn
 focuspoint_install_field_exists = Das Feld "{0}" existiert, hat aber den falschen Feldtyp. Feldtyp ändern auf "{1}" oder Feld umbenennen/löschen.
 focuspoint_install_field_error = Fehler beim Anlegen des Metafeldes {0}: {1}
 focuspoint_install_type_error = Fehler beim Anlegen des Meta-Typs {0}: {1}
+focuspoint_install_media_exists = Spalte "{0}" in Tabelle "{1}" existiert bereits; Spalte umbenennen oder löschen
+focuspoint_install_field_ok = Metainfo-Feld "{0}" angelegt
+focuspoint_install_type_ok = Metainfo-Typ "{0}" angelegt
+focuspoint_install_media_ok = Fehlende Spalte "{0}" in Tabelle "{1}" ergänzt
+focuspoint_install_link_ok = Metainfo-Typ "{0}" und Metainfo-Feld "{1}" neu zugeordnet
+focuspoint_install_media_error = Fehler beim Anlegen der Spalte {0} in Tabelle {1}
+focuspoint_install_mmtype_ok = Media-Manager-Type "{0}" angelegt
+focuspoint_install_mmeffect_ok = Default-Effekte des Media-Manager-Type "{0}" eingetragen
 focuspoint_uninstall_metafields = Zusätzliche Metafelder des Typs "{0}". Das AddOn kann erst gelöscht werden, wenn die Felder gelöscht sind oder auf einen anderen Datentyp (text) umgestellt.
 focuspoint_uninstall_external_effects = Zusätzliche Fokuspunkt-Effekte. Das AddOn kann erst gelöscht werden, wenn die Effekte deaktiviert sind.
 focuspoint_uninstall_effects_in_use = Betroffene Media-Manager-Typen:
