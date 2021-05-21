@@ -47,7 +47,7 @@ if( isset( $this->fieldselect ) && is_array( $this->fieldselect ) )
 }
 ?>
     <div class="focuspoint-panel-image">
-        <img src="index.php?rex_media_type=<?=rex_effect_abstract_focuspoint::MM_TYPE ?>&rex_media_file=<?=$this->mediafile ?>">
+        <img src="<?= rex_media_manager::getUrl(rex_effect_abstract_focuspoint::MM_TYPE, $this->mediafile, rex_media::get($this->mediafile)->getUpdateDate()); ?>">
         <div class="focuspoint-panel-enabler hidden"></div>
     </div>
     <small class="focuspoint-panel-enabler hidden"><span></span></small>
