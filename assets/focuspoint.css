@@ -45,10 +45,10 @@
 .focuspoint-panel > small > span {
     display: inline-block;
     width: 17rem;
-    border: 1px solid darkgray;
+    border: 1px solid rgba(64, 64, 64, 0.3);
     border-top: 0;
     border-radius: 0 0 1rem 1rem;
-    background-color: lightgray;
+    background-color: rgba(128, 128, 128, 0.3);
 }
 
 .focuspoint-panel button[data-button="zoom"] .fa-search-minus { display:none; }

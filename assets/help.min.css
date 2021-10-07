@@ -8,3 +8,21 @@ code[class*="language-"],pre[class*="language-"]{color:#ccc;background:none;font
     muss per  asset_packer bei der Installation mit prism gemischt werden.
 */
 .help-documentation{background-color:#fff;padding:15px;margin-bottom:20px}.panel-body>.help-documentation{padding:0;margin-bottom:0}.rex-docs-sidebar{flex-basis:300px}.rex-docs-content{max-width:950px}.rex-docs-content img{box-shadow:2px 2px 20px silver;border-radius:5px}.rex-docs-content p{margin-bottom:10px}
+
+
+
+body.rex-theme-dark .help-documentation {
+    background-color: transparent;
+}
+body.rex-theme-dark .rex-docs-content img {
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+    body:not(.rex-theme-light) .help-documentation {
+        background-color: transparent;
+    }
+    body:not(.rex-theme-light) .rex-docs-content img {
+        box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
+    }
+}
