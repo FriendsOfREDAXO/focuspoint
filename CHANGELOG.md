@@ -1,5 +1,9 @@
 # Changelog
 
+## **23.10.2021 Version 3.1.0**
+
+- Enhanced CSS for darkmode compatibility (thanks to @schuer); active with REDAXO 5.13.
+
 ## **01.03.2021 Version 3.0.2**
 
 - Bugfix: PHP8 fixed an error in MySQL transaction handling regarding DDL-statements, with now can
