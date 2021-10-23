@@ -1,6 +1,6 @@
 # Changelog
 
-## **xx.xx.2021 Version 3.1.0**
+## **23.10.2021 Version 3.1.0**
 
 - Enhanced CSS for darkmode compatibility (thanks to @schuer); active with REDAXO 5.13.
 
