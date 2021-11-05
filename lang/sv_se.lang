@@ -1,7 +1,7 @@
 #   This file is part of the REDAXO-AddOn "focuspoint".
 #
 #   @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
-#   @version     2.x.0
+#   @version     3.0.2
 #   @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
 #
 #   For the full copyright and license information, please view the LICENSE
@@ -15,6 +15,14 @@ focuspoint_doc = Fokuspunkt-AddOn
 focuspoint_install_field_exists = Fältet "{0}" existerar men har fel typ av fält. Ändra fälttyp till "{1}" eller byt namn / radera fält.
 focuspoint_install_field_error = Fel vid att skapa metafältet {0}: {1}
 focuspoint_install_type_error = Fel vid att skapa meta-typen {0}: {1}
+focuspoint_install_media_exists = Kolumnen "{0}" i tabellen "{1}" finns redan. Byt namn på eller ta bort kolumn
+focuspoint_install_field_ok = Metainfo-fältet {0} har skapats
+focuspoint_install_type_ok = Metainfo-typ {0} har skapats
+focuspoint_install_media_ok = Saknade kolumnen "{0}" har lagts till i tabellen "{1}"
+focuspoint_install_link_ok = Metainfo -typen "{0}" och metainfo -fältet "{1}" har tilldelats om
+focuspoint_install_media_error = Fel vid skapande av kolumn {0} i tabell {1}
+focuspoint_install_mmtype_ok = Media-Manager-Type "{0}" har skapats
+focuspoint_install_mmeffect_ok = Standardeffekter av Media-Manager-Type:n "{0}" har angetts
 focuspoint_uninstall_metafields = Ytterligare metafält av typen "{0}". AddOn kan inte raderas förrän fälten raderas eller ändras till en annan datatyp (text).
 focuspoint_uninstall_external_effects = Ytterligare fokuspunktseffekter. AddOn kan inte raderas förrän effekterna är inaktiverade.
 focuspoint_uninstall_effects_in_use = Berörda mediekontrolltyper:
@@ -41,7 +49,7 @@ focuspoint_edit_label_heigth = Målstorlek: höjd
 focuspoint_edit_msg_inuse1 = Metafield "{0}" används i en eller flera typer av medihanterare.
 focuspoint_edit_msg_inuse2 = Metafield "{0}" finns i systemfältet.
 focuspoint_edit_msg_inuse3 = "{0}" och "{1}" kan inte ändras; metafältet kan inte raderas.
-# - focuspoint_resize
+# - focuspoint_resize (deprecated since 2.0)
 focuspoint_edit_notice_widthheigth_resize = Värde i pixlar
 focuspoint_edit_label_style = Modus
 focuspoint_edit_label_allow_enlarge = Om bilden är för liten
