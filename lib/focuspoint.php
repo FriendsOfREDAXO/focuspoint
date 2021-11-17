@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.2.1
+ *  @version     4.0.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -66,7 +66,7 @@ class focuspoint
 
         // Identifiziere das Vorschaubild
         //
-        //      <a href="index.php?rex_media_type=rex_mediapool_maximized&amp;rex_media_file=filename&amp;buster=1527191505">
+        //      <a href="index.php?rex_media_type=rex_media_large&amp;rex_media_file=filename&amp;buster=1527191505">
         //          <img class="img-responsive" src="index.php?rex_media_type=rex_mediapool_detail&amp;rex_media_file=filename&amp;buster=1234567890" alt="0" title="0">
         //      </a>
         //
@@ -76,9 +76,9 @@ class focuspoint
         $text = $ep->getSubject();
         $mediafile = $params['filename'];
 
-        $referenz = '<a href="'.rex_media_manager::getUrl('rex_mediapool_maximized', urlencode($mediafile) );
-
+        $referenz = '<a href="'.rex_media_manager::getUrl('rex_media_large', urlencode($mediafile) );
         $p1 = stripos( $text, $referenz );
+
         if( $p1 === false ) return;
 
         $p2 = stripos( $text, '</a>', $p1 + strlen($referenz) );
