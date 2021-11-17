@@ -1,6 +1,6 @@
 # Changelog
 
-## **17.10.2021 Version 4.0.0**
+## **17.11.2021 Version 4.0.0**
 
 - Changes in the mediapool markup forced an update in the hook mechanismen, which enables Focuspoint´s interactive selection in the mediapool-sidebar. Due the
   changed mechanismen Focuspoint 4.0 and onward is incompatible with REDAXO 5.12.x and prior versions.
