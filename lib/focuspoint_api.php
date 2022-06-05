@@ -80,6 +80,7 @@ class focuspoint_media_manager extends rex_media_manager
         $media = new rex_managed_media( rex_path::media( $file ) );
         $manager = new self( $media );
         $manager->deleteCache( $file, $type );
+        $manager->setCachePath($cachePath);
         $manager->applyEffects( $type );
         $media->asImage();
         $manager->deleteCache( $file, $type );
