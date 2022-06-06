@@ -1,9 +1,16 @@
 # Changelog
 
+## **05.06.2022 Version 4.0.1**
+
+- Corrected an error witch prevented a proper media-type related preview un the focuspoint-selection
+  of the media manager window. Thanks to LEAakaLAP und Markus Neubauer.
+- Developer-Section of the documentation extended with another use case for ExtensionPoint
+  `FOCUSPOINT_PREVIEW_SELECT` regarding media-types for images outside the media pool.
+   
 ## **17.11.2021 Version 4.0.0**
 
 - Changes in the mediapool markup forced an update in the hook mechanismen, which enables Focuspoint´s interactive selection in the mediapool-sidebar. Due the
-  changed mechanismen Focuspoint 4.0 and onward is incompatible with REDAXO 5.12.x and prior versions.
+changed mechanismen Focuspoint 4.0 and onward is incompatible with REDAXO 5.12.x and prior versions.
 
 ## **23.10.2021 Version 3.1.0**
 

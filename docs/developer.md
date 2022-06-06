@@ -61,6 +61,20 @@ rex_extension::register('FOCUSPOINT_PREVIEW_SELECT', function($ep){
 });
 ```
 
+In folgenden Beispiel wird ein Element aus der Liste entfernt. Das kann z.B. notwendig sein, wenn der
+Media-Manager-Typ zwar einen Focuspoint-Effekt nutzt, das Bild aber nicht aus dem Medienpool zieht.
+Da dieser Umstand nicht hinreichend zuverlässig automatisch erkennbar ist, muss der Media-Manager-Typ
+über den EP entfernt werden:
+```php
+rex_extension::register('FOCUSPOINT_PREVIEW_SELECT', function($ep){
+    $mediatypes = $ep->getSubject();
+    if( isset($mediatypes['xyz']) ) {
+        unset($mediatypes['xyz']);
+    }
+    return $mediatypes;
+});
+```
+
 > **Hinweis:**  
 >
 > Die Daten im Array `mediatypes` bzw. `$ep->getSubject()` sind auch zur Steuerung der Zusammenspiels
