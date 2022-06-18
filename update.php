@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -15,6 +15,7 @@
  *
  *  SQL-transaction is rolled back in case of update-errors
  *
+ *  @var rex_addon $this
  */
 
 if (rex_string::versionCompare($this->getVersion(), '2.0', '<'))
@@ -55,7 +56,7 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<'))
         else
         {
             // field does not exist. Add field
-            $result = rex_metainfo_add_field('translate:focuspoint_field_label', rex_effect_abstract_focuspoint::MED_DEFAULT, '3', '', $type_id, '', '', '', '');
+            $result = rex_metainfo_add_field('translate:focuspoint_field_label', rex_effect_abstract_focuspoint::MED_DEFAULT, 3, '', $type_id, '', '', '', '');
             if( $result !== true )
             {
                 $message = rex_i18n::msg( 'focuspoint_install_field_error', rex_effect_abstract_focuspoint::MED_DEFAULT, "<strong><i>$result</i></strong>" );
@@ -82,6 +83,7 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<'))
                 {
 
                     $qry = 'SELECT id,med_focuspoint_data FROM '.$tab.' WHERE med_focuspoint_data > ""';
+                    /** @var array<integer,string> $liste */
                     $liste = $sql->getArray( $qry, [], PDO::FETCH_KEY_PAIR );
                     foreach( $liste as $k=>$v )
                     {
@@ -109,7 +111,9 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<'))
                 $tab = rex::getTable('media_manager_type_effect');
                 $mitte = sprintf( rex_effect_abstract_focuspoint::STRING, rex_effect_abstract_focuspoint::$mitte[0], rex_effect_abstract_focuspoint::$mitte[1] );
                 $qry = "SELECT id,parameters FROM $tab";
-                foreach( $sql->getArray( $qry, [], PDO::FETCH_KEY_PAIR ) as $k=>$v )
+                /** @var array<integer,string> */
+                $liste = $sql->getArray( $qry, [], PDO::FETCH_KEY_PAIR );
+                foreach( $liste as $k=>$v )
                 {
                     $v = json_decode( $v, true );
                     if( isset($v['rex_effect_focuspoint_fit'] ) )
@@ -203,6 +207,14 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<'))
 
 }
 
+
+/**
+ *  @param string|integer|float $para
+ *  @param int|float $low
+ *  @param int|float $default
+ *  @param int|float $high
+ *  @return int|float
+ */
 
 function fpUpdateNumParaOk( $para, $low=0, $default=0, $high=0 )
 {

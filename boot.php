@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     3.0
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -13,6 +13,8 @@
  *
  *  Teile der Verarbeitung sind - bis auf die Abfragen - ausgelagert, um die Code-Übersetzung
  *  nur durchzuführen, wenn es notwendig ist, jedoch nicht bei jedem Aufruf.
+ *
+ *  @var rex_addon $this
  */
 
 if (rex::isBackend())
