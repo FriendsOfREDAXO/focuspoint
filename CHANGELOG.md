@@ -1,5 +1,13 @@
 # Changelog
 
+## **18.06.2022 Version 4.0.2**
+
+- Another correction regarding preview issue
+- Code refinement with [rexstan](https://staabm.github.io/2022/06/18/rexstan-REDAXO-AddOn.html) up to level 6
+  based on PHP8 specification. Some notifications are suppressed by `@phpstan-ignore-next-line`, as the root
+  cause is outside focuspoint; three are not covered
+- `focuspoint_media::_construct` removed: only relevant for PHP 5.6, which is obsolete. The required REDAXO-Versions needs PHP 7.3+.
+
 ## **05.06.2022 Version 4.0.1**
 
 - Corrected an error witch prevented a proper media-type related preview un the focuspoint-selection

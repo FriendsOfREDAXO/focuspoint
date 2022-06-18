@@ -1,5 +1,5 @@
 package:  focuspoint
-version:  '4.0.1'
+version:  '4.0.2'
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/focuspoint
 
@@ -46,7 +46,7 @@ help:
             title: translate:focuspoint_docs_api
             icon: fa fa-book
             path: docs/developer.md
-    # menu-structure für media_manager (siehe Sektion "pages:")
+    # menu-structure für media_manager (siehe dessen Sektion "pages:")
     media_manager/overview/focuspoint:
         0:
             title: translate:focuspoint_effect_fit
