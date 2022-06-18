@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.1.2
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -44,19 +44,16 @@
  *  zweiter Buchstabe ist die Verwendung: Offset (x bzw. y), Höhe (h), Breite (w), AspectRatio (r)
  *  Beispiel: $dw, $dh, $dr
  *
- *  @method string getName()
- *  @method void execute()
- *  @method array getParams()
- *  @method int|float|null decodeSize( string $value, $ref=0 )
  */
 
 
 
 class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 {
-    private $optionsZoom = ['0%','25%', '50%', '75%','100%'];
+	/** @var array<string> */
+	private $optionsZoom = ['0%','25%', '50%', '75%','100%'];
+	/** @var integer */
     private $targetByAR;
-    private $dummy = '##';
 
     const PATTERN = '^([1-9]\d*\s*(px)?|(100|[1-9]?\d)(\.\d)?\s*%|[1-9]\d*\s*fr)$';
 
@@ -112,6 +109,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 			$dw = $this->decodeSize( $this->params['width'],$sw );
 			$dh = $this->decodeSize( $this->params['height'],$sh );
 			if ( empty($dw) && empty($dh) ) return;
+			// Auch wenn rexstan hier meckert, aber es stimmt so: decodeSize incrmentiert targetByAR
+			// @phpstan-ignore-next-line 
 			if ( $this->targetByAR == 1 ) return;
 
 		/*
@@ -148,6 +147,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 			und  Höhe 9fr, was 16:9 entspricht), muss das Zielformat auf die Bildgröße
 			geändert werden. Zoom ist dann irrelevant.
 		*/
+			// Auch wenn rexstan hier meckert, aber es stimmt so: decodeSize incrmentiert targetByAR
+			// @phpstan-ignore-next-line 
 			if ( $this->targetByAR == 2)
 			{
 				$dw = $too_wide ? $sh * $dr : $sw;
@@ -211,11 +212,16 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 			return;
 		}
 
+		// Die Fehlermeldung von rexstan beruht auf der Prüfung gegen PHP8. Dort sind GD-Objekte vom Typ "GdImage" und nicht "resoource"
+		// Daher werden nachfolgend drei Zeilen ignoriert.
+		// @phpstan-ignore-next-line
 		$this->keepTransparent($des);
+		// @phpstan-ignore-next-line
 		imagecopyresampled($des, $gdimage,
 						   0, 0, $cx, $cy,
 						   $dw, $dh, $cw, $ch);
 
+		// @phpstan-ignore-next-line
 		$this->media->setImage($des);
 		$this->media->refreshImageDimensions();
 
@@ -228,7 +234,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
      *  Die Basisfelder werden aus der Parent-Klasse abgerufen und um die Felder für
      *  Breite und Höhe des Zielbildes sowie den Zoom-Faktor ergänzt.
      *
-     *  @return     array   Felddefinitionen
+     *  @return     array<mixed>   Felddefinitionen
      */
     public function getParams()
     {
@@ -266,10 +272,10 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
      *  mit Einheit %: über $ref in absolute Werte umrechnen
      *  mit Einheit fr: keine Fmrechnenung, aber FR-Zähler hochsetzen
      *
-     *  @var    string  $value  auszuwertende Zeichenfolge
-     *  @var    num     $ref    Referenzwert (Breite oder Höhe des Bildes)
+     *  @param    string        $value  auszuwertende Zeichenfolge
+     *  @param    float|int     $ref    Referenzwert (Breite oder Höhe des Bildes)
      *
-     *  @return num|null    umgerechneter Wert oder null für ungültiges Format
+     *  @return   float|null    umgerechneter Wert oder null für ungültiges Format
      */
     function decodeSize( $value, $ref=0 )
     {

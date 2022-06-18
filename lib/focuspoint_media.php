@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.1
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -15,23 +15,10 @@
  *  Die Klasse "focuspoint_media" ist von "rex_media" abgeleitet und erleichetrt den
  *  Umgang mit Medien, deren Darstellung auf Fokuspunkten basiert.
  *
- *  @method __construct( )
- *  @method focuspoint_media get( string $name )
- *  @method array getFocus( string $metafield = null, array $default = null, $wh=false )
- *  @method bool hasFocus( string $metafield = null )
  */
 
 class focuspoint_media extends rex_media
 {
-
-
-    /**
-     * Necessary for PHP 5.6
-     */
-    public function __construct()
-    {
-    }
-
 
     /**
      *  Gibt die Bildinstanz zurück und prüft dabei ab, ob es ein Bild ist (isImage).
@@ -64,15 +51,15 @@ class focuspoint_media extends rex_media
      *  Die als $default und $wh angegebenen Array müssen format korrekt sein.
      *  Das wird nicht überprüft. Also [x,y] mit x|y von 0.0 bis 100.0.
      *
-     *  @param  string $metafield   Metafeld, aus dem die Koordinaten entnommen werden.
-     *                              default: med_focuspoint
-     *  @param  array  $default     Default-Koordinaten falls das Metafeld leer oder ungültig ist.
-     *                              Wenn $default fehlt: 50,50
-     *  @param  array  $wh          Array [breite,höhe] mit den absoluten Referenzwerten, auf die
-     *                              sich die Prozentwerte der Koordinaten beziehen, oder True für
-     *                              [bildbreite,bildhöhe].
+     *  @param  string             $metafield  Metafeld, aus dem die Koordinaten entnommen werden.
+     *                                          default: med_focuspoint
+     *  @param  array<mixed>       $default    Default-Koordinaten falls das Metafeld leer oder ungültig ist.
+     *                                          Wenn $default fehlt: 50,50
+     *  @param  array<mixed>|bool   $wh         Array [breite,höhe] mit den absoluten Referenzwerten, auf die
+     *                                          sich die Prozentwerte der Koordinaten beziehen, oder True für
+     *                                          [bildbreite,bildhöhe].
      *
-     *  @return array  [x,y] als Koordinaten-Array
+     *  @return array<float>                    [x,y] als Koordinaten-Array
      */
     function getFocus( $metafield = null, array $default = null, $wh=false )
     {
@@ -102,10 +89,10 @@ class focuspoint_media extends rex_media
      *  (1) das angegebene Fokuspunkt-Metafeld existiert und
      *  (2) das Feld einen formal gültigen Wert liefert.
      *
-     *  @param  string $metafield   Metafeld, aus dem die Koordinaten entnommen werden.
-     *                              default: med_focuspoint
+     *  @param  string     $metafield   Metafeld, aus dem die Koordinaten entnommen werden.
+     *                                  default: med_focuspoint
      *
-     *  @return bool   true, false
+     *  @return bool                        
      */
     function hasFocus( $metafield = null )
     {

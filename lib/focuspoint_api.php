@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -32,7 +32,6 @@
  *               &type=      Name des MM-Effektes
  *               &xy=        Fokuspunkt numerisch (0.0,0.0 bis 100.1,100.0)
  *
- *  @method void function execute()
  */
 
  class rex_api_focuspoint extends rex_api_function {
@@ -63,7 +62,6 @@
 *  Da die wichtige Funktion rex_media_manager->applyEffects 'protected' ist, muss eine abgeleitete
 *  Klasse "focuspoint_media_manager" zwischengeschaltet werden, um das neue Bild zu generieren.
 *
-*  @method rex_managed_media createMedia( string $type=null, string $file=null )
 */
 class focuspoint_media_manager extends rex_media_manager
 {
@@ -77,13 +75,12 @@ class focuspoint_media_manager extends rex_media_manager
      */
     public static function createMedia( $type=null, $file=null )
     {
-        $media = new rex_managed_media( rex_path::media( $file ) );
-        $manager = new self( $media );
-        $manager->deleteCache( $file, $type );
-        $manager->setCachePath($cachePath);
-        $manager->applyEffects( $type );
-        $media->asImage();
-        $manager->deleteCache( $file, $type );
+        $mediaPath = rex_path::media($file);
+        $media = new rex_managed_media($mediaPath);
+        $manager = new self($media);
+        $manager->setCachePath('');
+        $manager->applyEffects($type);
+        $media->refreshImageDimensions();
         return $media;
     }
 }
