@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0.3
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -19,12 +19,6 @@
  *  Eigene Fokuspunkt-Effekte sollten unbedingt hiervon abgeleitet werden, nie direkt von
  *  "rex_effect_abstract"!
  *
- *  @method array|false str2fp( string $xy, array $wh=null )
- *  @method array rel2px( array $xy, array $wh )
- *  @method array getDefaultFocus( array $default=null, array $wh=null )
- *  @method string getMetaField()
- *  @method array getFocus( focuspoint_media|null $media, array $default=null, array $wh=null )
- *  @method array getParams()
  */
 
 abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
@@ -36,7 +30,11 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
     const HTML_PATTERN = '^(100|[1-9]?[0-9])\.[0-9],(100|[1-9]?[0-9])\.[0-9]$';
     const PATTERN = '/^(?<x>(100|[1-9]?\d)\.\d),(?<y>(100|[1-9]?\d)\.\d)$/';
     const STRING = '%3.1F,%3.1F';
+
+    /** @var array<int> */
     static $mitte = [50,50];
+    
+    /** @var array<string> */
     static $internalEffects = [ 'focuspoint_fit', 'focuspoint_resize' ];
 
     /**
@@ -44,13 +42,13 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *
      *  Ist der Parameter $wh angegeben, werden die Koordinaten in absolute Werte umgerechnet.
      *
-     *  @param  string $xy  Zeichenkette mit dem Koordinaten-Paar ("12.3,34.5")
-     *  @param  array  $wh  Array [breite,höhe] mit den Referenzwerten, auf die sich
-     *                      die Prozentwerte der Koordinaten beziehen.
+     *  @param  string          $xy     Zeichenkette mit dem Koordinaten-Paar ("12.3,34.5")
+     *  @param  array<mixed>    $wh     Array [breite,höhe] mit den Referenzwerten, auf die sich
+     *                                  die Prozentwerte der Koordinaten beziehen.
      *
-     *  @return array|null  [x,y] als Koordinaten-Array oder null für ungültiger String
+     *  @return array<float>|bool       [x,y] als Koordinaten-Array oder false für ungültiger String
      */
-    static public function str2fp( $xy, array $wh=null )
+    static public function str2fp( string $xy, array $wh=null )
     {
         if( $i = preg_match_all( self::PATTERN, (string)$xy, $tags ) )
         {
@@ -65,10 +63,10 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
     /**
      *  rechnet relative Fokuspunkt-Koordinaten in absolute um.
      *
-     *  @param  array $xy   Array [x,y] der relativen Koordinaten (0..100)
-     *  @param  array $wh   Array [breite,höhe] der Bildabmessungen
+     *  @param  array<mixed>    $xy     Array [x,y] der relativen Koordinaten (0..100)
+     *  @param  array<mixed>    $wh     Array [breite,höhe] der Bildabmessungen
      *
-     *  @return array       [x,y] als absolute Werte der Fokuspunkt-Koordinate
+     *  @return array<integer>            [x,y] als absolute Werte der Fokuspunkt-Koordinate
      */
     static public function rel2px( array $xy, array $wh )
     {
@@ -84,9 +82,10 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *  Sollt das Feld leer sein oder ungültig, wird der angegebene $default herangezogen.
      *  Gibt es den auch nicht, wird  aus Bildmitte gesetzt.
      *
-     *  @param  array $default  Ein Array [x,y] mit den Koordinaten als Prozent der Bilddimension
+     *  @param  array<mixed>    $default    Ein Array [x,y] mit den Koordinaten als Prozent der Bilddimension
+     *  @param  array<mixed>    $wh         Array [breite,höhe] der Bildabmessungen
      *
-     *  @return array           [x,y] als Koordinaten-Array
+     *  @return array<float>                [x,y] als Koordinaten-Array
      */
     public function getDefaultFocus( array $default=null, array $wh=null )
     {
@@ -105,13 +104,11 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *  Das Feld 'meta' des Efektes enthält den Namen des Fokuspunkt-Meta-Feldes.
      *  steht er auf 'defaut', ist kein Meta-Feld ausgewählt.
      *
-     *  @param  array $default  Ein Array [x,y] mit den Koordinaten als Prozent der Bilddimension
-     *
-     *  @return array           [x,y] als Koordinaten-Array
+     *  @return string           Feldname
      */
     public function getMetaField()
     {
-        return substr($this->params['meta'],0,9) == 'default ' ? '' : $this->params['meta'];
+        return str_starts_with($this->params['meta'],'default ') ? '' : $this->params['meta'];
     }
 
 
@@ -124,13 +121,13 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *  Falls $media kein gültiges Objekt aus dem Medienpool ist (z.B. wenn der Medienpfad mit dem
      *  vorgeschalteten Effekt "mediapath" geändert wurde), werden die Defaultwerte herangezogen.
      *
-     *  @param  focuspoint_media | null $media     Media-Objekt oder null
-     *  @param  array                   $default   Default-Koordinaten falls auf anderem Wege keine
-     *                                             gültigen Koordinaten ermittelt werden können
-     *  @param  array                   $wh        Array [breite,höhe] mit den Referenzwerten, auf die
-     *                                             sich die Prozentwerte der Koordinaten beziehen.
+     *  @param  focuspoint_media    $media    Media-Objekt oder null
+     *  @param  array<mixed>        $default  Default-Koordinaten falls auf anderem Wege keine
+     *                                        gültigen Koordinaten ermittelt werden können
+     *  @param  array<mixed>        $wh       Array [breite,höhe] mit den Referenzwerten, auf die
+     *                                        sich die Prozentwerte der Koordinaten beziehen.
      *
-     *  @return array   [x,y] als Koordinaten-Array
+     *  @return array<float>                  [x,y] als Koordinaten-Array
      */
     function getFocus( $media=null, array $default=null, array $wh=null )
     {
@@ -161,7 +158,7 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *      * Auswahl des genutzten Meta-Feldes oder "default" für "Default-Koordinaten"
      *      * Eingabefeld für die Default-Koordinaten
      *
-     *  @return array   Felddefinitionen
+     *  @return array<mixed>   Felddefinitionen
      */
     public function getParams()
     {

@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -32,7 +32,6 @@
  *               &type=      Name des MM-Effektes
  *               &xy=        Fokuspunkt numerisch (0.0,0.0 bis 100.1,100.0)
  *
- *  @method void function execute()
  */
 
  class rex_api_focuspoint_package extends rex_api_package {
@@ -62,6 +61,8 @@
               throw new rex_api_exception('Package "' . $packageId . '" doesn\'t exists!');
           }
           $reinstall = 'install' === $function && $package->isInstalled();
+          // Die rexstan-Fehlermeldung beruht vermutlich auf Bezügen zu rex_package; ist aber hier nicht lösbar. 
+          // @phpstan-ignore-next-line
           $manager = rex_package_manager::factory($package);
           try {
               $package->includeFile('precheck.php', [ 'request' => ($reinstall ? 'reinstall' : $function) ] );

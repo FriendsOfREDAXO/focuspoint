@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -22,6 +22,8 @@
  *  2) Lösche die zuvor installierten Standards
  *      - Meta-Feld "med_focuspoint"
  *      - Meta-Typ "Focuspoint (AddOn)"
+ *
+ *  @var rex_addon $this
  */
 
 // make addon-parameters available

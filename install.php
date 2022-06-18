@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     3.0.2
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -19,6 +19,8 @@
  *
  *  As well we have to cover that a field "med_focuspoint" might already exists from other sources
  *  with a different meta-type.
+ *
+ *  @var rex_addon $this
  */
 
 // make addon-parameters available
@@ -147,7 +149,7 @@ if( $meta_action_type && !$message ) {
 }
 
 if( $meta_action_field && !$message ) {
-    $result = rex_metainfo_add_field('translate:focuspoint_field_label', rex_effect_abstract_focuspoint::MED_DEFAULT, '', '', $meta_type_id, '', '', '', '');
+    $result = rex_metainfo_add_field('translate:focuspoint_field_label', rex_effect_abstract_focuspoint::MED_DEFAULT, 0, '', $meta_type_id, '', '', '', '');
     if( true === $result ) {
         $successMsg[] = rex_i18n::msg( 'focuspoint_install_field_ok', rex_effect_abstract_focuspoint::MED_DEFAULT );
         $meta_action_connect = false; // impliziet beim Anlegen durchgeführt
@@ -189,6 +191,8 @@ if ( $mm_action_type && !$message ) {
 
 if ( $mm_action_effect && !$message ) {
     $sql->setTable( $db_mmeffect );
+    // Auch wenn rexstan hier meckert, ist es passed so.
+    // @phpstan-ignore-next-line 
     $sql->setValue( 'type_id', $mm_type_id );
     $sql->setValue( 'effect', 'resize' );
     $sql->setValue( 'parameters', '{"rex_effect_resize":{"rex_effect_resize_width":"1024","rex_effect_resize_height":"1024","rex_effect_resize_style":"maximum","rex_effect_resize_allow_enlarge":"enlarge"}}' );

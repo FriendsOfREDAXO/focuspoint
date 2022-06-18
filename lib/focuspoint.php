@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.0
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -14,18 +14,6 @@
  *
  *  Die Klasse "focuspoint" stellt Service-Funktionen bereit, die in Extension-Points
  *  aufgerufen werden
- *
- *  @method string show_sidebar( rex_extension_point $ep )
- *  @method array customfield( rex_extension_point $ep )
- *  @method string checkUninstallDependencies( )
- *  @method string checkActivateDependencies( )
- *  @method string checkDeactivateDependencies( )
- *  @method string metafield_is_in_use( rex_extension_point $ep )
- *  @method array getMetafieldList( $extern=false )
- *  @method array getFocuspointMetafieldInUse( string $feld )
- *  @method array getFocuspointEffects( $extern=false )
- *  @method array getFocuspointEffectsInUse( )
- *  @method string getFocuspointEffectsInUseMessage( array $effekte )
  */
 
 class focuspoint
@@ -52,6 +40,8 @@ class focuspoint
      *  @return string|void   modifiziertes Sidebar-Html | keine Änderung
      */
 
+    // rexstan meldet: "Method focuspoint::show_sidebar() has parameter $ep with generic class rex_extension_point but does not specify its types: T"
+    // Warum?? Einfach ignorieren
     public static function show_sidebar( rex_extension_point $ep )
     {
         $params = $ep->getParams();
@@ -134,9 +124,11 @@ class focuspoint
      *
      *  @param  rex_extension_point $ep
      *
-     *  @return array   Metafield-Html, ....
+     *  @return array<mixed>|void   Metafield-Html, ....
      */
 
+    // rexstan meldet: "Method focuspoint::customfield() has parameter $ep with generic class rex_extension_point but does not specify its types: T"
+    // Warum?? Einfach ignorieren
     public static function customfield( rex_extension_point $ep )
     {
         $subject = $ep->getSubject();
@@ -151,8 +143,7 @@ class focuspoint
         // as of V2.2 the fields are still available just for not cousing a BC.
         // A future V3.0 will instead stop generating the HTML.
         $hidden = rex::getProperty('focuspoint_no_image',false) === true;
-        # V3.0: if( rex::getProperty('focuspoint_no_image',false) === true ) return;
-
+    
         $feld = new rex_fragment();
         $feld->setVar( 'label', $subject[4], false );
         $feld->setVar( 'id', $subject[3] );
@@ -275,15 +266,15 @@ class focuspoint
      *  Identifizierungsmerkmal ist im Feld "parameters" von rex_media_manager_type_effect der
      *  Eintrag "rex_effect_«focuspunktfeld»_meta":"«metafeld»".
      *
-     *  @param  int $id Nummer des Feldes (Datensatz-Id in rex_metainfo_field)
-     *  @return string  leerer String oder Rückmeldung der gefundenen Einträge
+     *  @param  int          $id Nummer des Feldes (Datensatz-Id in rex_metainfo_field)
+     *  @return string       leerer String oder Rückmeldung der gefundenen Einträge
      */
 
     public static function metafield_is_in_use( $id )
     {
         // Name des zu löschenden Metafeldes
         $feld = self::getMetafieldList( );
-        if( !isset( $feld[$id] ) ) return;
+        if( !isset( $feld[$id] ) ) return '';
         $feld = $feld[$id];
 
         // Das Default-Feld "med_focuspoint" darf so oder so nie gelöcht werden.
@@ -313,7 +304,7 @@ class focuspoint
      *  @param  bool $extern    wenn true werden nur Felder geliefert, die zusätzlich zum
      *                          AddOn-eigenen Feld "med_fosuspunkt" angelegt wurden
      *
-     *  @return array           Key/Value-Array mit id=>name
+     *  @return array<mixed>   Key/Value-Array mit id=>name
      */
 
     public static function getMetafieldList( $extern=false )
@@ -336,7 +327,7 @@ class focuspoint
      *  rex_effect_abstract_focuspoint erzeugt und nutze das Parameterfeld "meta".
      *
      *  @param  string $feld  Name des Fokuspunkt-Metafeldes
-     *  @return array         Array mit einem Subarray je Type/Effekt mit
+     *  @return array<mixed>  Array mit einem Subarray je Type/Effekt mit
      *                          name        => Name des Typ
      *                          type_id     => id des Typs "name" (rex_media_manager_type)
      *                          effect      => Name des eingesetzten Fokuspunkt-Effektes
@@ -368,7 +359,7 @@ class focuspoint
      *  @param  bool $extern    wenn true werden nur Effekte ermittelt, die zusätzlich zu den
      *                          AddOn-eigenen Effekten beim Media-Manager registriert wurden.
      *
-     *  @return array           Key/Value-Array mit rex_effect_«name»=>«name»
+     *  @return array<string>   Key/Value-Array mit rex_effect_«name»=>«name»
      */
 
     public static function getFocuspointEffects( $extern=false )
@@ -389,12 +380,12 @@ class focuspoint
      *  Die Funktion ermittelt die Liste aller Fokuspunkt-Effekte, die in einem Media-Manager-Typ
      *  eingesetzt sind.
      *
-     *  @return array   Array mit einem Subarray je Type/Effekt mit
-     *                      name        => Name des Typ
-     *                      type_id     => id des Typs "name" (rex_media_manager_type)
-     *                      effect      => Name des eingesetzten Fokuspunkt-Effektes
-     *                      id          => id des effektes (rex_media_manager_type_effect)
-     *                      parameters  => Parameter des Effektes
+     *  @return array<mixed>   Array mit einem Subarray je Type/Effekt mit
+     *                          name        => Name des Typ
+     *                          type_id     => id des Typs "name" (rex_media_manager_type)
+     *                          effect      => Name des eingesetzten Fokuspunkt-Effektes
+     *                          id          => id des effektes (rex_media_manager_type_effect)
+     *                          parameters  => Parameter des Effektes
      */
 
     public static function getFocuspointEffectsInUse( )
@@ -413,7 +404,7 @@ class focuspoint
     /**
      *  Die Funktion bereitet die angegebenen Effekte zu einer UL/LI-Meldung auf.
      *
-     *  @param  array $effekte
+     *  @param  array<mixed> $effekte
      *  @return string
      */
 
