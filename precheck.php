@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn ".....".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     2.0
+ *  @version     4.0.2
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -47,6 +47,9 @@
  *  Note:
  *      in case of an install (not re-install) or update the addon addon/lib and other configurations
  *      are not loaded. Be carefull. But generally special prechecks are not necessary for "install"
+ *
+ *  @var rex_addon $this
+ *  @var string $request
  */
 
 $message = '';
