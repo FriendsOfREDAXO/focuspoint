@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.0.3
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -151,8 +151,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 			// @phpstan-ignore-next-line 
 			if ( $this->targetByAR == 2)
 			{
-				$dw = $too_wide ? $sh * $dr : $sw;
-				$dh = $too_wide ? $sh : $sw / $dr;
+                                $dw = $too_wide ? floor($sh * $dr) : $sw;
+                                $dh = $too_wide ? $sh : floor($sw / $dr);
 				$zoom = 0;
 			}
 		/*
