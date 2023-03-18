@@ -218,8 +218,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 		$this->keepTransparent($des);
 		// @phpstan-ignore-next-line
 		imagecopyresampled($des, $gdimage,
-						   0, 0, $cx, $cy,
-						   $dw, $dh, $cw, $ch);
+		    0, 0, (int)$cx, (int)$cy,
+		    (int)$dw, (int)$dh, (int)$cw, (int)$ch);
 
 		// @phpstan-ignore-next-line
 		$this->media->setImage($des);
