@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.3
+ *  @version     4.0.4
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -218,8 +218,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 		$this->keepTransparent($des);
 		// @phpstan-ignore-next-line
 		imagecopyresampled($des, $gdimage,
-						   0, 0, $cx, $cy,
-						   $dw, $dh, $cw, $ch);
+		    0, 0, (int)$cx, (int)$cy,
+		    (int)$dw, (int)$dh, (int)$cw, (int)$ch);
 
 		// @phpstan-ignore-next-line
 		$this->media->setImage($des);
