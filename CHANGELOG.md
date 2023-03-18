@@ -1,5 +1,9 @@
 # Changelog
 
+## **18.03.2023 Version 4.0.4**
+
+- Bugfix: mitigates deprecated warning (PHP 8.1) or exception(PHP 8.2) when using a target sizes like "80%" in the effect "focuspoint_fit"
+
 ## **03.01.2023 Version 4.0.3**
 
 - Bugfix: mitigates deprecated warning (PHP 8.1) or exception(PHP 8.2) when using a target sizes like "16fr/9fr" in the effect "focuspoint_fit"
