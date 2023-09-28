@@ -27,33 +27,32 @@
  */
 
 // make addon-parameters available
-include_once ( 'lib/effect_focuspoint.php' );
+include_once 'lib/effect_focuspoint.php';
 
 $sql = rex_sql::factory();
 
 // remove default-meta-field
-rex_metainfo_delete_field( rex_effect_abstract_focuspoint::MED_DEFAULT );
+rex_metainfo_delete_field(rex_effect_abstract_focuspoint::MED_DEFAULT);
 
 // remove meta-type
 $qry = 'SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label=:label LIMIT 1';
-$typeId = $sql->getArray( $qry, [':label' => rex_effect_abstract_focuspoint::META_FIELD_TYPE] );
+$typeId = $sql->getArray($qry, [':label' => rex_effect_abstract_focuspoint::META_FIELD_TYPE]);
 
-if( count( $typeId ) )
-{
-    rex_metainfo_delete_field_type( (int)$typeId[0]['id'] );
+if (count($typeId)) {
+    rex_metainfo_delete_field_type((int) $typeId[0]['id']);
 }
 
 // remove media-manager-type
-$sql->setQuery('select id from '.rex::getTable('media_manager_type').' where name="'.rex_effect_abstract_focuspoint::MM_TYPE.'" LIMIT 1');
-if( $sql->getRows() ) {
-    $id = $sql->getValue( 'id' );
-    $sql->setTable( rex::getTable('media_manager_type') );
-    $sql->setWhere( 'id='.$id );
+$sql->setQuery('select id from ' . rex::getTable('media_manager_type') . ' where name="' . rex_effect_abstract_focuspoint::MM_TYPE . '" LIMIT 1');
+if ($sql->getRows()) {
+    $id = $sql->getValue('id');
+    $sql->setTable(rex::getTable('media_manager_type'));
+    $sql->setWhere('id=' . $id);
     $sql->delete();
-    $sql->setTable( rex::getTable('media_manager_type_effect') );
-    $sql->setWhere( 'type_id='.$id );
+    $sql->setTable(rex::getTable('media_manager_type_effect'));
+    $sql->setWhere('type_id=' . $id);
     $sql->delete();
 }
 
 // ... delete corresponding cache files
-rex_media_manager::deleteCache( null, rex_effect_abstract_focuspoint::MM_TYPE );
+rex_media_manager::deleteCache(null, rex_effect_abstract_focuspoint::MM_TYPE);

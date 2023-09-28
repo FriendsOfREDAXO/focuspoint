@@ -23,21 +23,23 @@
  *  $this->hidden       true => ausblenden
  */
 
-if( !isset( $this->default ) ) $this->default = '';
+if (!isset($this->default)) {
+    $this->default = '';
+}
 $feld = new rex_fragment();
 $feld->setVar('elements', [
-        [
-            'class' => 'focuspoint-input-group',
-            'left'  => '<button class="btn btn-default" type="button"><i class="rex-icon fa-crosshairs"></i></button>',
-            'field' => "<input id=\"{$this->id}\" name=\"$this->name\" value=\"$this->value\" pattern=\"^(100|[1-9]?[0-9])[.][0-9],(100|[1-9]?[0-9])[.][0-9]$\" type=\"text\" class=\"form-control\" data-default=\"$this->default\" data-fpinitial=\"$this->value\" />",
-        ]
-    ], false);
+    [
+        'class' => 'focuspoint-input-group',
+        'left' => '<button class="btn btn-default" type="button"><i class="rex-icon fa-crosshairs"></i></button>',
+        'field' => "<input id=\"{$this->id}\" name=\"$this->name\" value=\"$this->value\" pattern=\"^(100|[1-9]?[0-9])[.][0-9],(100|[1-9]?[0-9])[.][0-9]$\" type=\"text\" class=\"form-control\" data-default=\"$this->default\" data-fpinitial=\"$this->value\" />",
+    ],
+], false);
 
 $feld->setVar('elements', [
-        [
-            'label'=>$this->label,
-            'field'=>$feld->parse('core/form/input_group.php'),
-            'class'=>'focuspoint-form-group' . ($this->hidden?' hidden':''),
-        ]
-    ], false);
+    [
+        'label' => $this->label,
+        'field' => $feld->parse('core/form/input_group.php'),
+        'class' => 'focuspoint-form-group' . ($this->hidden ? ' hidden' : ''),
+    ],
+], false);
 echo $feld->parse('core/form/form.php');
