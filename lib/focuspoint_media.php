@@ -14,12 +14,10 @@
  *
  *  Die Klasse "focuspoint_media" ist von "rex_media" abgeleitet und erleichetrt den
  *  Umgang mit Medien, deren Darstellung auf Fokuspunkten basiert.
- *
  */
 
 class focuspoint_media extends rex_media
 {
-
     /**
      *  Gibt die Bildinstanz zurück und prüft dabei ab, ob es ein Bild ist (isImage).
      *
@@ -28,17 +26,16 @@ class focuspoint_media extends rex_media
     public static function get($name)
     {
         $media = parent::get($name);
-        if( $media ) {
-            if( !$media->isImage() ) {
+        if ($media) {
+            if (!$media->isImage()) {
                 $media = null;
             }
         }
         return $media;
     }
 
-
     /**
-     *  Ermittelt die Fokuspunkt-Koordinaten des Bildes
+     *  Ermittelt die Fokuspunkt-Koordinaten des Bildes.
      *
      *  Liefert ein Koordinatenpaar (Prozentwert) aus dem angegebenen Metafeld oder (default) aus
      *  dem Feld "med_focuspoint". Ist das feld leer oder hat einen formal ungültigen wert, wird
@@ -55,35 +52,37 @@ class focuspoint_media extends rex_media
      *                                          default: med_focuspoint
      *  @param  array<mixed>       $default    Default-Koordinaten falls das Metafeld leer oder ungültig ist.
      *                                          Wenn $default fehlt: 50,50
-     *  @param  array<mixed>|bool   $wh         Array [breite,höhe] mit den absoluten Referenzwerten, auf die
+     *  @param  array<mixed>|bool   $wh         array [breite,höhe] mit den absoluten Referenzwerten, auf die
      *                                          sich die Prozentwerte der Koordinaten beziehen, oder True für
-     *                                          [bildbreite,bildhöhe].
+     *                                          [bildbreite,bildhöhe]
      *
      *  @return array<float>                    [x,y] als Koordinaten-Array
      */
-    function getFocus( $metafield = null, array $default = null, $wh=false )
+    public function getFocus($metafield = null, ?array $default = null, $wh = false)
     {
         // read the field
-        if(  $metafield == null ) $metafield = rex_effect_abstract_focuspoint::MED_DEFAULT;
-        $xy = (string) $this->getValue( (string)$metafield );
+        if (null == $metafield) {
+            $metafield = rex_effect_abstract_focuspoint::MED_DEFAULT;
+        }
+        $xy = (string) $this->getValue((string) $metafield);
 
-        $fp = rex_effect_abstract_focuspoint::str2fp( $xy );
-        if( $fp === false )
-        {
-            $fp = $default ? $default : rex_effect_abstract_focuspoint::$mitte;
+        $fp = rex_effect_abstract_focuspoint::str2fp($xy);
+        if (false === $fp) {
+            $fp = $default ?: rex_effect_abstract_focuspoint::$mitte;
         }
 
-        if( $wh !== false )
-        {
-            if( $wh === true ) $wh = [ $this->getWidth(), $this->getHeight() ];
-            $fp = rex_effect_abstract_focuspoint::rel2px( $fp, $wh );
+        if (false !== $wh) {
+            if (true === $wh) {
+                $wh = [$this->getWidth(), $this->getHeight()];
+            }
+            $fp = rex_effect_abstract_focuspoint::rel2px($fp, $wh);
         }
 
         return $fp;
     }
 
     /**
-     *  Ermittelt, ob ein Fokuspunkt gesetzt ist
+     *  Ermittelt, ob ein Fokuspunkt gesetzt ist.
      *
      *  Liefert true zurück, wenn
      *  (1) das angegebene Fokuspunkt-Metafeld existiert und
@@ -92,14 +91,16 @@ class focuspoint_media extends rex_media
      *  @param  string     $metafield   Metafeld, aus dem die Koordinaten entnommen werden.
      *                                  default: med_focuspoint
      *
-     *  @return bool                        
+     *  @return bool
      */
-    function hasFocus( $metafield = null )
+    public function hasFocus($metafield = null)
     {
         // read the field
-        if(  $metafield == null ) $metafield = rex_effect_abstract_focuspoint::MED_DEFAULT;
-        $xy = (string) $this->getValue( (string)$metafield );
+        if (null == $metafield) {
+            $metafield = rex_effect_abstract_focuspoint::MED_DEFAULT;
+        }
+        $xy = (string) $this->getValue((string) $metafield);
         // check for a valid entry
-        return rex_effect_abstract_focuspoint::str2fp( $xy ) !== false;
+        return false !== rex_effect_abstract_focuspoint::str2fp($xy);
     }
 }

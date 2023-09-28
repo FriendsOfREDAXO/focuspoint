@@ -16,22 +16,22 @@
  *  in der Klasse ansonsten nicht zugänglich sind (private oder protected)
  *
  *  HANDLE WITH CARE!
- *
  */
 
 // rexstan meldet: "Class focuspoint_reflection extends generic class ReflectionClass but does not specify its types: T"
 // Warum?? Einfach ignorieren
-class focuspoint_reflection extends ReflectionClass {
-
+class focuspoint_reflection extends ReflectionClass
+{
     /** @var object */
-    public $obj = null;
+    public $obj;
 
     /**
      *  @param object $obj
      *  @return void
      */
-    function __construct( $obj ) {
-        parent::__construct( $obj );
+    public function __construct($obj)
+    {
+        parent::__construct($obj);
         $this->obj = $obj;
     }
 
@@ -40,8 +40,9 @@ class focuspoint_reflection extends ReflectionClass {
      *  @param array<mixed> $params
      *  @return mixed
      */
-    function executeMethod ($method, array $params){
-        $method = $this->getMethod( $method );
+    public function executeMethod($method, array $params)
+    {
+        $method = $this->getMethod($method);
         $method->setAccessible(true);
         return $method->invokeArgs($this->obj, $params);
     }
@@ -50,10 +51,11 @@ class focuspoint_reflection extends ReflectionClass {
      *  @param string $prop
      *  @return mixed
      */
-    function getPropertyValue ( $prop ) {
+    public function getPropertyValue($prop)
+    {
         $property = $this->getProperty($prop);
         $property->setAccessible(true);
-        return $property->getValue( $this->obj );
+        return $property->getValue($this->obj);
     }
 
     /**
@@ -61,9 +63,10 @@ class focuspoint_reflection extends ReflectionClass {
      *  @param mixed $value
      *  @return void
      */
-    function setPropertyValue ( $prop, $value ) {
+    public function setPropertyValue($prop, $value)
+    {
         $property = $this->getProperty($prop);
         $property->setAccessible(true);
-        $property->setValue( $this->obj, $value );
+        $property->setValue($this->obj, $value);
     }
 }
