@@ -17,14 +17,12 @@
  *  @var rex_addon $this
  */
 
-if (rex::isBackend())
-{
+if (rex::isBackend()) {
 
-    switch ( rex_request('page', 'string') )
-    {
+    switch (rex_request('page', 'string')) {
         case 'mediapool/media':
             // provide support for media detail-page
-            focuspoint_boot::mediaDetailPage( $this );
+            focuspoint_boot::mediaDetailPage($this);
             break;
 
         case 'metainfo/articles':
@@ -49,7 +47,7 @@ if (rex::isBackend())
         case 'packages':
             // prevent deactivation if in use by effects
             // effective only in dialog-mode via AddOn-administration-page
-            focuspoint_boot::packages( $this );
+            focuspoint_boot::packages($this);
             break;
     }
 

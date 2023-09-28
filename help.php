@@ -1,6 +1,6 @@
 <?php
 /**
- *  HELP.PHP für REDAXO-Addons
+ *  HELP.PHP für REDAXO-Addons.
  *
  *  @author     Christoph Böcker <https://github.com/christophboecker>
  *  @version    2.4
@@ -14,16 +14,14 @@
  *  @var rex_addon $this
  */
 
-
 /*
     2.1: wirft _pjax aus dem Request; klemmt sonst womöglich
     2.1: Zweistufige Menüs
     2.1: Menüstrukturen (help:) optional in eigener help.yml statt package.yml
 */
-if( !class_exists('help_documentation') )
-{
-    class help_documentation {
-
+if(!class_exists('help_documentation')) {
+    class help_documentation
+    {
         /** @var array<mixed> */
         public $navigation = [];
 
@@ -36,7 +34,7 @@ if( !class_exists('help_documentation') )
         /** @var string */
         public $dir = '';
 
-        /** @var integer */
+        /** @var int */
         public $dirLen = 0;
 
         /** @var string */
@@ -47,9 +45,9 @@ if( !class_exists('help_documentation') )
 
         /** @var string */
         public $targetfile = '';
-        
+
         /** @var rex_addon|null */
-        public $context = null;
+        public $context;
 
         /** @var array<mixed> */
         public $prohibited = [];
@@ -67,24 +65,25 @@ if( !class_exists('help_documentation') )
         //  Oberste Priorität ist die Angabe in der URL (...&doc=...)
 
         /**
-         *  @param rex_addon $addon
          *  @return void
          */
-        function __construct( \rex_addon $addon )
+        public function __construct(rex_addon $addon)
         {
             $this->context = $addon;
             $user = rex::getUser();
             //  Im weiteren Verlauf wird immer wieder das aktuelle Verzeichnis (Root des Addons) benötigt
             $this->dir = $addon->getPath();
-            $this->dirLen = strlen( $this->dir );
+            $this->dirLen = strlen($this->dir);
 
-            $navigation = rex_file::getConfig( $addon->getPath('help.yml'), [] );
-            if( $navigation ):
-                array_walk_recursive($navigation, function(&$a,$b){
-                    if( 'translate:'==substr($a,0,10) ) $a = rex_i18n::translate($a);
+            $navigation = rex_file::getConfig($addon->getPath('help.yml'), []);
+            if($navigation):
+                array_walk_recursive($navigation, static function (&$a, $b) {
+                    if('translate:' == substr($a, 0, 10)) {
+                    $a = rex_i18n::translate($a);
+                    }
                 });
             else:
-                $navigation = $addon->getProperty('help',[]);
+                $navigation = $addon->getProperty('help', []);
             endif;
 
             $this->navigation = $navigation[\rex_be_controller::getCurrentPage()] ?? $navigation['default'] ?? [];
@@ -92,54 +91,56 @@ if( !class_exists('help_documentation') )
             // Berechtigungen prüfen und rauswerfen, was nicht berechtigt ist
             // Aus der Navigation das Array 'permissions' extrahieren
             $permissions = $this->navigation['permissions'] ?? [];
-            if( $permissions ) {
+            if($permissions) {
                 // aus der Navigation entfernen
-                unset( $this->navigation['permissions'] );
-                foreach( $permissions as $k=>$v ) {
-                    foreach( (array) $v as $perm ) {
-                        if( $perm && !$user->hasPerm($perm) ) {
+                unset($this->navigation['permissions']);
+                foreach($permissions as $k => $v) {
+                    foreach((array) $v as $perm) {
+                        if($perm && !$user->hasPerm($perm)) {
                             $this->prohibited[] = $k;
                         }
                     }
                 }
             }
 
-            foreach( $this->navigation as $k1=>$v1 ) {
+            foreach($this->navigation as $k1 => $v1) {
                 $permission = $v1['perm'] ?? '';
-                if( $permission && !$user->hasPerm($permission) ) {
+                if($permission && !$user->hasPerm($permission)) {
                     $this->prohibited[] = $v1['path'];
-                    unset( $this->navigation[$k1] );
+                    unset($this->navigation[$k1]);
                 }
-                foreach( ($v1['subnav'] ?? []) as $k2=>$v2 ) {
+                foreach(($v1['subnav'] ?? []) as $k2 => $v2) {
                     $subPermission = $v2['perm'] ?? $permission;
-                    if( $subPermission && !$user->hasPerm($subPermission) ) {
+                    if($subPermission && !$user->hasPerm($subPermission)) {
                         $this->prohibited[] = $v2['path'];
-                        unset( $this->navigation[$k1][$k2] );
+                        unset($this->navigation[$k1][$k2]);
                     }
                 }
             }
-            $this->prohibited = array_unique( $this->prohibited );
+            $this->prohibited = array_unique($this->prohibited);
 
-            if( isset($this->navigation['initial']) && $this->navigation['initial'] ){
+            if(isset($this->navigation['initial']) && $this->navigation['initial']) {
                 $this->initialPage = $this->navigation['initial'];
-                unset( $this->navigation['initial'] );
+                unset($this->navigation['initial']);
             }
 
-            foreach( $this->navigation as $k=>$v ) {
-                if( isset($v['path']) ):
-                    if( !$this->activePage ) $this->activePage = $v['path'];
-                    if( isset($v['active']) && true===$v['active'] ):
+            foreach($this->navigation as $k => $v) {
+                if(isset($v['path'])):
+                    if(!$this->activePage) {
+                    $this->activePage = $v['path'];
+                    }
+                    if(isset($v['active']) && true === $v['active']):
                         $this->activePage = $v['path'];
                         break;
                     endif;
                 endif;
             }
-            $this->filename = \rex_request( 'doc','string',$this->initialPage ?: $this->activePage ?: 'README.md' );
+            $this->filename = rex_request('doc', 'string', $this->initialPage ?: $this->activePage ?: 'README.md');
             // Wenn das replace auf einen Fehler läuft, stimt wohl etwas Grundlegendws nicht. Abschalten.
-            $this->filename =  mb_ereg_replace('\\\\|/', DIRECTORY_SEPARATOR, $this->filename, 'msr') ?: '';
-            $this->filetype = pathinfo( $this->filename,PATHINFO_EXTENSION );
+            $this->filename = mb_ereg_replace('\\\\|/', DIRECTORY_SEPARATOR, $this->filename, 'msr') ?: '';
+            $this->filetype = pathinfo($this->filename, PATHINFO_EXTENSION);
 
-            $this->targetfile = $this->getDocumentName( );
+            $this->targetfile = $this->getDocumentName();
         }
 
         //  Der $file_name kann auch Pfadanteile enthalten. Auch "../"-Elemente sind zulässig.
@@ -156,46 +157,42 @@ if( !class_exists('help_documentation') )
         //
         //  Als Nebeneffekt wird geprüft, ob die Datei überhaupt exisitert bzw. ob sie in einer
         //  Sprachversion existiert (pfad/dateiname.lang.suffix), die statt des Originalnamens genutzt wird.
-        /** @return boolean|string */
+        /** @return bool|string */
 
         /**
          *  @return string
          */
-        function getDocumentName( )
+        public function getDocumentName()
         {
             // Zerlege den Pfadnamen in path, name, lang und suffix.
             // lang ist optional. Ohne suffix => NO_GO
             $filepath = $this->dir . $this->filename;
             $pattern = '/^(?<path>(.*?\/)*)(?<name>.*?)(?<lang>\.[a-zA-Z]{2})?(?<suffix>\.\w+)$/';
-            if( !preg_match( $pattern, $filepath, $pathinfo ) ) {
+            if(!preg_match($pattern, $filepath, $pathinfo)) {
                 return '';
             }
-            $pathinfo = array_filter( $pathinfo, 'is_string', ARRAY_FILTER_USE_KEY );
+            $pathinfo = array_filter($pathinfo, 'is_string', ARRAY_FILTER_USE_KEY);
 
             // Suche zunächst die Datei mit dem aktuellen Sprachcode
             $pathinfo['lang'] = '.' . \rex_i18n::getLanguage();
-            $real_path = realpath( implode('',$pathinfo) );
-            if( !$real_path)
-            {
+            $real_path = realpath(implode('', $pathinfo));
+            if(!$real_path) {
                 //  Pfad normieren, Suche nach normaler Datei
                 $pathinfo['lang'] = '';
-                $real_path = realpath( implode('',$pathinfo) );
+                $real_path = realpath(implode('', $pathinfo));
             }
 
-            if( $real_path )
-            {
-                $real_dir = substr($real_path,0,$this->dirLen);
-                if( 0 == strcasecmp($this->dir,$real_dir) )
-                {
-                    $filename = substr($real_path,$this->dirLen);
-                    $xxx = in_array( $filename,$this->prohibited );
-                    if( ( 0 == strcasecmp(substr($filename,0,5),'docs'.DIRECTORY_SEPARATOR)
-                     || 0 == strcasecmp($filename,'readme.md')
-                     || 0 == strcasecmp($filename,'changelog.md')
-                     || 0 == strcasecmp($filename,'credits.md')
-                     || 0 == strcasecmp($filename,'license.md') )
-                     && !in_array( $filename,$this->prohibited ) )
-                    {
+            if($real_path) {
+                $real_dir = substr($real_path, 0, $this->dirLen);
+                if(0 == strcasecmp($this->dir, $real_dir)) {
+                    $filename = substr($real_path, $this->dirLen);
+                    $xxx = in_array($filename, $this->prohibited);
+                    if((0 == strcasecmp(substr($filename, 0, 5), 'docs' . DIRECTORY_SEPARATOR)
+                     || 0 == strcasecmp($filename, 'readme.md')
+                     || 0 == strcasecmp($filename, 'changelog.md')
+                     || 0 == strcasecmp($filename, 'credits.md')
+                     || 0 == strcasecmp($filename, 'license.md'))
+                     && !in_array($filename, $this->prohibited)) {
                         return $filename;
                     }
                 }
@@ -204,13 +201,13 @@ if( !class_exists('help_documentation') )
         }
 
         /** @return string */
-        function getFilePath()
+        public function getFilePath()
         {
             return $this->targetfile ? $this->dir . $this->targetfile : '';
         }
 
-        /** @return boolean */
-        function isAsset( )
+        /** @return bool */
+        public function isAsset()
         {
             return 'md' !== $this->filetype;
         }
@@ -218,34 +215,29 @@ if( !class_exists('help_documentation') )
         //  Nicht-Markdown-Dateien (meist Bilder), werden direkt ausgegeben.
         //  Danach abbrechen.
         //  Non-Images als Download-Anhang senden
-        /** @return void */
 
-        function sendAsset( ): void
+        public function sendAsset(): void
         {
             \rex_response::cleanOutputBuffers();
-            if ( ($path = $this->getFilePath()) && \rex_media::isDocType($this->filetype) ) {
-                $mime = \rex_file::mimeType( $path );
-                if( 'image/' === substr($mime,0,6) ) {
-                    \rex_response::sendFile( $path, $mime );
+            if (($path = $this->getFilePath()) && \rex_media::isDocType($this->filetype)) {
+                $mime = \rex_file::mimeType($path);
+                if('image/' === substr($mime, 0, 6)) {
+                    \rex_response::sendFile($path, $mime);
                 } else {
-                    \rex_response::sendFile( $path, $mime, 'attachment', basename($path) );
+                    \rex_response::sendFile($path, $mime, 'attachment', basename($path));
                 }
             } else {
-                header( 'HTTP/1.1 Not Found' );
+                header('HTTP/1.1 Not Found');
             }
-            exit();
+            exit;
         }
 
         //  Entferne ein für die Github-Ansicht eingebautes Menü, das hier der $navigation entspricht
         //  Das sind alle Zeilen ab Zeile 1, die mit "> - " beginnen sowie die abschließende Leerzeile
-        /**
-         *  @param string $text
-         *  @return string
-         */
 
-        function stripGithubNavigation( string $text ): string
+        public function stripGithubNavigation(string $text): string
         {
-            return preg_replace( '/^(\>\s+\-\s?.*?\\n)*\s*\\n/', '', $text );
+            return preg_replace('/^(\>\s+\-\s?.*?\\n)*\s*\\n/', '', $text);
         }
 
         //  Im Text werden alle Links, die nicht Datei-intern (#...) und nicht URIs (z.B. http://...)
@@ -253,49 +245,42 @@ if( !class_exists('help_documentation') )
         //  Der Link ist die URL der aktuellen Seite mit dem zusätzlichen Parameter '&doc=originallink'
         //  per EP kann der Link noch einmal umgearbeitet werden.
         //  Datei die Code-Blöcke auslassen
-        /**
-         *  @param string $text
-         *  @return string
-         */
 
-        function replaceLinks( string $text ): string
+        public function replaceLinks(string $text): string
         {
             $request = $_REQUEST;
             $request['doc'] = dirname($this->targetfile);
 
-            # Code-Blöcke identifizieren und herauslösen, damit keine darin enthaltenen Links geändert werden.
+            // Code-Blöcke identifizieren und herauslösen, damit keine darin enthaltenen Links geändert werden.
 
             $original = [];
-            $text = preg_replace_callback( '/(```.*?```|`.*?`)/s', function( $matches) use(&$original){
+            $text = preg_replace_callback('/(```.*?```|`.*?`)/s', static function ($matches) use (&$original) {
                     $marker = '<!--' . md5($matches[0]) . '-->';
                     $original["/$marker/"] = $matches[0];
                     return $marker;
-                }, $text );
+                }, $text);
 
-            # Links umbauen; nur Markdown! [label](link) bzw. ![label](link)
-            $text = preg_replace_callback (
+            // Links umbauen; nur Markdown! [label](link) bzw. ![label](link)
+            $text = preg_replace_callback(
                 '/((!?)\[(.*?)\]\()\s*(.*?)\s*(\))/',
-                function( $matches ) use( $request )
-                {
+                function ($matches) use ($request) {
                     $link = $matches[4];
                     //  leere Links ignorieren
                     //  Dokument-interne Referenzen (#) ignorieren
                     //  REDAXO-Interne Aufrufe (?...) ignorieren
                     //  Dokumente mit kompletter URL ignorieren (irgendwas://sonstnochwas)
-                    if( !$link
-                     || '#' == substr($link,0,1)
-                     || '?' == substr($link,0,1)
-                     || preg_match( '/^.*?\:\/\/.*?$/',$link)
-                     || ('' === ($href = help_documentation::getLink( $request, $link, $docfile ))) )
-                    {
+                    if(!$link
+                     || '#' == substr($link, 0, 1)
+                     || '?' == substr($link, 0, 1)
+                     || preg_match('/^.*?\:\/\/.*?$/', $link)
+                     || ('' === ($href = self::getLink($request, $link, $docfile)))) {
                         $term = $matches[0];
                         $href = $link;
                     }
                     //  alle anderen Varianten umbauen
-                    else
-                    {
+                    else {
                         // gesperrte Seite => ohne Link
-                        if( in_array($docfile,$this->prohibited) ) {
+                        if(in_array($docfile, $this->prohibited)) {
                             $term = $matches[3];
                         } else {
                             $term = $matches[1] . $href . $matches[5];
@@ -304,14 +289,14 @@ if( !class_exists('help_documentation') )
                     return \rex_extension::registerPoint(new \rex_extension_point(
                         'HELP_HREF',
                         $term,
-                        ['source'=>$matches[0],'label'=>$matches[3],'link'=>$matches[4],'href'=>$href,'isImageLink'=>($matches[2]>''),'context'=>$this->context]
+                        ['source' => $matches[0], 'label' => $matches[3], 'link' => $matches[4], 'href' => $href, 'isImageLink' => ($matches[2] > ''), 'context' => $this->context],
                     ));
                 },
-                $text );
+                $text);
 
-            # Code-Blöcke wieder einfügen
-            if( $original ) {
-                $text = preg_replace( array_keys($original), $original, $text );
+            // Code-Blöcke wieder einfügen
+            if($original) {
+                $text = preg_replace(array_keys($original), $original, $text);
             }
 
             return $text;
@@ -323,14 +308,20 @@ if( !class_exists('help_documentation') )
          *  @param string $docfile
          *  @return string                  Aus dem Link ermittelte neue, BE-bazogene URL
          */
-        static function getLink( $request, $link, &$docfile=null )
+        public static function getLink($request, $link, &$docfile = null)
         {
             $url = '';
-            if( preg_match('/^(?<link>.*?)(#(?<hook>.*?))?$$/',$link,$linkinfo) ){
-                if( $linkinfo['link'] ?? '' ) $request['doc'] .= DIRECTORY_SEPARATOR . $linkinfo['link'];
-                if( isset($request['_pjax']) ) unset($request['_pjax']);
-                $url = \rex_url::currentBackendPage( $request,false );
-                if( $linkinfo['hook'] ?? '' ) $url .= '#' . $linkinfo['hook'];
+            if(preg_match('/^(?<link>.*?)(#(?<hook>.*?))?$$/', $link, $linkinfo)) {
+                if($linkinfo['link'] ?? '') {
+                $request['doc'] .= DIRECTORY_SEPARATOR . $linkinfo['link'];
+                }
+                if(isset($request['_pjax'])) {
+                unset($request['_pjax']);
+                }
+                $url = \rex_url::currentBackendPage($request, false);
+                if($linkinfo['hook'] ?? '') {
+                $url .= '#' . $linkinfo['hook'];
+                }
                 $docfile = $request['doc'];
             }
             return $url;
@@ -345,18 +336,16 @@ if( !class_exists('help_documentation') )
          *  @param array<mixed> $request
          *  @return array<mixed>
          */
-
-        function getNavArray( array $navigation, array $request ) : array
+        public function getNavArray(array $navigation, array $request): array
         {
             $tabs = [];
-            foreach( $navigation as $nav )
-            {
+            foreach($navigation as $nav) {
                 $href = $nav['href'] ?? '' ?: '';
-                if( isset($nav['path']) && $nav['path'] ){
+                if(isset($nav['path']) && $nav['path']) {
                     $request['doc'] = $nav['path'] ?? '' ?: '';
-                    $href = \rex_url::currentBackendPage( $request,false );
+                    $href = \rex_url::currentBackendPage($request, false);
                 }
-                if( $href ) {
+                if($href) {
                     $active = $this->filename == ($nav['path'] ?? '' ?: '');
                     $tab = [
                         'linkClasses' => [],
@@ -365,13 +354,15 @@ if( !class_exists('help_documentation') )
                         'itemAttr' => [],
                         'href' => $href,
                         'title' => $nav['title'] ?? '' ?: '',
-                        'icon' => $nav['icon'] ?? false ?: false
+                        'icon' => $nav['icon'] ?? false ?: false,
                     ];
                     $active = false;
-                    if( is_array($nav['subnav']??null) ) {
-                        $subnav = $this->getNavArray( $nav['subnav'], $request );
-                        $active = array_reduce( $subnav, function($c,$v){return $c || $v['active'];}, false );
-                        if( $active ) {
+                    if(is_array($nav['subnav'] ?? null)) {
+                        $subnav = $this->getNavArray($nav['subnav'], $request);
+                        $active = array_reduce($subnav, static function ($c, $v) {
+                        return $c || $v['active'];
+                        }, false);
+                        if($active) {
                             $tab['children'] = $subnav;
                         }
                     }
@@ -387,18 +378,17 @@ if( !class_exists('help_documentation') )
          *  @param array<mixed> $request
          *  @return array<mixed>
          */
-        function getNavigationStructure( array $navigation, array $request ) : array
+        public function getNavigationStructure(array $navigation, array $request): array
         {
             $tabs = [];
             $active = false;
-            foreach( $navigation as $nav )
-            {
+            foreach($navigation as $nav) {
                 $href = $nav['href'] ?? '' ?: '';
-                if( isset($nav['path']) && $nav['path'] ){
+                if(isset($nav['path']) && $nav['path']) {
                     $request['doc'] = $nav['path'] ?? '' ?: '';
-                    $href = \rex_url::currentBackendPage( $request,false );
+                    $href = \rex_url::currentBackendPage($request, false);
                 }
-                if( $href ) {
+                if($href) {
                     $tab = [
                         'linkClasses' => [],
                         'itemClasses' => [],
@@ -407,11 +397,11 @@ if( !class_exists('help_documentation') )
                         'href' => $href,
                         'title' => $nav['title'] ?? '' ?: '',
                         'active' => $this->filename == ($nav['path'] ?? '' ?: ''),
-                        'icon' => $nav['icon'] ?? false ?: false
+                        'icon' => $nav['icon'] ?? false ?: false,
                     ];
-                    if( is_array($nav['subnav']??null) ) {
-                        $subnav = $this->getNavigationStructure( $nav['subnav'], $request );
-                        if( $subnav ) {
+                    if(is_array($nav['subnav'] ?? null)) {
+                        $subnav = $this->getNavigationStructure($nav['subnav'], $request);
+                        if($subnav) {
                             $tab['children'] = $subnav;
                             $tab['active'] = true;
                         }
@@ -423,15 +413,14 @@ if( !class_exists('help_documentation') )
             return $active ? $tabs : [];
         }
 
-        function getNavigation( ) : string
+        public function getNavigation(): string
         {
             $tabs = \rex_extension::registerPoint(new \rex_extension_point(
                 'HELP_NAVIGATION',
-                $this->getNavArray( $this->navigation, $_REQUEST ),
-                ['profile'=>$this->navigation,'context'=>$this->context]
+                $this->getNavArray($this->navigation, $_REQUEST),
+                ['profile' => $this->navigation, 'context' => $this->context],
             ));
-            if( $tabs )
-            {
+            if($tabs) {
                 $fragment = new \rex_fragment();
                 $fragment->setVar('left', $tabs, false);
                 return $fragment->parse('core/navigations/content.php');
@@ -442,9 +431,9 @@ if( !class_exists('help_documentation') )
         //  Die Markdown-Datei wird in Inhaltsverzeichnis und Inhalt aufgedröselt
         //  beide stehen nebeneinander in zwei Spalten.
 
-        function getDocument( string $text ) : string
+        public function getDocument(string $text): string
         {
-            [$toc, $content] = \rex_markdown::factory()->parseWithToc( $text,2,3,false );
+            [$toc, $content] = \rex_markdown::factory()->parseWithToc($text, 2, 3, false);
             $fragment = new \rex_fragment();
             $fragment->setVar('content', $content, false);
             $fragment->setVar('toc', $toc, false);
@@ -454,56 +443,55 @@ if( !class_exists('help_documentation') )
         //  Wenn es im Addon-Asset-Verzeichnis Ressourcen-Dateien gibt, werden sie geladen
         //  /assests/addons/myaddon/help.min.js bzw. /assests/addons/myaddon/help.min.css
 
-        function getJsCss( ): string
+        public function getJsCss(): string
         {
             $HTML = '';
             $path = $this->context->getAssetsPath('help.min.js');
-            if( file_exists($path) ){
+            if(file_exists($path)) {
                 $file = $this->context->getAssetsUrl('help.min.js');
                 $url = \rex_url::backendController(['asset' => $file, 'buster' => filemtime($path)]);
-                $HTML .= '<script type="text/javascript" src="' . $url .'"></script>';
+                $HTML .= '<script type="text/javascript" src="' . $url . '"></script>';
             }
             $path = $this->context->getAssetsPath('help.min.css');
-            if( file_exists($path) ){
+            if(file_exists($path)) {
                 $file = $this->context->getAssetsUrl('help.min.css');
                 $url = \rex_url::backendController(['asset' => $file, 'buster' => filemtime($path)]);
-                $HTML .= '<link rel="stylesheet" type="text/css" media="all" href="' . $url .'" />';
+                $HTML .= '<link rel="stylesheet" type="text/css" media="all" href="' . $url . '" />';
             }
             return $HTML;
         }
-
     }
 }
 
 // Here we go ....
 
-$publish = new help_documentation( $this );
+$publish = new help_documentation($this);
 
-if( $publish->isAsset() ) {
+if($publish->isAsset()) {
     $publish->sendAsset();
 }
 
-if( '' === ($path = $publish->getFilePath()) ) {
+if('' === ($path = $publish->getFilePath())) {
 
     $key = $this->getName() . '_helpphp_not_found';
-    if( !\rex_i18n::hasMsg($key) ) {
+    if(!\rex_i18n::hasMsg($key)) {
         \rex_i18n::addMsg($key, '#Sorry, die angeforderte Seite existiert nicht oder ist gesperrt!');
     }
     $text = \rex_i18n::msg($key);
 
 } else {
 
-    $text = \rex_file::get( $path );
+    $text = \rex_file::get($path);
 
-    $text = $publish->stripGithubNavigation( $text );
-    $text = $publish->replaceLinks( $text );
+    $text = $publish->stripGithubNavigation($text);
+    $text = $publish->replaceLinks($text);
 }
 
-$text = $publish->getDocument( $text );
+$text = $publish->getDocument($text);
 
 ?>
 <?=$publish->getJsCss()?>
 <div class="help-documentation">
-    <?=$publish->getNavigation( )?>
+    <?=$publish->getNavigation()?>
     <?=$text?>
 </div>
