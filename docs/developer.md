@@ -123,7 +123,7 @@ eines Addons wird der Extension-Point `MEDIA_LIST_FUNCTIONS` belegt.
 Abgefragt wird das Default-Feld "med_focuspoint":
 
 ```php
-use FriendsOfREDAXO\FriendsOfRedaxo\focuspoint_media;
+use FriendsOfRedaxo\focuspoint\focuspoint_media;
 
 if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') )
 {
@@ -143,7 +143,7 @@ Falls zusätzlich individuelle Fokuspunkt-Metafelder definiert sind, kann mit di
 komplette Satz überprüft werden:
 
 ```php
-use FriendsOfREDAXO\FriendsOfRedaxo\focuspoint_media;
+use FriendsOfRedaxo\focuspoint\focuspoint_media;
 
 if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') )
 {
@@ -218,6 +218,9 @@ abgeleitet werden. Das AddOn basiert darauf, dass Fokuspunkt-Effekte von der Kla
 `rex_effect_abstract_focuspoint` abstammen und die darin bereitgestellten Parameter-Felder
 (`meta`, `focus`) aufweisen.
 
+> **Bitte beachten:** Mediamanager-Effekte werden READXO-intern über den Klassennamen `rex_effect_....` gesucht.
+Effekte dürfen nicht in einem Namespace wie `FriendsOfRedaxo\focuspoint` liegen. 
+
 Es stehen sechs Methoden zur Verfügung:
 
 - `str2fp` wandelt einen Koordinaten-String in ein Koordinaten-Wertepaar um oder liefert false
@@ -248,8 +251,6 @@ ein Array sein mit zwei Zahlen: `$wh = [ 0 => «bildbreite», 1 => «bildhöhe»
 Die Funktion ist "static" deklariert und kann auch außerhalb des Klassen-Kontext aufgerufen werden.
 
 ```php
-use FriendsOfRedaxo\focuspoint\rex_effect_abstract_focuspoint;
-
 $fp1 = rex_effect_abstract_focuspoint::str2fp( '50,60');                 // Ergebnis: false
 $fp1 = rex_effect_abstract_focuspoint::str2fp( '50.0,60.0');             // Ergebnis: [50,60]
 
