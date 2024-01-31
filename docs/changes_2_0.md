@@ -36,6 +36,8 @@ Um einen dem alten Feld vergleichbaren Wert zu erhalten, sollte die Koordinate i
 Einzelwerten abgerufen werden. Man kann die Einzelwerte nach Bedarf weiterverarbeiten.
 
 ```
+use FriendsOfREDAXO\focuspoint\focuspoint_media;
+
 $fpMedia = focuspoint_media::get( $filename );  // statt rex_media::get( $filename )
 list( $x, $y) = $fpMedia->getFocus();           // Abruf von "med_focuspoint" als [$x,$y]
 $fp = "$x%,$y%";                                // Verwendung
@@ -50,6 +52,8 @@ Wert zwischen -1 (links bzw. unten) und 1 (rechts bzw. oben).
 - neu: 50.0,60.0
 
 ```
+use FriendsOfREDAXO\focuspoint\focuspoint_media;
+
 $fpMedia = focuspoint_media::get( $filename );  // statt rex_media::get( $filename )
 list( $x_neu, $y_neu) = $fpMedia->getFocus();    // Abruf von "med_focuspoint" als [$x,$y]
 $x_alt = $x_neu / 50 - 1;                       // X-Koordinate umrechnen

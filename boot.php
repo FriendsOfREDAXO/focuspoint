@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -17,14 +17,18 @@
  *  @var rex_addon $this
  */
 
-if (rex::isBackend())
-{
+namespace FriendsOfREDAXO\focuspoint;
 
-    switch ( rex_request('page', 'string') )
-    {
+use rex;
+use rex_effect_focuspoint_fit;
+use rex_media_manager;
+
+if (rex::isBackend()) {
+
+    switch (rex_request('page', 'string')) {
         case 'mediapool/media':
             // provide support for media detail-page
-            focuspoint_boot::mediaDetailPage( $this );
+            focuspoint_boot::mediaDetailPage($this);
             break;
 
         case 'metainfo/articles':
@@ -49,10 +53,10 @@ if (rex::isBackend())
         case 'packages':
             // prevent deactivation if in use by effects
             // effective only in dialog-mode via AddOn-administration-page
-            focuspoint_boot::packages( $this );
+            focuspoint_boot::packages($this);
             break;
     }
 
 }
 
-rex_media_manager::addEffect('rex_effect_focuspoint_fit');
+rex_media_manager::addEffect(rex_effect_focuspoint_fit::class);
