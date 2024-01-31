@@ -17,7 +17,7 @@
  *  REDAXO-Instanz eine schlanke boot.php mit geringem Kompilieraufwand zu haben.
  */
 
-namespace FriendsOfREDAXO\focuspoint;
+namespace FriendsOfRedaxo\focuspoint;
 
 use ReflectionException;
 use rex;

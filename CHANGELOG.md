@@ -2,7 +2,7 @@
 
 ## **xx.xx.2024 Version 4.1.0
 
-- Umstellung auf den Namespace **FriendsOfREDAXO\focuspoint**. Aus Klasse `xyz` wird `FriendsOfREDAXO\focuspoint\xyz`. Für eine Übergangszeit ist der
+- Umstellung auf den Namespace **FriendsOfRedaxo\focuspoint**. Aus Klasse `xyz` wird `FriendsOfRedaxo\focuspoint\xyz`. Für eine Übergangszeit ist der
   alte Aufruf mit `xyz` weiterhin möglich. In der Entwicklungsumgebung sind die Aufrufe als **Deprecated** gekennzeichnet und sollten schnellstens auf die
   neue Variante umgestellt werden. Mit Version 5.0.0 wird die alte Auftufvariante endgültig entfernt.
 

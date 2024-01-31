@@ -52,20 +52,19 @@
  *  @var string $request
  */
 
-namespace FriendsOfREDAXO\focuspoint;
+namespace FriendsOfRedaxo\focuspoint;
 
-use rex_i18n;
 use rex_functional_exception;
+use rex_i18n;
 
 $message = '';
 $header = '';
-switch ( $request )
-{
+switch ($request) {
     case 'install':
-        //noop
+        // noop
         break;
     case 'reinstall':
-        //noop
+        // noop
         break;
     case 'activate':
         $message = focuspoint::checkActivateDependencies();
@@ -85,7 +84,7 @@ switch ( $request )
         break;
 }
 
-if( $message ){
+if ($message) {
     $message = rex_i18n::rawMsg($header, $this->getName()) . "<br>$message";
-    throw new rex_functional_exception( $message );
+    throw new rex_functional_exception($message);
 }

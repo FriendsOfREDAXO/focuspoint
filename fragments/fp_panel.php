@@ -22,7 +22,7 @@
  *                                      Dann wird ein Select eingebaut.
  */
 
-namespace FriendsOfREDAXO\focuspoint;
+namespace FriendsOfRedaxo\focuspoint;
 
 use rex_effect_abstract_focuspoint;
 use rex_i18n;

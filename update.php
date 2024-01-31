@@ -18,7 +18,7 @@
  *  @var rex_addon $this
  */
 
-namespace FriendsOfREDAXO\focuspoint;
+namespace FriendsOfRedaxo\focuspoint;
 
 use Exception;
 

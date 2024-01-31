@@ -18,16 +18,16 @@
 > - [rex_api_call `focuspoint`](#api-racf)
 > - [Eigene Fokuspunkt-Effekte entwickeln](#api-mofe)
 
-Die Klassen sind mit Aussnahme von `rex_api_focuspoint` im Namensraum `FriendsOfREDAXO\focuspoint\`. Sie
+Die Klassen sind mit Aussnahme von `rex_api_focuspoint` im Namensraum `FriendsOfRedaxo\focuspoint\`. Sie
 können entweder über einen vollständigen Qualifier aufgerufen werden oder durch Einbinden am Anfang des Scriptes.
 
 ```
 ...
-$image = FriendsOfREDAXO\focuspoint\focuspoint_media::get($filename);
+$image = FriendsOfRedaxo\focuspoint\focuspoint_media::get($filename);
 ```
 
 ```
-use FriendsOfREDAXO\focuspoint\focuspoint_media;
+use FriendsOfRedaxo\focuspoint\focuspoint_media;
 ...
 $image = focuspoint_media::get($filename);
 ```
@@ -123,7 +123,7 @@ eines Addons wird der Extension-Point `MEDIA_LIST_FUNCTIONS` belegt.
 Abgefragt wird das Default-Feld "med_focuspoint":
 
 ```php
-use FriendsOfREDAXO\focuspoint\focuspoint_media;
+use FriendsOfREDAXO\FriendsOfRedaxo\focuspoint_media;
 
 if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') )
 {
@@ -143,7 +143,7 @@ Falls zusätzlich individuelle Fokuspunkt-Metafelder definiert sind, kann mit di
 komplette Satz überprüft werden:
 
 ```php
-use FriendsOfREDAXO\focuspoint\focuspoint_media;
+use FriendsOfREDAXO\FriendsOfRedaxo\focuspoint_media;
 
 if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') )
 {
@@ -185,7 +185,7 @@ zurückgegriffen, sondern der Fallback-Wert herangezogen.
 Die Klasse `focuspoint_media` kann z.B. in eigenen Effekten, die auf Fokuspunkten basieren,
 eingesetzt werden, aber auch in beliebigen anderen Zusammenhängen. Hier ein Beispiel :
 ```php
-use FriendsOfREDAXO\focuspoint\focuspoint_media;
+use FriendsOfRedaxo\focuspoint\focuspoint_media;
 
 $fpMedia = focuspoint_media::get( $filename );
 
@@ -248,7 +248,7 @@ ein Array sein mit zwei Zahlen: `$wh = [ 0 => «bildbreite», 1 => «bildhöhe»
 Die Funktion ist "static" deklariert und kann auch außerhalb des Klassen-Kontext aufgerufen werden.
 
 ```php
-use FriendsOfREDAXO\focuspoint\rex_effect_abstract_focuspoint;
+use FriendsOfRedaxo\focuspoint\rex_effect_abstract_focuspoint;
 
 $fp1 = rex_effect_abstract_focuspoint::str2fp( '50,60');                 // Ergebnis: false
 $fp1 = rex_effect_abstract_focuspoint::str2fp( '50.0,60.0');             // Ergebnis: [50,60]
@@ -417,7 +417,7 @@ Eine neue Effekt-Klasse sollte drei Methoden bereitstellen:
 Eine rudimentäre Effekt-Klasse würde so aussehen:
 
 ```php
-use FriendsOfREDAXO\focuspoint\rex_effect_abstract_focuspoint;
+use FriendsOfRedaxo\focuspoint\rex_effect_abstract_focuspoint;
 
 class rex_effect_focuspoint_myeffect extends rex_effect_abstract_focuspoint
 {

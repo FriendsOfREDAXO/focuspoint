@@ -17,7 +17,7 @@
  *  @var rex_addon $this
  */
 
-namespace FriendsOfREDAXO\focuspoint;
+namespace FriendsOfRedaxo\focuspoint;
 
 use rex;
 use rex_effect_focuspoint_fit;
