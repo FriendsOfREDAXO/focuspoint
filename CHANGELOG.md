@@ -1,10 +1,22 @@
 # Changelog
 
-## **xx.xx.2024 Version 4.1.0
+## **01.02.2024 Version 4.1.0**
 
-- Umstellung auf den Namespace **FriendsOfRedaxo\Focuspoint**. Aus Klasse `xyz` wird `FriendsOfRedaxo\Focuspoint\xyz`. Für eine Übergangszeit ist der
-  alte Aufruf mit `xyz` weiterhin möglich. In der Entwicklungsumgebung sind die Aufrufe als **Deprecated** gekennzeichnet und sollten schnellstens auf die
-  neue Variante umgestellt werden. Mit Version 5.0.0 wird die alte Auftufvariante endgültig entfernt.
+- Umstellung auf den Namespace **FriendsOfRedaxo\Focuspoint**. Aus Klasse `xyz` wird `FriendsOfRedaxo\Focuspoint\xyz`. 
+- Mit RexStan bereinigt (Level 5, PHP 8.2, Extensions: REDAXO SuperGlobals | Bleeding-Edge | Strict-Mode | Deprecation Warnings | PHPUnit | phpstan-dba | report mixed | dead code).
+- Erstmalig PHP-CS-Fixer formatiert. 
+- Ab jetzt ist PHP 8.1 Mindestvoraussetzung und REDAXO 5.15. 
+
+Diese Version ist die Vorbereitung auf REDAXO 6. Es gibt keine Änderungen am Funktionsumfang.
+
+Die Umstellung im Namespace hat jetzt nur Auswirkungen für Entwickler, die zusätzlich eigene Focuspoint-Effekte scheiben oder
+anderweitig auf die Focuspoint-Tools/Klassen zugreifen. Für eine Übergangszeit ist der alte Aufruf mit `xyz`
+weiterhin möglich. In der Entwicklungsumgebung sind die Aufrufe als **Deprecated** gekennzeichnet und sollten
+rasch auf die neue Variante umgestellt werden. Mit Version 5.0.0 wird die alte Aufrufvariante endgültig entfernt.
+
+Zur Umstellung kann man entweder
+- Den Klassennamen um den Namespace erweitern: `FriendsOfRedaxo\Focuspoint\xyz::func(...)`.
+- Weiter `xyz` nutzen und einmalig am Anfang der Datei ein Use-Statement einfügen: `use FriendsOfRedaxo\Focuspoint\xyz;`
 
 ## **18.03.2023 Version 4.0.4**
 
