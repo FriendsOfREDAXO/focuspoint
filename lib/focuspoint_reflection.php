@@ -24,8 +24,8 @@ use ReflectionClass;
 
 class focuspoint_reflection extends ReflectionClass
 {
-    /** 
-     * @var object 
+    /**
+     * @var object
      * @api
      */
     public $obj;

@@ -30,6 +30,7 @@ use rex_i18n;
 use rex_metainfo_table_manager;
 use rex_sql;
 
+use function count;
 use function in_array;
 
 /** @var rex_addon $this */
@@ -65,7 +66,7 @@ $mm_action_effect = false;
 
 $qry = 'SELECT a.id,a.type_id,b.id AS tid,b.label AS tlabel FROM ' . $db_metafield . ' AS a LEFT JOIN ' . $db_metatype . ' AS b ON a.type_id=b.id WHERE a.name=:name';
 $meta_field = $sql->getArray($qry, [':name' => rex_effect_abstract_focuspoint::MED_DEFAULT]);
-if( 0 < count($meta_field)) {
+if (0 < count($meta_field)) {
     $meta_field_id = $meta_field[0]['id'];
     $meta_field_type = $meta_field[0]['type_id'];
     $meta_field_tid = $meta_field[0]['tid'];
@@ -79,7 +80,7 @@ if( 0 < count($meta_field)) {
 
 $qry = 'SELECT id FROM ' . $db_metatype . ' WHERE label=:label LIMIT 1';
 $meta_type = $sql->getArray($qry, [':label' => rex_effect_abstract_focuspoint::META_FIELD_TYPE]);
-if( 0 < count($meta_type)) {
+if (0 < count($meta_type)) {
     $meta_type_id = $meta_type[0]['id'];
 } else {
     $meta_type_id = null;
@@ -133,7 +134,7 @@ else {
 
 // Für das Metafeld besteht die Abhängigkeit zur zugehörigen Spalte in rex_media
 $sql->setQuery('SELECT * FROM ' . $db_media . ' LIMIT 1');
-$media_feld = in_array(rex_effect_abstract_focuspoint::MED_DEFAULT, $sql->getFieldnames(),true);
+$media_feld = in_array(rex_effect_abstract_focuspoint::MED_DEFAULT, $sql->getFieldnames(), true);
 // Metafeld existiert in rex_metainfo_field, aber die Spalte in rex_media fehlt
 if (!$meta_action_field && !$media_feld) {
     $meta_action_media = true;
@@ -192,7 +193,7 @@ if ($meta_action_connect && '' === $message) {
     $sql->setTable($db_metafield);
     /**
      * STAN: Value 'type_id' does not exist in table selected via setTable().
-     * Falsch. rex_metainfo_field.type_id ist ein Standardfeld
+     * Falsch. rex_metainfo_field.type_id ist ein Standardfeld.
      * @phpstan-ignore-next-line
      */
     $sql->setValue('type_id', $meta_type_id);
@@ -207,7 +208,7 @@ if ($mm_action_type && '' === $message) {
     $sql->setTable($db_mmtype);
     /**
      * STAN: Value 'name' does not exist in table selected via setTable().
-     * Falsch. media_manager_type.name ist ein Standardfeld
+     * Falsch. media_manager_type.name ist ein Standardfeld.
      * @phpstan-ignore-next-line
      */
     $sql->setValue('name', rex_effect_abstract_focuspoint::MM_TYPE);
@@ -225,19 +226,19 @@ if ($mm_action_effect && '' === $message) {
      * STAN: Variable $mm_type_id might not be defined.
      * Auch wenn rexstan hier meckert, ich halte es für passend.
      * STAN: Value 'type_id' does not exist in table selected via setTable().
-     * Falsch. media_manager_type_effect.type_id ist ein Standardfeld
+     * Falsch. media_manager_type_effect.type_id ist ein Standardfeld.
      * @phpstan-ignore-next-line
      */
     $sql->setValue('type_id', $mm_type_id);
     /**
      * STAN: Value 'effect' does not exist in table selected via setTable().
-     * Falsch. media_manager_type_effect.effect ist ein Standardfeld
+     * Falsch. media_manager_type_effect.effect ist ein Standardfeld.
      * @phpstan-ignore-next-line
      */
     $sql->setValue('effect', 'resize');
     /**
      * STAN: Value 'parameters' does not exist in table selected via setTable().
-     * Falsch. media_manager_type_effect.parameters ist ein Standardfeld
+     * Falsch. media_manager_type_effect.parameters ist ein Standardfeld.
      * @phpstan-ignore-next-line
      */
     $sql->setValue('parameters', '{"rex_effect_resize":{"rex_effect_resize_width":"1024","rex_effect_resize_height":"1024","rex_effect_resize_style":"maximum","rex_effect_resize_allow_enlarge":"enlarge"}}');

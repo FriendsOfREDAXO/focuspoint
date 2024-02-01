@@ -54,7 +54,7 @@ if (0 < count($typeId)) {
 
 // remove media-manager-type
 $sql->setQuery('select id from ' . rex::getTable('media_manager_type') . ' where name="' . rex_effect_abstract_focuspoint::MM_TYPE . '" LIMIT 1');
-if (0 < (int)$sql->getRows()) {
+if (0 < (int) $sql->getRows()) {
     $id = $sql->getValue('id');
     $sql->setTable(rex::getTable('media_manager_type'));
     $sql->setWhere('id=' . $id);

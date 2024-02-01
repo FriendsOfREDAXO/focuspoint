@@ -115,9 +115,7 @@ class focuspoint
 
         // Option-Liste der Felder aufbauen - falls es mindestens zwei Felder und davon mindestens ein hidden-Feld gibt.
         $qry = 'SELECT name,title,params FROM ' . rex::getTable('metainfo_field') . ' WHERE name LIKE "med_%" AND type_id = (SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label="' . rex_effect_abstract_focuspoint::META_FIELD_TYPE . '") ORDER BY priority ASC';
-        /**
-         * @var array<int,string[]> $felder
-         */
+        /** @var array<int,string[]> $felder */
         $felder = rex_sql::factory()->getArray($qry);
         if (count($felder) > 1) {
             $feldauswahl = [];
@@ -151,7 +149,7 @@ class focuspoint
     public static function customfield(rex_extension_point $ep)
     {
         $subject = $ep->getSubject();
-        
+
         if (rex_effect_abstract_focuspoint::META_FIELD_TYPE !== $subject['type']) {
             return;
         }
@@ -265,7 +263,7 @@ class focuspoint
     public static function checkDeactivateDependencies()
     {
         $message = '';
-        $inUseMessages = self::getFocuspointEffectsInUse(); 
+        $inUseMessages = self::getFocuspointEffectsInUse();
         if (0 < count($inUseMessages)) {
             $message = self::getFocuspointEffectsInUseMessage($inUseMessages);
             $message = '<strong>' . rex_i18n::msg('focuspoint_deactivate_dependencies') . "</strong><br>$message";
@@ -412,7 +410,7 @@ class focuspoint
         }
         return [];
     }
-    
+
     /**
      *  Die Funktion bereitet die angegebenen Effekte zu einer UL/LI-Meldung auf.
      *
