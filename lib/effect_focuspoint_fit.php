@@ -240,7 +240,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
      *  Breite und Höhe des Zielbildes sowie den Zoom-Faktor ergänzt.
      *
      *  @return list<array{label: string, name: string, type: 'int'|'float'|'string'|'select'|'media', default?: mixed, notice?: string, prefix?: string, suffix?: string, attributes?: array, options?: array}>
-     * 
+     *
      * Ursprünglich war die Meldung "Return type (array<string, string>) of method rex_effect_focuspoint_fit::getParams() should be compatible with return type (....) of method rex_effect_abstract_focuspoint::getParams()"
      * Daher obige @ return aus rex_effect_abstract_focuspoint::getParams() kopiert und hier eingefügt. Das ergibt nun 2 x diese Meldung:
      * STAN: Method rex_effect_focuspoint_fit::getParams() return type has no value type specified in iterable type array.
@@ -297,7 +297,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
         }
         if (str_contains($value, '%')) {
             $value = trim(str_replace('%', '', $value));
-            $value = floatval($value);
+            $value = (float) $value;
             $value = max(0, min(100, $value));
             if (0 < $ref) {
                 $value = $ref * $value / 100;

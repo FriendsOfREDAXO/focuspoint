@@ -150,9 +150,8 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
                 ? $media->getFocus($this->getMetaField(), $default)
                 : $this->getDefaultFocus($default);
         }
-        return is_array($wh) && count($wh) === 2 ? self::rel2px($fp, $wh) : $fp;
+        return is_array($wh) && 2 === count($wh) ? self::rel2px($fp, $wh) : $fp;
     }
-
 
     /**
      *  Stellt die Basis-Felder für eine Effekt-Parametriesierung zur Verfügung.
@@ -162,7 +161,7 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *      * Eingabefeld für die Default-Koordinaten
      *
      *  @return list<array{label: string, name: string, type: 'int'|'float'|'string'|'select'|'media', default?: mixed, notice?: string, prefix?: string, suffix?: string, attributes?: array, options?: array}>
-     * 
+     *
      * Ursprünglich war die Meldung "Return type (array) of method rex_effect_abstract_focuspoint::getParams() should be covariant with return type (....) of method rex_effect_abstract::getParams()"
      * Daher obige @ return aus rex_effect_abstract::getParams() kopiert und hier eingefügt. Das ergibt nun 2 x diese Meldung:
      * STAN: Method rex_effect_abstract_focuspoint::getParams() return type has no value type specified in iterable type array.
@@ -174,9 +173,9 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
         $qry = 'SELECT id,name FROM ' . rex::getTable('metainfo_field') . ' WHERE type_id=(SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label="' . self::META_FIELD_TYPE . '"  LIMIT 1) AND name LIKE "med_%" ORDER BY name ASC';
         $felder = rex_sql::factory()->getArray($qry, [], PDO::FETCH_KEY_PAIR);
         $felder[] = 'default => ' . rex_i18n::msg('focuspoint_edit_label_focus');
-        array_walk($felder,'strtolower');
+        array_walk($felder, 'strtolower');
         $default = current($felder);
-        if (($k = array_search(self::MED_DEFAULT, $felder,true)) !== false) {
+        if (($k = array_search(self::MED_DEFAULT, $felder, true)) !== false) {
             $default = $felder[$k];
         }
         return [

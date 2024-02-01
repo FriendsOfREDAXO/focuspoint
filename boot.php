@@ -26,7 +26,6 @@ use rex_media_manager;
 
 if (rex::isBackend()) {
 
-
     switch (rex_request('page', 'string')) {
         case 'mediapool/media':
             // provide support for media detail-page

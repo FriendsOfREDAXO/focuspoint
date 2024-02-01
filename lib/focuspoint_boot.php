@@ -30,6 +30,7 @@ use rex_sql;
 use rex_view;
 
 use function array_key_exists;
+use function count;
 
 /** @api */
 class focuspoint_boot
@@ -243,7 +244,7 @@ class focuspoint_boot
 
         // Verhindert beim Editieren des Support-Media-Types im Medienpool dass der Name überschrieben wird.
         // Außerdem darf der Eintrag nicht gelöscht werden, daher muss der Löschbutton unterdrückt werden.
-       if ('edit' === rex_request('func', 'string')) {
+        if ('edit' === rex_request('func', 'string')) {
 
             rex_extension::register('REX_FORM_CONTROL_FIELDS', static function (rex_extension_point $ep) {
                 $sql = rex_sql::factory();
@@ -303,8 +304,8 @@ class focuspoint_boot
      */
     public static function packages($fpAddon)
     {
-        if(rex_request('package', 'string') === $fpAddon->getName()) {
-            if('package' === rex_request('rex-api-call', 'string', '') ) {
+        if (rex_request('package', 'string') === $fpAddon->getName()) {
+            if ('package' === rex_request('rex-api-call', 'string', '')) {
                 // STAN: Using $_REQUEST is forbidden, use rex_request::request() or rex_request() instead.
                 // Da hat er recht, aber ich wüsste nicht, wie man es anders löst.
                 // @phpstan-ignore-next-line

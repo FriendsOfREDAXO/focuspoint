@@ -42,7 +42,7 @@ class rex_api_focuspoint_package extends rex_api_package
      */
     public function execute()
     {
-       $function = strtolower(rex_request('function', 'string'));
+        $function = strtolower(rex_request('function', 'string'));
         if (!in_array($function, ['install', 'uninstall', 'activate', 'deactivate', 'delete'], true)) {
             throw new rex_api_exception('Unknown package function "' . $function . '"!');
         }
@@ -76,8 +76,10 @@ class rex_api_focuspoint_package extends rex_api_package
             $success = false;
         }
         if ($success) {
-            // STAN: Variable method call on rex_package_manager.
-            // @phpstan-ignore-next-line
+            /**
+             * STAN: Variable method call on rex_package_manager.
+             * @phpstan-ignore-next-line
+             */
             $success = rex_type::bool($manager->$function());
             $message = $manager->getMessage();
         }

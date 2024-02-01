@@ -103,7 +103,7 @@ if (rex_version::compare($this->getVersion(), '2.0', '<')) {
                     /**
                      * STAN: Query error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'med_focuspoint_data' in 'field list' (42S22).
                      * Die Spalte wird hier als Metafeld hinzugefügt und wird damit eine Spalte der Tabelle.
-                     * Das kann RexStan verm. nicht wissen/verstehen. Daher zur Fehlermeldungsunterdrückung
+                     * Das kann RexStan verm. nicht wissen/verstehen. Daher zur Fehlermeldungsunterdrückung.
                      * @phpstan-ignore-next-line
                      */
                     $liste = $sql->getArray($qry, [], PDO::FETCH_KEY_PAIR);
@@ -193,19 +193,19 @@ if (rex_version::compare($this->getVersion(), '2.0', '<')) {
                  * STAN: Value 'type_id' does not exist in table selected via setTable().
                  * Falsch.
                  * @phpstan-ignore-next-line
-                 */                
+                 */
                 $sql->setValue('type_id', $id);
                 /**
                  * STAN: Value 'effect' does not exist in table selected via setTable().
                  * Falsch.
                  * @phpstan-ignore-next-line
-                 */                
+                 */
                 $sql->setValue('effect', 'resize');
                 /**
                  * STAN: Value 'parameters' does not exist in table selected via setTable().
                  * Falsch.
                  * @phpstan-ignore-next-line
-                 */                
+                 */
                 $sql->setValue('parameters', '{"rex_effect_resize":{"rex_effect_resize_width":"1024","rex_effect_resize_height":"1024","rex_effect_resize_style":"maximum","rex_effect_resize_allow_enlarge":"enlarge"}}');
                 $sql->addGlobalUpdateFields();
                 $sql->addGlobalCreateFields();
