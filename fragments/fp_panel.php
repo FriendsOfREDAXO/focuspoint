@@ -25,21 +25,23 @@
 namespace FriendsOfRedaxo\focuspoint;
 
 use rex_effect_abstract_focuspoint;
+use rex_fragment;
 use rex_i18n;
 use rex_media;
 use rex_media_manager;
 
+/** @var rex_fragment $this */
 ?>
 <div id="focuspoint-panel" class="focuspoint-panel panel panel-default">
     <div class="panel-heading"><?= rex_i18n::msg('focuspoint_detail_header') ?></div>
 <?php
 $mediatypes = '';
 if (isset($this->mediatypes) && \is_array($this->mediatypes)) {
-    $mediatypes = $this->mediatypes;
-    array_walk($mediatypes, static function (&$t, $k) {
+    $mediatypeList = $this->mediatypes;
+    array_walk($mediatypeList, static function (&$t, $k) {
     $t = '<li data-ref="' . $k . '" data-field="' . implode(' ', $t['meta']) . '"><a href="#" >' . $t['label'] . '</a></li>';
     });
-    $mediatypes = implode('', $mediatypes);
+    $mediatypes = implode('', $mediatypeList);
 }
 if (isset($this->fieldselect) && \is_array($this->fieldselect)) {
     $fieldselect = $this->fieldselect;
@@ -70,7 +72,7 @@ if (isset($this->fieldselect) && \is_array($this->fieldselect)) {
         </div>
         <button type="button" class="btn btn-primary btn-sm" data-button="zoom" ><i class="rex-icon fa-search-plus"></i><i class="rex-icon fa-search-minus"></i></button>
 <?php
-if ($mediatypes) {
+if ('' < $mediatypes) {
 ?>
         <div class="focuspoint-panel-typeselect btn-group">
             <button type="button" class="btn btn-default  btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?= rex_i18n::msg('focuspoint_detail_preview') ?> <span class="badge"></span> <span class="caret"></span></button>
@@ -80,7 +82,7 @@ if ($mediatypes) {
 <?php } ?>
     </div>
 <?php
-if ($mediatypes) {
+if ('' < $mediatypes) {
 ?>
     <div class="hidden panel-body">
         <img >

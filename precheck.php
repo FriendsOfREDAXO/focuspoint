@@ -47,9 +47,17 @@
  *  Note:
  *      in case of an install (not re-install) or update the addon addon/lib and other configurations
  *      are not loaded. Be carefull. But generally special prechecks are not necessary for "install"
- *
- *  @var rex_addon $this
- *  @var string $request
+ */
+
+namespace FriendsOfRedaxo\focuspoint;
+
+use rex_addon;
+use rex_functional_exception;
+use rex_i18n;
+
+/**
+ * @var rex_addon $this
+ * @var string $request Ist aus dem aufrufenden Context vorhanden
  */
 
 namespace FriendsOfRedaxo\focuspoint;
@@ -84,7 +92,7 @@ switch ($request) {
         break;
 }
 
-if ($message) {
+if ('' < $message) {
     $message = rex_i18n::rawMsg($header, $this->getName()) . "<br>$message";
     throw new rex_functional_exception($message);
 }

@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -20,6 +20,9 @@
  *  "rex_effect_abstract"!
  */
 
+use FriendsOfRedaxo\focuspoint\focuspoint_media;
+
+/** @api */
 abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
 {
     public const URL_KEY = 'xy';
@@ -45,13 +48,14 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *  @param  array<mixed>    $wh     array [breite,höhe] mit den Referenzwerten, auf die sich
      *                                  die Prozentwerte der Koordinaten beziehen
      *
-     *  @return array<float>|bool       [x,y] als Koordinaten-Array oder false für ungültiger String
+     *  @return array<float>|false       [x,y] als Koordinaten-Array oder false für ungültiger String
      */
     public static function str2fp(string $xy, ?array $wh = null)
     {
-        if ($i = preg_match_all(self::PATTERN, (string) $xy, $tags)) {
+        $i = preg_match_all(self::PATTERN, $xy, $tags);
+        if (0 < $i) {
             $xy = [min(100, max(0, $tags['x'][0])), min(100, max(0, $tags['y'][0]))];
-            if ($wh) {
+            if (is_array($wh)) {
                 $xy = self::rel2px($xy, $wh);
             }
             return $xy;
@@ -89,10 +93,10 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
     public function getDefaultFocus(?array $default = null, ?array $wh = null)
     {
         $xy = self::str2fp($this->params['focus']);
-        if (!$xy) {
+        if (false === $xy) {
             $xy = null === $default ? self::$mitte : $default;
         }
-        if ($wh) {
+        if (null !== $wh) {
             $xy = self::rel2px($xy, $wh);
         }
         return $xy;
@@ -130,11 +134,12 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      */
     public function getFocus($media = null, ?array $default = null, ?array $wh = null)
     {
-        if ($xy = rex_request(self::URL_KEY, 'string', null)) {
+        $xy = rex_request(self::URL_KEY, 'string', null);
+        if (is_string($xy)) {
             // nur relevant für temporäre Bilder; funktioniert nicht mit Cache!
             // hier eingebaut zur Funktionsfähigkeit von focuspoint_api
             $fp = self::str2fp($xy);
-            if (!$fp) {
+            if (false === $fp) {
                 $fp = null !== $media && is_a($media, 'focuspoint_media')
                     ? $media->getFocus($xy, $default) // $xy = Meta-Feld-Name??
                     : $this->getDefaultFocus($default);
@@ -145,9 +150,9 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
                 ? $media->getFocus($this->getMetaField(), $default)
                 : $this->getDefaultFocus($default);
         }
-        return $wh ? self::rel2px($fp, $wh) : $fp;
-
+        return is_array($wh) && count($wh) === 2 ? self::rel2px($fp, $wh) : $fp;
     }
+
 
     /**
      *  Stellt die Basis-Felder für eine Effekt-Parametriesierung zur Verfügung.
@@ -156,16 +161,22 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *      * Auswahl des genutzten Meta-Feldes oder "default" für "Default-Koordinaten"
      *      * Eingabefeld für die Default-Koordinaten
      *
-     *  @return array<mixed>   Felddefinitionen
+     *  @return list<array{label: string, name: string, type: 'int'|'float'|'string'|'select'|'media', default?: mixed, notice?: string, prefix?: string, suffix?: string, attributes?: array, options?: array}>
+     * 
+     * Ursprünglich war die Meldung "Return type (array) of method rex_effect_abstract_focuspoint::getParams() should be covariant with return type (....) of method rex_effect_abstract::getParams()"
+     * Daher obige @ return aus rex_effect_abstract::getParams() kopiert und hier eingefügt. Das ergibt nun 2 x diese Meldung:
+     * STAN: Method rex_effect_abstract_focuspoint::getParams() return type has no value type specified in iterable type array.
+     * Hängt vermutlich mit "attributes?: array, options?: array" zusammen. Das ignorieren wir also ...
+     * @phpstan-ignore-next-line
      */
     public function getParams()
     {
-
         $qry = 'SELECT id,name FROM ' . rex::getTable('metainfo_field') . ' WHERE type_id=(SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label="' . self::META_FIELD_TYPE . '"  LIMIT 1) AND name LIKE "med_%" ORDER BY name ASC';
         $felder = rex_sql::factory()->getArray($qry, [], PDO::FETCH_KEY_PAIR);
         $felder[] = 'default => ' . rex_i18n::msg('focuspoint_edit_label_focus');
+        array_walk($felder,'strtolower');
         $default = current($felder);
-        if (($k = array_search(self::MED_DEFAULT, $felder)) !== false) {
+        if (($k = array_search(self::MED_DEFAULT, $felder,true)) !== false) {
             $default = $felder[$k];
         }
         return [

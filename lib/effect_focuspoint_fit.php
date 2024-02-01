@@ -47,6 +47,7 @@
 
 use FriendsOfRedaxo\focuspoint\focuspoint_media;
 
+/** @api */
 class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 {
     public const PATTERN = '^([1-9]\d*\s*(px)?|(100|[1-9]?\d)(\.\d)?\s*%|[1-9]\d*\s*fr)$';
@@ -106,12 +107,13 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
         $this->targetByAR = 0;
         $dw = $this->decodeSize($this->params['width'], $sw);
         $dh = $this->decodeSize($this->params['height'], $sh);
-        if (empty($dw) && empty($dh)) {
+        if (null === $dw && null === $dh) {
             return;
         }
-        // Auch wenn rexstan hier meckert, aber es stimmt so: decodeSize incrmentiert targetByAR
+        // STAN: Strict comparison using === between 1 and 0 will always evaluate to false.
+        // Auch wenn rexstan hier meckert, aber es stimmt so: decodeSize incrementiert targetByAR
         // @phpstan-ignore-next-line
-        if (1 == $this->targetByAR) {
+        if (1 === $this->targetByAR) {
             return;
         }
 
@@ -142,8 +144,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
                 Nur Breite angegeben    => Höhe über den AspectRatio des Originals bestimmen
                 Nur Höhe angegeben      => Breite über den AspectRatio des Originals bestimmen
         */
-        $dw = empty($dw) ? $dh * $sr : $dw;
-        $dh = empty($dh) ? $dw / $sr : $dh;
+        $dw = null === $dw ? $dh * $sr : $dw;
+        $dh = null === $dh ? $dw / $sr : $dh;
         $dr = $dw / $dh;
         $too_wide = ($sr >= $dr);
 
@@ -152,9 +154,10 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
             und  Höhe 9fr, was 16:9 entspricht), muss das Zielformat auf die Bildgröße
             geändert werden. Zoom ist dann irrelevant.
         */
-        // Auch wenn rexstan hier meckert, aber es stimmt so: decodeSize incrmentiert targetByAR
+        // STAN: Strict comparison using === between 2 and 0 will always evaluate to false.
+        // Auch wenn rexstan hier meckert, aber es stimmt so: decodeSize incrementiert targetByAR
         // @phpstan-ignore-next-line
-        if (2 == $this->targetByAR) {
+        if (2 === $this->targetByAR) {
             $dw = $too_wide ? floor($sh * $dr) : $sw;
             $dh = $too_wide ? $sh : floor($sw / $dr);
             $zoom = 0;
@@ -182,7 +185,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
                 Ausschnitt mit hineingenooen werden sollen. Faktisch wird der Ausschnitt um einen
                 entsprechenden Faktor vergrößert.
         */
-        if ($zoom) {
+        if (0 < $zoom) {
             $faktor = $too_wide ? (($sh - $ch) * $zoom + $ch) / $ch : (($sw - $cw) * $zoom + $cw) / $cw;
             $cw = floor($cw * $faktor);
             $ch = floor($ch * $faktor);
@@ -205,17 +208,18 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
             Ausgabe der Grafik
         */
         if (function_exists('ImageCreateTrueColor')) {
-            $des = @imagecreatetruecolor($dw, $dh);
+            $des = @imagecreatetruecolor((int) $dw, (int) $dh);
         } else {
-            $des = @imagecreate($dw, $dh);
+            $des = @imagecreate((int) $dw, (int) $dh);
         }
 
-        if (!$des) {
+        if (false === $des) {
             return;
         }
 
         // Die Fehlermeldung von rexstan beruht auf der Prüfung gegen PHP8. Dort sind GD-Objekte vom Typ "GdImage" und nicht "resoource"
         // Daher werden nachfolgend drei Zeilen ignoriert.
+        // TODO: 5.0.0 Auflösen; wir sind bei nur noch PHP 8
         // @phpstan-ignore-next-line
         $this->keepTransparent($des);
         // @phpstan-ignore-next-line
@@ -235,7 +239,14 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
      *  Die Basisfelder werden aus der Parent-Klasse abgerufen und um die Felder für
      *  Breite und Höhe des Zielbildes sowie den Zoom-Faktor ergänzt.
      *
-     *  @return     array<mixed>   Felddefinitionen
+     *  @return list<array{label: string, name: string, type: 'int'|'float'|'string'|'select'|'media', default?: mixed, notice?: string, prefix?: string, suffix?: string, attributes?: array, options?: array}>
+     * 
+     * Ursprünglich war die Meldung "Return type (array<string, string>) of method rex_effect_focuspoint_fit::getParams() should be compatible with return type (....) of method rex_effect_abstract_focuspoint::getParams()"
+     * Daher obige @ return aus rex_effect_abstract_focuspoint::getParams() kopiert und hier eingefügt. Das ergibt nun 2 x diese Meldung:
+     * STAN: Method rex_effect_focuspoint_fit::getParams() return type has no value type specified in iterable type array.
+     * Hängt vermutlich mit "attributes?: array, options?: array" zusammen. Das ignorieren wir also ...
+     * TODO: Issue im Core aufmachen
+     * @phpstan-ignore-next-line
      */
     public function getParams()
     {
@@ -280,19 +291,20 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
      */
     public function decodeSize($value, $ref = 0)
     {
-        $value = trim((string) $value);
-        if (!preg_match('/' . self::PATTERN . '/', $value)) {
+        $value = trim($value);
+        if (0 === preg_match('/' . self::PATTERN . '/', $value)) {
             return null;
         }
-        if (strpos($value, '%')) {
+        if (str_contains($value, '%')) {
             $value = trim(str_replace('%', '', $value));
+            $value = floatval($value);
             $value = max(0, min(100, $value));
-            if ($ref) {
+            if (0 < $ref) {
                 $value = $ref * $value / 100;
             }
             return (float) $value;
         }
-        if (strpos($value, 'fr')) {
+        if (str_contains($value, 'fr')) {
             $value = trim(str_replace('fr', '', $value));
             ++$this->targetByAR;
             return (int) $value;

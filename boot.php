@@ -13,17 +13,19 @@
  *
  *  Teile der Verarbeitung sind - bis auf die Abfragen - ausgelagert, um die Code-Übersetzung
  *  nur durchzuführen, wenn es notwendig ist, jedoch nicht bei jedem Aufruf.
- *
- *  @var rex_addon $this
  */
 
 namespace FriendsOfRedaxo\focuspoint;
 
 use rex;
+use rex_addon;
 use rex_effect_focuspoint_fit;
 use rex_media_manager;
 
+/** @var rex_addon $this */
+
 if (rex::isBackend()) {
+
 
     switch (rex_request('page', 'string')) {
         case 'mediapool/media':

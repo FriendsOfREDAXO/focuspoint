@@ -21,6 +21,7 @@ namespace FriendsOfRedaxo\focuspoint;
 
 use ReflectionException;
 use rex;
+use rex_addon;
 use rex_effect_abstract_focuspoint;
 use rex_extension;
 use rex_extension_point;
@@ -30,6 +31,7 @@ use rex_view;
 
 use function array_key_exists;
 
+/** @api */
 class focuspoint_boot
 {
     /**
@@ -59,7 +61,7 @@ class focuspoint_boot
      */
     public static function metainfoDefault()
     {
-        if ('delete' != rex_request('func', 'string')) {
+        if ('delete' !== rex_request('func', 'string')) {
             rex_extension::register('REX_FORM_GET', static function (rex_extension_point $ep) {
                 try {
                     // provide access to the form-elements
@@ -72,7 +74,7 @@ class focuspoint_boot
                     $selectReflection = new focuspoint_reflection($typeidReflection->getPropertyValue('select'));
                     $options = $selectReflection->getPropertyValue('options');
                     foreach ($options[0][0] as $i => $o) {
-                        if (rex_effect_abstract_focuspoint::META_FIELD_TYPE != $o[0]) {
+                        if (rex_effect_abstract_focuspoint::META_FIELD_TYPE !== $o[0]) {
                             continue;
                         }
                         array_splice($options[0][0], $i, 1, []);
@@ -105,19 +107,23 @@ class focuspoint_boot
     public static function metainfoMedia()
     {
         // prevent deletion of meta-fields still in use by effects
-        if ('delete' == rex_request('func', 'string')) {
+        if ('delete' === rex_request('func', 'string')) {
             rex_extension::register('PACKAGES_INCLUDED', static function (rex_extension_point $ep) {
-                if ($result = focuspoint::metafield_is_in_use(rex_request('field_id', 'int', 0))) {
+                $inUseMessage = focuspoint::metafield_is_in_use(rex_request('field_id', 'int', 0));
+                if ('' < $inUseMessage) {
+                    // STAN: Using $_REQUEST is forbidden, use rex_request::request() or rex_request() instead.
+                    // Da hat er recht, aber ich wüsste nicht, wie man es anders löst.
+                    // @phpstan-ignore-next-line
                     $_REQUEST['func'] = '';
-                    rex_extension::register('PAGE_TITLE_SHOWN', static function (rex_extension_point $ep) use ($result) {
-                        $ep->setSubject(rex_view::error($result) . $ep->getSubject());
+                    rex_extension::register('PAGE_TITLE_SHOWN', static function (rex_extension_point $ep) use ($inUseMessage) {
+                        $ep->setSubject(rex_view::error($inUseMessage) . $ep->getSubject());
                     });
                 }
             });
         }
 
         // limit changing the default-focuspoint-metafield and fields in use: fieldname, fieldtype, no delete
-        if ('edit' == rex_request('func', 'string')) {
+        if ('edit' === rex_request('func', 'string')) {
             rex_extension::register('REX_FORM_GET', static function (rex_extension_point $ep) {
                 $form = $ep->getSubject();
                 $fpMetafields = focuspoint::getMetafieldList();
@@ -134,26 +140,27 @@ class focuspoint_boot
                         $fselements = $elements[$fieldset] ?? [];
 
                         // the default-field is not restrictable to mediapool-categories
-                        if (rex_effect_abstract_focuspoint::MED_DEFAULT == $fpField) {
+                        if (rex_effect_abstract_focuspoint::MED_DEFAULT === $fpField) {
                             $message .= rex_i18n::msg('focuspoint_edit_msg_inuse2', $fpField) . '<br>';
                         }
                         // focuspoint-fields in use will get restrictions
-                        if ($effects = focuspoint::getFocuspointMetafieldInUse($fpField)) {
+                        $effects = focuspoint::getFocuspointMetafieldInUse($fpField);
+                        if (0 < count($effects)) {
                             $message .= rex_i18n::msg('focuspoint_edit_msg_inuse1', $fpField) .
                                '<br>' . focuspoint::getFocuspointEffectsInUseMessage($effects);
                         }
-                        if ($message) {
+                        if ('' < $message) {
                             $message .= rex_i18n::msg('focuspoint_edit_msg_inuse3', rex_i18n::msg('minfo_field_label_name'), rex_i18n::msg('minfo_field_label_type'));
                             echo rex_view::info('<u><b>' . rex_i18n::msg('focuspoint_doc') . '</b></u><br>' . $message) . "\n";
                             foreach ($fselements as $k => $e) {
-                                if ('name' == $e->getFieldName()) {
+                                if ('name' === $e->getFieldName()) {
                                     // prevent the name from being changed by turning the field in a hidden one.
                                     // Don´t use type=hidden due to rex_form-behavior
                                     $e->setPrefix('<p class="form-control-static">' . $form->stripPrefix($e->getValue()) . '</p>');
                                     $e->setAttribute('class', 'hidden');
                                     continue;
                                 }
-                                if ('type_id' == $e->getFieldName()) {
+                                if ('type_id' === $e->getFieldName()) {
                                     // replace by a simple hidden input to preserve the value
                                     // Don´t use type=hidden due to rex_form-behavior
                                     $x = $form->addInputField('input', 'type_id', null, [], false);
@@ -163,7 +170,7 @@ class focuspoint_boot
                                     $fselements[$k] = $x;
                                     continue;
                                 }
-                                if ('rex_form_control_element' == $e::class) {
+                                if ('rex_form_control_element' === $e::class) {
                                     // don´t delete the default-field or fields in use
                                     // so remove the delete-button
                                     $controlReflection = new focuspoint_reflection($e);
@@ -189,7 +196,7 @@ class focuspoint_boot
             //            $list->setColumnFormat('delete', 'custom', function ($params) use($effectsInUse) {
             $list->setColumnFormat('delete', 'custom', static function ($params) {
                 $list = $params['list'];
-                if (rex_effect_abstract_focuspoint::MED_DEFAULT == $list->getValue('name')) {
+                if (rex_effect_abstract_focuspoint::MED_DEFAULT === $list->getValue('name')) {
                     return '<small class="text-muted">' . rex_i18n::msg('focuspoint_doc') . '</small>';
                 }
                 // planned with V3.0 because it is a breaking change:
@@ -214,14 +221,14 @@ class focuspoint_boot
      */
     public static function media_managerTypes()
     {
-        if (1 != rex_request('effects', 'int')) {
+        if (1 !== rex_request('effects', 'int')) {
 
             // Listenansicht anpassen und hier schon unzulässige Button deaktivieren
             rex_extension::register('REX_LIST_GET', static function (rex_extension_point $ep) {
                 $list = $ep->getSubject();
                 $list->setColumnFormat('deleteType', 'custom', static function ($params) {
                     $list = $params['list'];
-                    if (rex_effect_abstract_focuspoint::MM_TYPE == $list->getValue('name')) {
+                    if (rex_effect_abstract_focuspoint::MM_TYPE === $list->getValue('name')) {
                         return '<small class="text-muted">' . rex_i18n::msg('focuspoint_doc') . '</small>';
                     }
                     $field = $params['field'];
@@ -236,13 +243,13 @@ class focuspoint_boot
 
         // Verhindert beim Editieren des Support-Media-Types im Medienpool dass der Name überschrieben wird.
         // Außerdem darf der Eintrag nicht gelöscht werden, daher muss der Löschbutton unterdrückt werden.
-        if ('edit' == rex_request('func', 'string')) {
+       if ('edit' === rex_request('func', 'string')) {
 
             rex_extension::register('REX_FORM_CONTROL_FIELDS', static function (rex_extension_point $ep) {
                 $sql = rex_sql::factory();
                 $qry = 'SELECT * FROM ' . rex::getTable('media_manager_type') . ' WHERE id=? and name=?';
                 $sql->setQuery($qry, [rex_request('type_id', 'int'), rex_effect_abstract_focuspoint::MM_TYPE]);
-                if ($sql->getRows()) {
+                if (0 < $sql->getRows()) {
                     $cf = $ep->getSubject();
                     $cf['delete'] = '';
                     $ep->setSubject($cf);
@@ -254,7 +261,7 @@ class focuspoint_boot
                         $elements = $formReflection->getPropertyValue('elements');
                         $fselements = $elements[$fieldset] ?? [];
                         foreach ($fselements as $k => $e) {
-                            if ('name' == $e->getFieldName()) {
+                            if ('name' === $e->getFieldName()) {
                                 // prevent the name from being changed by turning the field in a hidden one.
                                 // Don´t use type=hidden due to rex_form-behavior
                                 $e->setPrefix('<p class="form-control-static">' . $e->getValue() . '</p>');
@@ -269,11 +276,14 @@ class focuspoint_boot
         }
 
         // Falls doch ein "delete" ankommt und den Default-Type betrifft: abblocken
-        if ('delete' == rex_request('func', 'string')) {
+        if ('delete' === rex_request('func', 'string')) {
             $sql = rex_sql::factory();
             $qry = 'SELECT * FROM ' . rex::getTable('media_manager_type') . ' WHERE id=? and name=?';
             $sql->setQuery($qry, [rex_request('type_id', 'int'), rex_effect_abstract_focuspoint::MM_TYPE]);
-            if ($sql->getRows()) {
+            if (0 < $sql->getRows()) {
+                // STAN: Using $_REQUEST is forbidden, use rex_request::request() or rex_request() instead.
+                // Da hat er recht, aber ich wüsste nicht, wie man es anders löst.
+                // @phpstan-ignore-next-line
                 $_REQUEST['func'] = '';
                 rex_extension::register('PAGE_TITLE_SHOWN', static function (rex_extension_point $ep) {
                     $result = rex_i18n::msg('focuspoint_isinuse_dontdeletedefault', rex_effect_abstract_focuspoint::MM_TYPE);
@@ -293,10 +303,13 @@ class focuspoint_boot
      */
     public static function packages($fpAddon)
     {
-        if (rex_request('package', 'string') == $fpAddon->getName()
-            && isset($_REQUEST['rex-api-call'])
-            && 'package' == $_REQUEST['rex-api-call']) {
-            $_REQUEST['rex-api-call'] = 'focuspoint_package';
+        if(rex_request('package', 'string') === $fpAddon->getName()) {
+            if('package' === rex_request('rex-api-call', 'string', '') ) {
+                // STAN: Using $_REQUEST is forbidden, use rex_request::request() or rex_request() instead.
+                // Da hat er recht, aber ich wüsste nicht, wie man es anders löst.
+                // @phpstan-ignore-next-line
+                $_REQUEST['rex-api-call'] = 'focuspoint_package';
+            }
         }
     }
 }

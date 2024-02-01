@@ -20,6 +20,7 @@ namespace FriendsOfRedaxo\focuspoint;
 
 use PDO;
 use rex;
+use rex_effect_abstract;
 use rex_effect_abstract_focuspoint;
 use rex_extension;
 use rex_extension_point;
@@ -32,6 +33,7 @@ use rex_url;
 use function count;
 use function strlen;
 
+/** @api */
 class focuspoint
 {
     /**
@@ -50,11 +52,10 @@ class focuspoint
      *
      *  Das HTML wird vom Fragment "fp_panel.php" erzeugt.
      *
+     *  @template T
+     *  @param rex_extension_point<T> $ep
      *  @return string|void   modifiziertes Sidebar-Html | keine Änderung
      */
-
-    // rexstan meldet: "Method focuspoint::show_sidebar() has parameter $ep with generic class rex_extension_point but does not specify its types: T"
-    // Warum?? Einfach ignorieren
     public static function show_sidebar(rex_extension_point $ep)
     {
         $params = $ep->getParams();
@@ -114,13 +115,16 @@ class focuspoint
 
         // Option-Liste der Felder aufbauen - falls es mindestens zwei Felder und davon mindestens ein hidden-Feld gibt.
         $qry = 'SELECT name,title,params FROM ' . rex::getTable('metainfo_field') . ' WHERE name LIKE "med_%" AND type_id = (SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label="' . rex_effect_abstract_focuspoint::META_FIELD_TYPE . '") ORDER BY priority ASC';
+        /**
+         * @var array<int,string[]> $felder
+         */
         $felder = rex_sql::factory()->getArray($qry);
         if (count($felder) > 1) {
             $feldauswahl = [];
             $hidden = false;
             foreach ($felder as $feld) {
-                $feldauswahl[$feld['name']] = $feld['title'] ? rex_i18n::translate($feld['title']) : htmlspecialchars($feld['name']);
-                $hidden = $hidden || 'hidden' == strtolower($feld['params']);
+                $feldauswahl[$feld['name']] = '' < $feld['title'] ? rex_i18n::translate($feld['title']) : htmlspecialchars($feld['name']);
+                $hidden = $hidden || 'hidden' === strtolower($feld['params']);
             }
             if ($hidden) {
                 $fragment->setVar('fieldselect', $feldauswahl);
@@ -140,19 +144,19 @@ class focuspoint
      *
      *  Das HTML wird vom Fragment "fp_metafield.php" erzeugt.
      *
+     *  @template T
+     *  @param rex_extension_point<T> $ep
      *  @return array<mixed>|void   Metafield-Html, ....
      */
-
-    // rexstan meldet: "Method focuspoint::customfield() has parameter $ep with generic class rex_extension_point but does not specify its types: T"
-    // Warum?? Einfach ignorieren
     public static function customfield(rex_extension_point $ep)
     {
         $subject = $ep->getSubject();
-        if (rex_effect_abstract_focuspoint::META_FIELD_TYPE != $subject['type']) {
+        
+        if (rex_effect_abstract_focuspoint::META_FIELD_TYPE !== $subject['type']) {
             return;
         }
         $default = $subject['sql']->getValue('default');
-        if (!rex_effect_abstract_focuspoint::str2fp($subject['sql']->getValue('default'))) {
+        if (false === rex_effect_abstract_focuspoint::str2fp($subject['sql']->getValue('default'))) {
             $default = '';
         }
 
@@ -168,7 +172,7 @@ class focuspoint
         $feld->setVar('name', str_replace('rex-metainfo-', '', $subject[3]));
         $feld->setVar('value', $subject['values'][0]);
         $feld->setVar('default', $default);
-        $feld->setVar('hidden', $hidden || 'hidden' == strtolower(trim($subject['sql']->getValue('params'))));
+        $feld->setVar('hidden', $hidden || 'hidden' === strtolower(trim($subject['sql']->getValue('params'))));
 
         $subject[0] = $feld->parse('fp_metafield.php');
         return $subject;
@@ -191,19 +195,21 @@ class focuspoint
         $message = '';
 
         // ermittle die Meta-Felder vom Typ 'Focuspoint (AddOn)', die nicht 'med_focuspoint' sind.
-        if ($felder = self::getMetafieldList(true)) {
+        $felder = self::getMetafieldList(true);
+        if (0 < count($felder)) {
             $message .= '<li>' . rex_i18n::msg('focuspoint_uninstall_metafields', rex_effect_abstract_focuspoint::META_FIELD_TYPE) .
                         '<ul><li>' . implode('</li><li>', $felder) .
                         '</li></ul></li>';
         }
 
         // ermittle alle Effekte der Liste, die im Media-Manager genutzt werden
-        if ($mmEffekteMsg = self::getFocuspointEffectsInUse()) {
+        $mmEffekteMsg = self::getFocuspointEffectsInUse();
+        if (0 < count($mmEffekteMsg)) {
             $mmEffekteMsg = self::getFocuspointEffectsInUseMessage($mmEffekteMsg);
             $message .= "<li>$mmEffekteMsg</li>";
         }
 
-        if ($message) {
+        if ('' < $message) {
             $message = '<strong>' . rex_i18n::msg('focuspoint_uninstall_dependencies') . "</strong><ul>$message</ul>";
         }
         return $message;
@@ -227,20 +233,20 @@ class focuspoint
         $sql = rex_sql::factory();
         $qry = 'SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label=:label LIMIT 1';
         $sql->setQuery($qry, [':label' => rex_effect_abstract_focuspoint::META_FIELD_TYPE]);
-        if (0 == $sql->getRows()) {
+        if (0 === $sql->getRows()) {
             $message .= '<li>' . rex_i18n::msg('focuspoint_activate_missing_metainfotype') . '</li>';
         }
         $qry = 'SELECT type_id FROM ' . rex::getTable('metainfo_field') . ' WHERE name=:name LIMIT 1';
         $sql->setQuery($qry, [':name' => rex_effect_abstract_focuspoint::MED_DEFAULT]);
-        if (0 == $sql->getRows()) {
+        if (0 === $sql->getRows()) {
             $message .= '<li>' . rex_i18n::msg('focuspoint_activate_missing_metainfofield') . '</li>';
         }
         $qry = 'SELECT id FROM ' . rex::getTable('media_manager_type') . ' WHERE name=:name LIMIT 1';
         $sql->setQuery($qry, [':name' => rex_effect_abstract_focuspoint::MM_TYPE]);
-        if (0 == $sql->getRows()) {
+        if (0 === $sql->getRows()) {
             $message .= '<li>' . rex_i18n::msg('focuspoint_activate_missing_mediamanagertype') . '</li>';
         }
-        if ($message) {
+        if ('' < $message) {
             $message = '<strong>' . rex_i18n::msg('focuspoint_activate_dependencies') . "</strong><ul>$message</ul>";
         }
         return $message;
@@ -258,8 +264,10 @@ class focuspoint
      */
     public static function checkDeactivateDependencies()
     {
-        if ($message = self::getFocuspointEffectsInUse()) {
-            $message = self::getFocuspointEffectsInUseMessage($message);
+        $message = '';
+        $inUseMessages = self::getFocuspointEffectsInUse(); 
+        if (0 < count($inUseMessages)) {
+            $message = self::getFocuspointEffectsInUseMessage($inUseMessages);
             $message = '<strong>' . rex_i18n::msg('focuspoint_deactivate_dependencies') . "</strong><br>$message";
         }
         return $message;
@@ -279,6 +287,7 @@ class focuspoint
      */
     public static function metafield_is_in_use($id)
     {
+        $result = '';
         // Name des zu löschenden Metafeldes
         $feld = self::getMetafieldList();
         if (!isset($feld[$id])) {
@@ -287,17 +296,17 @@ class focuspoint
         $feld = $feld[$id];
 
         // Das Default-Feld "med_focuspoint" darf so oder so nie gelöcht werden.
-        if (rex_effect_abstract_focuspoint::MED_DEFAULT == $feld) {
+        if (rex_effect_abstract_focuspoint::MED_DEFAULT === $feld) {
             $result = rex_i18n::msg('focuspoint_isinuse_dontdeletedefault', $feld);
         }
 
         // Andere Felder gezielt überprüfen
-        elseif ($result = self::getFocuspointMetafieldInUse($feld)) {
+        elseif (0 < count($inUseList = self::getFocuspointMetafieldInUse($feld))) {
             $result = '<strong>' . rex_i18n::rawMsg(
                 'focuspoint_isinuse_message',
                 $feld,
                 rex_url::backendController(['page' => 'media_manager/types']),
-            ) . '</strong><br>' . self::getFocuspointEffectsInUseMessage($result);
+            ) . '</strong><br>' . self::getFocuspointEffectsInUseMessage($inUseList);
         }
         return $result;
     }
@@ -347,7 +356,7 @@ class focuspoint
             $params = json_decode($v['parameters'], true);
             $effekt = "rex_effect_{$v['effect']}";
             $meta = "{$effekt}_meta";
-            if (isset($params[$effekt][$meta]) && $params[$effekt][$meta] == $feld) {
+            if (isset($params[$effekt][$meta]) && $params[$effekt][$meta] === $feld) {
                 continue;
             }
             unset($effects[$k]);
@@ -394,15 +403,16 @@ class focuspoint
      */
     public static function getFocuspointEffectsInUse()
     {
-        if ($effects = self::getFocuspointEffects()) {
+        $effects = self::getFocuspointEffects();
+        if (0 < count($effects)) {
             $qry = 'SELECT name, effect, parameters, type_id, a.id as id, description FROM ' .
                     rex::getTable('media_manager_type_effect') . ' as a, ' . rex::getTable('media_manager_type') .
-                    ' as b WHERE effect IN ("' . implode('","', $effects) . '") AND b.id = a.type_id';
-            return rex_sql::factory()->getArray($qry);
+                    ' as b WHERE effect IN (:effects) AND b.id = a.type_id';
+            return rex_sql::factory()->getArray($qry, [':effects' => implode('","', $effects)]);
         }
         return [];
     }
-
+    
     /**
      *  Die Funktion bereitet die angegebenen Effekte zu einer UL/LI-Meldung auf.
      *
@@ -413,6 +423,8 @@ class focuspoint
     {
         $message = '';
         foreach ($effekte as $effect) {
+            /** @ var rex_effect_abstract $target */
+            /** @var non-falsy-string $target */
             $target = "rex_effect_{$effect['effect']}";
             $name = new $target();
             $message .= '<li>' . rex_i18n::rawMsg(
@@ -434,7 +446,7 @@ class focuspoint
             ) . ' / ' . $effect['effect'] . '</li>';
 
         }
-        if ($message) {
+        if ('' < $message) {
             $message = "<ul>$message</ul>";
         }
         return $message;

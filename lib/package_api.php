@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -42,16 +42,16 @@ class rex_api_focuspoint_package extends rex_api_package
      */
     public function execute()
     {
-        $function = rex_request('function', 'string');
-        if (!in_array($function, ['install', 'uninstall', 'activate', 'deactivate', 'delete'])) {
+       $function = strtolower(rex_request('function', 'string'));
+        if (!in_array($function, ['install', 'uninstall', 'activate', 'deactivate', 'delete'], true)) {
             throw new rex_api_exception('Unknown package function "' . $function . '"!');
         }
         $packageId = rex_request('package', 'string');
         $package = rex_package::get($packageId);
-        if ('uninstall' == $function && !$package->isInstalled()
-            || 'activate' == $function && $package->isAvailable()
-            || 'deactivate' == $function && !$package->isAvailable()
-            || 'delete' == $function && !rex_package::exists($packageId)
+        if ('uninstall' === $function && !$package->isInstalled()
+            || 'activate' === $function && $package->isAvailable()
+            || 'deactivate' === $function && !$package->isAvailable()
+            || 'delete' === $function && !rex_package::exists($packageId)
         ) {
             return new rex_api_result(true);
         }
@@ -61,7 +61,9 @@ class rex_api_focuspoint_package extends rex_api_package
         }
         $reinstall = 'install' === $function && $package->isInstalled();
         /**
-         * Die rexstan-Fehlermeldung beruht vermutlich auf Bezügen zu rex_package; ist aber hier nicht lösbar.
+         * STAN: Parameter #1 $package of static method rex_package_manager<rex_package>::factory() expects rex_package, rex_package_interface given.
+         * Die rexstan-Fehlermeldung beruht vermutlich auf Bezügen zu rex_package; wüsste nicht, wie ich das auflösen sollte.
+         * TODO: 5.0 Diese ganze Nummer zum Abfangen von undefinierten Zuständen ab REX 6 neu überdenken.
          * @phpstan-ignore-next-line
          */
         $manager = rex_package_manager::factory($package);
@@ -74,7 +76,9 @@ class rex_api_focuspoint_package extends rex_api_package
             $success = false;
         }
         if ($success) {
-            $success = $manager->$function();
+            // STAN: Variable method call on rex_package_manager.
+            // @phpstan-ignore-next-line
+            $success = rex_type::bool($manager->$function());
             $message = $manager->getMessage();
         }
         $result = new rex_api_result($success, $message);

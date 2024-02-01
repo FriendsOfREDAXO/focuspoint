@@ -22,24 +22,25 @@ namespace FriendsOfRedaxo\focuspoint;
 
 use ReflectionClass;
 
-// rexstan meldet: "Class focuspoint_reflection extends generic class ReflectionClass but does not specify its types: T"
-// Warum?? Einfach ignorieren
 class focuspoint_reflection extends ReflectionClass
 {
-    /** @var object */
+    /** 
+     * @var object 
+     * @api
+     */
     public $obj;
 
     /**
-     *  @param object $obj
      *  @return void
      */
-    public function __construct($obj)
+    public function __construct(object $obj)
     {
         parent::__construct($obj);
         $this->obj = $obj;
     }
 
     /**
+     *  @api
      *  @param string $method
      *  @param array<mixed> $params
      *  @return mixed
@@ -52,6 +53,7 @@ class focuspoint_reflection extends ReflectionClass
     }
 
     /**
+     *  @api
      *  @param string $prop
      *  @return mixed
      */
@@ -63,6 +65,7 @@ class focuspoint_reflection extends ReflectionClass
     }
 
     /**
+     *  @api
      *  @param string $prop
      *  @param mixed $value
      *  @return void

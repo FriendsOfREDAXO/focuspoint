@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -48,7 +48,7 @@ class rex_api_focuspoint extends rex_api_function
         $mediafile = rex_request('file', 'string', '');
         $mediatype = rex_request('type', 'string', '');
 
-        if ($mediafile && $mediatype) {
+        if ('' < $mediafile && '' < $mediatype) {
             $bild = focuspoint_media_manager::createMedia($mediatype, $mediafile);
             $bild->sendMedia('', '');
         }
