@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -16,6 +16,12 @@
  *  Umgang mit Medien, deren Darstellung auf Fokuspunkten basiert.
  */
 
+namespace FriendsOfRedaxo\Focuspoint;
+
+use rex_effect_abstract_focuspoint;
+use rex_media;
+
+/** @api */
 class focuspoint_media extends rex_media
 {
     /**
@@ -26,7 +32,7 @@ class focuspoint_media extends rex_media
     public static function get($name)
     {
         $media = parent::get($name);
-        if ($media) {
+        if (null !== $media) {
             if (!$media->isImage()) {
                 $media = null;
             }
@@ -56,19 +62,19 @@ class focuspoint_media extends rex_media
      *                                          sich die Prozentwerte der Koordinaten beziehen, oder True für
      *                                          [bildbreite,bildhöhe]
      *
-     *  @return array<float>                    [x,y] als Koordinaten-Array
+     *  @return array<float|int>                [x,y] als Koordinaten-Array
      */
     public function getFocus($metafield = null, ?array $default = null, $wh = false)
     {
         // read the field
-        if (null == $metafield) {
+        if (null === $metafield) {
             $metafield = rex_effect_abstract_focuspoint::MED_DEFAULT;
         }
-        $xy = (string) $this->getValue((string) $metafield);
+        $xy = (string) $this->getValue($metafield);
 
         $fp = rex_effect_abstract_focuspoint::str2fp($xy);
         if (false === $fp) {
-            $fp = $default ?: rex_effect_abstract_focuspoint::$mitte;
+            $fp = null === $default ? rex_effect_abstract_focuspoint::$mitte : $default;
         }
 
         if (false !== $wh) {
@@ -96,10 +102,10 @@ class focuspoint_media extends rex_media
     public function hasFocus($metafield = null)
     {
         // read the field
-        if (null == $metafield) {
+        if (null === $metafield) {
             $metafield = rex_effect_abstract_focuspoint::MED_DEFAULT;
         }
-        $xy = (string) $this->getValue((string) $metafield);
+        $xy = (string) $this->getValue($metafield);
         // check for a valid entry
         return false !== rex_effect_abstract_focuspoint::str2fp($xy);
     }

@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -22,9 +22,19 @@
  *  2) Lösche die zuvor installierten Standards
  *      - Meta-Feld "med_focuspoint"
  *      - Meta-Typ "Focuspoint (AddOn)"
- *
- *  @var rex_addon $this
  */
+
+namespace FriendsOfRedaxo\Focuspoint;
+
+use rex;
+use rex_addon;
+use rex_effect_abstract_focuspoint;
+use rex_media_manager;
+use rex_sql;
+
+use function count;
+
+/** @var rex_addon $this */
 
 // make addon-parameters available
 include_once 'lib/effect_focuspoint.php';
@@ -38,13 +48,13 @@ rex_metainfo_delete_field(rex_effect_abstract_focuspoint::MED_DEFAULT);
 $qry = 'SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label=:label LIMIT 1';
 $typeId = $sql->getArray($qry, [':label' => rex_effect_abstract_focuspoint::META_FIELD_TYPE]);
 
-if (count($typeId)) {
-    rex_metainfo_delete_field_type((int) $typeId[0]['id']);
+if (0 < count($typeId)) {
+    rex_metainfo_delete_field_type($typeId[0]['id']);
 }
 
 // remove media-manager-type
 $sql->setQuery('select id from ' . rex::getTable('media_manager_type') . ' where name="' . rex_effect_abstract_focuspoint::MM_TYPE . '" LIMIT 1');
-if ($sql->getRows()) {
+if (0 < (int) $sql->getRows()) {
     $id = $sql->getValue('id');
     $sql->setTable(rex::getTable('media_manager_type'));
     $sql->setWhere('id=' . $id);

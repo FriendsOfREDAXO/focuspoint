@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -18,24 +18,29 @@
  *  HANDLE WITH CARE!
  */
 
-// rexstan meldet: "Class focuspoint_reflection extends generic class ReflectionClass but does not specify its types: T"
-// Warum?? Einfach ignorieren
+namespace FriendsOfRedaxo\Focuspoint;
+
+use ReflectionClass;
+
 class focuspoint_reflection extends ReflectionClass
 {
-    /** @var object */
+    /**
+     * @var object
+     * @api
+     */
     public $obj;
 
     /**
-     *  @param object $obj
      *  @return void
      */
-    public function __construct($obj)
+    public function __construct(object $obj)
     {
         parent::__construct($obj);
         $this->obj = $obj;
     }
 
     /**
+     *  @api
      *  @param string $method
      *  @param array<mixed> $params
      *  @return mixed
@@ -48,6 +53,7 @@ class focuspoint_reflection extends ReflectionClass
     }
 
     /**
+     *  @api
      *  @param string $prop
      *  @return mixed
      */
@@ -59,6 +65,7 @@ class focuspoint_reflection extends ReflectionClass
     }
 
     /**
+     *  @api
      *  @param string $prop
      *  @param mixed $value
      *  @return void

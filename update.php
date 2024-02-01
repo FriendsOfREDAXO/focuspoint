@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -14,11 +14,28 @@
  *  only necessary for updates from versions pre 2.0
  *
  *  SQL-transaction is rolled back in case of update-errors
- *
- *  @var rex_addon $this
  */
 
-if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
+namespace FriendsOfRedaxo\Focuspoint;
+
+use Exception;
+
+use PDO;
+use rex;
+use rex_addon;
+use rex_effect_abstract_focuspoint;
+use rex_i18n;
+use rex_sql;
+use rex_sql_column;
+use rex_sql_table;
+use rex_version;
+
+use function count;
+use function is_string;
+
+/** @var rex_addon $this */
+
+if (rex_version::compare($this->getVersion(), '2.0', '<')) {
     // activate .lang-files currently in a temporary directory
     rex_i18n::addDirectory(__DIR__ . '/lang');
 
@@ -26,26 +43,34 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
     include_once 'lib/effect_focuspoint.php';
 
     $sql = rex_sql::factory();
+    /**
+     * STAN: Calling rex_sql::beginTransaction() is forbidden, handling transactions manually is error prone.
+     * Nee, das bleibt erstmal so.
+     * @phpstan-ignore-next-line
+     */
     $sql->beginTransaction();
     $message = '';
 
     // Add or identify meta_type for focuspoint-fields
     $qry = 'SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label=:label LIMIT 1';
-    $type_id = $sql->getArray($qry, [':label' => rex_effect_abstract_focuspoint::META_FIELD_TYPE]);
+    $result = $sql->getArray($qry, [':label' => rex_effect_abstract_focuspoint::META_FIELD_TYPE]);
 
-    $type_id = $type_id
-            ? $type_id[0]['id']
+    $type_id = 0 < count($result)
+            ? $result[0]['id']
             : rex_metainfo_add_field_type(rex_effect_abstract_focuspoint::META_FIELD_TYPE, 'string', 20);
 
     // if valid type_id add default-field
     if (is_numeric($type_id)) {
 
+        // TODO: entfernen
+        /** @ var int|numeric-string $type_id */
+
         // Identify existing metafield by name and read current type_id
         $qry = 'SELECT type_id FROM ' . rex::getTable('metainfo_field') . ' WHERE name=:name LIMIT 1';
         $field = $sql->getArray($qry, [':name' => rex_effect_abstract_focuspoint::MED_DEFAULT]);
 
-        if ($field) {
-            if ($field[0]['type_id'] != $type_id) {
+        if (0 < count($field)) {
+            if ($field[0]['type_id'] !== $type_id) {
                 $message = rex_i18n::msg('focuspoint_install_field_exists', rex_effect_abstract_focuspoint::MED_DEFAULT, rex_effect_abstract_focuspoint::META_FIELD_TYPE);
             }
         } else {
@@ -63,7 +88,7 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
         }
 
         // Field prepared
-        if (!$message) {
+        if ('' === $message) {
 
             try {
 
@@ -71,13 +96,19 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
 
                 $tab = rex::getTable('media');
                 $qry = 'SHOW COLUMNS FROM ' . $tab . ' WHERE Field = "med_focuspoint_data"';
-                if ($sql->getArray($qry)) {
+                if (0 < count($sql->getArray($qry))) {
 
                     $qry = 'SELECT id,med_focuspoint_data FROM ' . $tab . ' WHERE med_focuspoint_data > ""';
                     /** @var array<integer,string> $liste */
+                    /**
+                     * STAN: Query error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'med_focuspoint_data' in 'field list' (42S22).
+                     * Die Spalte wird hier als Metafeld hinzugefügt und wird damit eine Spalte der Tabelle.
+                     * Das kann RexStan verm. nicht wissen/verstehen. Daher zur Fehlermeldungsunterdrückung.
+                     * @phpstan-ignore-next-line
+                     */
                     $liste = $sql->getArray($qry, [], PDO::FETCH_KEY_PAIR);
                     foreach ($liste as $k => $v) {
-                        if (preg_match_all('/(?<x>[+-]?[0-1][.][0-9]{2}),(?<y>[+-]?[0-1][.][0-9]{2})/', $v, $tags)) {
+                        if (0 < preg_match_all('/(?<x>[+-]?[0-1][.][0-9]{2}),(?<y>[+-]?[0-1][.][0-9]{2})/', $v, $tags)) {
                             $x = ($tags['x'][0] + 1) * 50;
                             $y = (1 - $tags['y'][0]) * 50;
                             $x = max(0, min(100, $x));
@@ -116,14 +147,14 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
                         }
                         if (!isset($v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_meta'])) {
                             $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_meta'] =
-                                $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_fp'] == rex_i18n::msg('media_manager_effekt_focuspointfit_fp_inherit')
+                                $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_fp'] === rex_i18n::msg('media_manager_effekt_focuspointfit_fp_inherit')
                                 ? 'default (' . rex_i18n::msg('focuspoint_edit_label_focus') . ')'
                                 : rex_effect_abstract_focuspoint::MED_DEFAULT;
                             unset($v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_fp']);
                         }
                         if (isset($v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom']) &&
-                            preg_match('(0%|25%|50%|75%|100%)', $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'], $match) &&
-                            count($match) > 0) {
+                            0 < preg_match('(0%|25%|50%|75%|100%)', $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'], $match) &&
+                            0 < count($match)) {
                             $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'] = $match[0];
                         } else {
                             $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'] = '0%';
@@ -146,7 +177,7 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
                 // add media-manager-type for interactiv focuspoint-selection
                 // don't check existance of effect "resize"; just setup.
                 $sql->setQuery('select id, name from ' . rex::getTable('media_manager_type') . ' where name="' . rex_effect_abstract_focuspoint::MM_TYPE . '" LIMIT 1');
-                if ($sql->getRows()) {
+                if (0 < $sql->getRows()) {
                     $id = $sql->getValue('id');
                 } else {
                     $sql->setTable(rex::getTable('media_manager_type'));
@@ -158,8 +189,23 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
                 $sql->setWhere('type_id=' . $id);
                 $sql->delete();
                 $sql->setTable(rex::getTable('media_manager_type_effect'));
+                /**
+                 * STAN: Value 'type_id' does not exist in table selected via setTable().
+                 * Falsch.
+                 * @phpstan-ignore-next-line
+                 */
                 $sql->setValue('type_id', $id);
+                /**
+                 * STAN: Value 'effect' does not exist in table selected via setTable().
+                 * Falsch.
+                 * @phpstan-ignore-next-line
+                 */
                 $sql->setValue('effect', 'resize');
+                /**
+                 * STAN: Value 'parameters' does not exist in table selected via setTable().
+                 * Falsch.
+                 * @phpstan-ignore-next-line
+                 */
                 $sql->setValue('parameters', '{"rex_effect_resize":{"rex_effect_resize_width":"1024","rex_effect_resize_height":"1024","rex_effect_resize_style":"maximum","rex_effect_resize_allow_enlarge":"enlarge"}}');
                 $sql->addGlobalUpdateFields();
                 $sql->addGlobalCreateFields();
@@ -175,7 +221,7 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
         $message = rex_i18n::msg('focuspoint_install_type_error', rex_effect_abstract_focuspoint::META_FIELD_TYPE, "<strong><i>$type_id</i></strong>");
     }
 
-    if ($message) {
+    if ('' < $message) {
         $sql->rollBack();
         $this->setProperty('updatemsg', $message);
     } else {
@@ -194,6 +240,12 @@ if (rex_string::versionCompare($this->getVersion(), '2.0', '<')) {
 
 function fpUpdateNumParaOk($para, $low = 0, $default = 0, $high = 0)
 {
-    $para = trim($para);
-    return (empty($para) || !is_numeric($para) || $para < $low || $para > $high) ? $default : (int) $para;
+    if (!is_numeric($para)) {
+        return $default;
+    }
+    if (is_string($para)) {
+        $para = trim($para);
+    }
+    // TODO: Warum wird (int)$para zurückgegeben? Relikt aus der Zeit der nur ganzzahligen %-Sätze?
+    return $para < $low || $para > $high ? $default : (int) $para;
 }
