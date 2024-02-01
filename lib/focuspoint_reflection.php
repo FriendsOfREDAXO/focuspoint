@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -16,54 +16,64 @@
  *  in der Klasse ansonsten nicht zugänglich sind (private oder protected)
  *
  *  HANDLE WITH CARE!
- *
  */
 
-// rexstan meldet: "Class focuspoint_reflection extends generic class ReflectionClass but does not specify its types: T"
-// Warum?? Einfach ignorieren
-class focuspoint_reflection extends ReflectionClass {
+namespace FriendsOfRedaxo\focuspoint;
 
-    /** @var object */
-    public $obj = null;
+use ReflectionClass;
+
+class focuspoint_reflection extends ReflectionClass
+{
+    /** 
+     * @var object 
+     * @api
+     */
+    public $obj;
 
     /**
-     *  @param object $obj
      *  @return void
      */
-    function __construct( $obj ) {
-        parent::__construct( $obj );
+    public function __construct(object $obj)
+    {
+        parent::__construct($obj);
         $this->obj = $obj;
     }
 
     /**
+     *  @api
      *  @param string $method
      *  @param array<mixed> $params
      *  @return mixed
      */
-    function executeMethod ($method, array $params){
-        $method = $this->getMethod( $method );
+    public function executeMethod($method, array $params)
+    {
+        $method = $this->getMethod($method);
         $method->setAccessible(true);
         return $method->invokeArgs($this->obj, $params);
     }
 
     /**
+     *  @api
      *  @param string $prop
      *  @return mixed
      */
-    function getPropertyValue ( $prop ) {
+    public function getPropertyValue($prop)
+    {
         $property = $this->getProperty($prop);
         $property->setAccessible(true);
-        return $property->getValue( $this->obj );
+        return $property->getValue($this->obj);
     }
 
     /**
+     *  @api
      *  @param string $prop
      *  @param mixed $value
      *  @return void
      */
-    function setPropertyValue ( $prop, $value ) {
+    public function setPropertyValue($prop, $value)
+    {
         $property = $this->getProperty($prop);
         $property->setAccessible(true);
-        $property->setValue( $this->obj, $value );
+        $property->setValue($this->obj, $value);
     }
 }

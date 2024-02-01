@@ -31,49 +31,46 @@
  *               &file=      Name der Mediendatei
  *               &type=      Name des MM-Effektes
  *               &xy=        Fokuspunkt numerisch (0.0,0.0 bis 100.1,100.0)
- *
  */
 
- class rex_api_focuspoint extends rex_api_function {
-
+class rex_api_focuspoint extends rex_api_function
+{
     //	protected $published = true;
 
     /**
-     *  Ausführende Funktion des rex_api_call "focuspoint"
+     *  Ausführende Funktion des rex_api_call "focuspoint".
      *
      *  prüft die Request-Parameter, initiiert die Bilderstellung und sendet das Bild an die Browser
      */
-    public function execute() {
+    public function execute()
+    {
 
-        $mediafile = rex_request( 'file', 'string', '' );
-        $mediatype = rex_request( 'type', 'string', '' );
+        $mediafile = rex_request('file', 'string', '');
+        $mediatype = rex_request('type', 'string', '');
 
-        if( $mediafile && $mediatype )
-        {
-            $bild = focuspoint_media_manager::createMedia( $mediatype, $mediafile );
-            $bild->sendMedia( '', '' );
+        if ('' < $mediafile && '' < $mediatype) {
+            $bild = focuspoint_media_manager::createMedia($mediatype, $mediafile);
+            $bild->sendMedia('', '');
         }
         exit;
     }
-
 }
 
 /**
-*  Da die wichtige Funktion rex_media_manager->applyEffects 'protected' ist, muss eine abgeleitete
-*  Klasse "focuspoint_media_manager" zwischengeschaltet werden, um das neue Bild zu generieren.
-*
-*/
+ *  Da die wichtige Funktion rex_media_manager->applyEffects 'protected' ist, muss eine abgeleitete
+ *  Klasse "focuspoint_media_manager" zwischengeschaltet werden, um das neue Bild zu generieren.
+ */
 class focuspoint_media_manager extends rex_media_manager
 {
     /**
-     *  Erzeugt das Bild des media-Effektes
+     *  Erzeugt das Bild des media-Effektes.
      *
      *  @param  string $type        Medientyp
      *  @param  string $file        Name der Bilddatei im Medienpool
      *
      *  @return rex_managed_media   Ergebnisbild
      */
-    public static function createMedia( $type=null, $file=null )
+    public static function createMedia($type = null, $file = null)
     {
         $mediaPath = rex_path::media($file);
         $media = new rex_managed_media($mediaPath);

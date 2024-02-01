@@ -1,9 +1,9 @@
 <?php
 /**
- *  This file is part of the REDAXO-AddOn ".....".
+ *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.0.2
+ *  @version     4.1.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -47,20 +47,27 @@
  *  Note:
  *      in case of an install (not re-install) or update the addon addon/lib and other configurations
  *      are not loaded. Be carefull. But generally special prechecks are not necessary for "install"
- *
- *  @var rex_addon $this
- *  @var string $request
+ */
+
+namespace FriendsOfRedaxo\focuspoint;
+
+use rex_addon;
+use rex_functional_exception;
+use rex_i18n;
+
+/**
+ * @var rex_addon $this
+ * @var string $request Ist aus dem aufrufenden Context vorhanden
  */
 
 $message = '';
 $header = '';
-switch ( $request )
-{
+switch ($request) {
     case 'install':
-        //noop
+        // noop
         break;
     case 'reinstall':
-        //noop
+        // noop
         break;
     case 'activate':
         $message = focuspoint::checkActivateDependencies();
@@ -79,8 +86,8 @@ switch ( $request )
         $header = 'addon_not_deleted';
         break;
 }
-dump($message);
-if( $message ){
+
+if ('' < $message) {
     $message = rex_i18n::rawMsg($header, $this->getName()) . "<br>$message";
-    throw new rex_functional_exception( $message );
+    throw new rex_functional_exception($message);
 }
