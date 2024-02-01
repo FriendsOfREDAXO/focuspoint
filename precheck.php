@@ -49,7 +49,7 @@
  *      are not loaded. Be carefull. But generally special prechecks are not necessary for "install"
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use rex_addon;
 use rex_functional_exception;
@@ -60,7 +60,7 @@ use rex_i18n;
  * @var string $request Ist aus dem aufrufenden Context vorhanden
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use rex_functional_exception;
 use rex_i18n;

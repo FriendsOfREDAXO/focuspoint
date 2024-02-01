@@ -16,7 +16,7 @@
  *  Umgang mit Medien, deren Darstellung auf Fokuspunkten basiert.
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use rex_effect_abstract_focuspoint;
 use rex_media;

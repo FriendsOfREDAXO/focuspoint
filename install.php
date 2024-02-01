@@ -21,7 +21,7 @@
  *  with a different meta-type.
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use rex;
 use rex_addon;

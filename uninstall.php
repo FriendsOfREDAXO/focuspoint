@@ -24,7 +24,7 @@
  *      - Meta-Typ "Focuspoint (AddOn)"
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use rex;
 use rex_addon;

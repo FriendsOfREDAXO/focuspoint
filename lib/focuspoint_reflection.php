@@ -18,7 +18,7 @@
  *  HANDLE WITH CARE!
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use ReflectionClass;
 

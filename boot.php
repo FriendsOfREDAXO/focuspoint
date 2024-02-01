@@ -15,7 +15,7 @@
  *  nur durchzuführen, wenn es notwendig ist, jedoch nicht bei jedem Aufruf.
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use rex;
 use rex_addon;
