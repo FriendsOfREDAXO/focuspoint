@@ -16,7 +16,7 @@
  *  SQL-transaction is rolled back in case of update-errors
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use Exception;
 

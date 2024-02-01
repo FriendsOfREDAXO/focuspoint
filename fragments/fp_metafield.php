@@ -23,7 +23,7 @@
  *  $this->hidden       true => ausblenden
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use rex_fragment;
 

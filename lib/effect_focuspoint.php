@@ -20,7 +20,7 @@
  *  "rex_effect_abstract"!
  */
 
-use FriendsOfRedaxo\focuspoint\focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\focuspoint_media;
 
 /** @api */
 abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract

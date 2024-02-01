@@ -16,7 +16,7 @@
  *  aufgerufen werden
  */
 
-namespace FriendsOfRedaxo\focuspoint;
+namespace FriendsOfRedaxo\Focuspoint;
 
 use PDO;
 use rex;
