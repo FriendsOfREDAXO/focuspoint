@@ -292,7 +292,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
     public function decodeSize($value, $ref = 0)
     {
         $value = trim($value);
-        if (0 < preg_match('/' . self::PATTERN . '/', $value)) {
+        if (0 === preg_match('/' . self::PATTERN . '/', $value)) {
             return null;
         }
         if (str_contains($value, '%')) {
