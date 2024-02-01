@@ -243,7 +243,7 @@ class focuspoint_boot
 
         // Verhindert beim Editieren des Support-Media-Types im Medienpool dass der Name überschrieben wird.
         // Außerdem darf der Eintrag nicht gelöscht werden, daher muss der Löschbutton unterdrückt werden.
-        if ('edit' === rex_request('func', 'string')) {
+       if ('edit' === rex_request('func', 'string')) {
 
             rex_extension::register('REX_FORM_CONTROL_FIELDS', static function (rex_extension_point $ep) {
                 $sql = rex_sql::factory();

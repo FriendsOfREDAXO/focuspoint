@@ -1,5 +1,11 @@
 # Changelog
 
+## **xx.xx.2024 Version 4.1.0
+
+- Umstellung auf den Namespace **FriendsOfRedaxo\focuspoint**. Aus Klasse `xyz` wird `FriendsOfRedaxo\focuspoint\xyz`. Für eine Übergangszeit ist der
+  alte Aufruf mit `xyz` weiterhin möglich. In der Entwicklungsumgebung sind die Aufrufe als **Deprecated** gekennzeichnet und sollten schnellstens auf die
+  neue Variante umgestellt werden. Mit Version 5.0.0 wird die alte Auftufvariante endgültig entfernt.
+
 ## **18.03.2023 Version 4.0.4**
 
 - Bugfix: mitigates deprecated warning (PHP 8.1) or exception(PHP 8.2) when using a target sizes like "80%" in the effect "focuspoint_fit"

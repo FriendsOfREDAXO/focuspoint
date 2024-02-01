@@ -28,7 +28,6 @@ use rex_i18n;
 use rex_sql;
 use rex_sql_column;
 use rex_sql_table;
-
 use rex_version;
 
 use function count;

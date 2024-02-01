@@ -151,7 +151,6 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
                 : $this->getDefaultFocus($default);
         }
         return is_array($wh) && count($wh) === 2 ? self::rel2px($fp, $wh) : $fp;
-
     }
 
 

@@ -67,7 +67,7 @@ class focuspoint_media extends rex_media
     public function getFocus($metafield = null, ?array $default = null, $wh = false)
     {
         // read the field
-        if (null === $metafield) {
+       if (null === $metafield) {
             $metafield = rex_effect_abstract_focuspoint::MED_DEFAULT;
         }
         $xy = (string) $this->getValue($metafield);

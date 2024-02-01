@@ -60,6 +60,11 @@ use rex_i18n;
  * @var string $request Ist aus dem aufrufenden Context vorhanden
  */
 
+namespace FriendsOfRedaxo\focuspoint;
+
+use rex_functional_exception;
+use rex_i18n;
+
 $message = '';
 $header = '';
 switch ($request) {

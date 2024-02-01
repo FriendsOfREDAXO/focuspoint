@@ -31,7 +31,6 @@ use rex_media;
 use rex_media_manager;
 
 /** @var rex_fragment $this */
-
 ?>
 <div id="focuspoint-panel" class="focuspoint-panel panel panel-default">
     <div class="panel-heading"><?= rex_i18n::msg('focuspoint_detail_header') ?></div>
