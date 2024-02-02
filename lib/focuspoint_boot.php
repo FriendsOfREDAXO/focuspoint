@@ -33,7 +33,7 @@ use function array_key_exists;
 use function count;
 
 /** @api */
-class focuspoint_boot
+class Focuspoint_boot
 {
     /**
      *  page=mediapool/media.

@@ -22,7 +22,7 @@ use rex_effect_abstract_focuspoint;
 use rex_media;
 
 /** @api */
-class focuspoint_media extends rex_media
+class Focuspoint_media extends rex_media
 {
     /**
      *  Gibt die Bildinstanz zurück und prüft dabei ab, ob es ein Bild ist (isImage).
