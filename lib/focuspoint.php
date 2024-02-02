@@ -34,7 +34,7 @@ use function count;
 use function strlen;
 
 /** @api */
-class focuspoint
+class Focuspoint
 {
     /**
      *  Erzeugt den HTML-Code, der in der Sidebar des Media-Detailformulars zur interaktiven

@@ -45,7 +45,7 @@
  *  Beispiel: $dw, $dh, $dr
  */
 
-use FriendsOfRedaxo\Focuspoint\focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\Focuspoint_media;
 
 /** @api */
 class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
