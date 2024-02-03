@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -11,7 +11,7 @@
  *
  *  ------------------------------------------------------------------------------------------------
  *
- *  focuspoint_reflection ist eine erweiterte PHP ReflectionClass. Sie erlaubt auf etwas
+ *  FocuspointReflection ist eine erweiterte PHP ReflectionClass. Sie erlaubt auf etwas
  *  vereinfachte Art Properties abzufragen oder zu ändern bzw. Methoden auszuführen, die
  *  in der Klasse ansonsten nicht zugänglich sind (private oder protected)
  *
@@ -22,7 +22,7 @@ namespace FriendsOfRedaxo\Focuspoint;
 
 use ReflectionClass;
 
-class Focuspoint_reflection extends ReflectionClass
+class FocuspointReflection extends ReflectionClass
 {
     /**
      * @var object

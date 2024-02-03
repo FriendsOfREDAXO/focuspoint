@@ -1,5 +1,16 @@
 # Changelog
 
+## **xx.02.2024 Version 4.2.0**
+
+- Umstellung der Klassennamen im Namespace auf CamelCase unter Wegfall von _.
+  Beispiel `focuspoint_media` -> `FocuspointMedia`
+- Anpassen der Dateinamen an die Klassennamen
+
+Ausnahme: auf `rex_effect` und `rex_api` aufsetzende Klassen
+
+Bugfix: 
+- StrToLower per array-Walk in die vorhergehende SQL-Abfrage verlagert. 
+
 ## **01.02.2024 Version 4.1.0**
 
 - Umstellung auf den Namespace **FriendsOfRedaxo\Focuspoint**. Aus Klasse `xyz` wird `FriendsOfRedaxo\Focuspoint\xyz`. 

@@ -13,7 +13,7 @@
 > Dies sind die wichtigsten Hilfsmittel:
 >
 > - [Extension-Point `FOCUSPOINT_PREVIEW_SELECT`](#api-ep)
-> - [Klasse `focuspoint_media`](#api-rfm)
+> - [Klasse `FocuspointMedia`](#api-rfm)
 > - [Klasse `rex_effect_abstract_focuspoint`](#api-refa)
 > - [rex_api_call `focuspoint`](#api-racf)
 > - [Eigene Fokuspunkt-Effekte entwickeln](#api-mofe)
@@ -23,13 +23,13 @@ können entweder über einen vollständigen Qualifier aufgerufen werden oder dur
 
 ```
 ...
-$image = FriendsOfRedaxo\Focuspoint\focuspoint_media::get($filename);
+$image = FriendsOfRedaxo\Focuspoint\FocuspointMedia::get($filename);
 ```
 
 ```
-use FriendsOfRedaxo\Focuspoint\focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
 ...
-$image = focuspoint_media::get($filename);
+$image = FocuspointMedia::get($filename);
 ```
 
 
@@ -99,9 +99,9 @@ rex_extension::register('FOCUSPOINT_PREVIEW_SELECT', function($ep){
 
 
 <a name="api-rfm"></a>
-## Klasse `focuspoint_media`
+## Klasse `FocuspointMedia`
 
-Die neue Klasse `focuspoint_media` erleichtert die Nutzung von Medien mit Fokuspunkt-Datenfeldern.
+Die neue Klasse `FocuspointMedia` erleichtert die Nutzung von Medien mit Fokuspunkt-Datenfeldern.
 
 Konkret stellt die Klasse zwei zusätzliche Methoden bereit:
 
@@ -123,13 +123,13 @@ eines Addons wird der Extension-Point `MEDIA_LIST_FUNCTIONS` belegt.
 Abgefragt wird das Default-Feld "med_focuspoint":
 
 ```php
-use FriendsOfRedaxo\Focuspoint\focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
 
 if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') )
 {
     rex_extension::register( 'MEDIA_LIST_FUNCTIONS', function( rex_extension_point $ep )
     {
-        $image = focuspoint_media::get( $ep->getParams()['file_name'] );
+        $image = FocuspointMedia::get( $ep->getParams()['file_name'] );
         if( $image && $image->hasValue() )
         {
             list( $x, $y) = $image->getFocus();
@@ -143,17 +143,18 @@ Falls zusätzlich individuelle Fokuspunkt-Metafelder definiert sind, kann mit di
 komplette Satz überprüft werden:
 
 ```php
-use FriendsOfRedaxo\Focuspoint\focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\Focuspoint;
+use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
 
 if( rex_request('page', 'string') == 'mediapool/media' && !rex_request('file_id', 'string') )
 {
     rex_extension::register( 'MEDIA_LIST_FUNCTIONS', function( rex_extension_point $ep )
     {
-        $image = focuspoint_media::get( $ep->getParams()['file_name'] );
+        $image = FocuspointMedia::get( $ep->getParams()['file_name'] );
         if( $image )
         {
             $content = [];
-            foreach( focuspoint::getMetafieldList() as $fpFeld )
+            foreach( Focuspoint::getMetafieldList() as $fpFeld )
             {
                 if( $image->hasFocus(fpFeld) )
                 {
@@ -182,12 +183,12 @@ Die Parameter sind:
 Falls das angegebene Fokuspunkt-Metafeld nicht existiert, wird nicht auf das Default-Feld
 zurückgegriffen, sondern der Fallback-Wert herangezogen.
 
-Die Klasse `focuspoint_media` kann z.B. in eigenen Effekten, die auf Fokuspunkten basieren,
+Die Klasse `FocuspointMedia` kann z.B. in eigenen Effekten, die auf Fokuspunkten basieren,
 eingesetzt werden, aber auch in beliebigen anderen Zusammenhängen. Hier ein Beispiel :
 ```php
-use FriendsOfRedaxo\Focuspoint\focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
 
-$fpMedia = focuspoint_media::get( $filename );
+$fpMedia = FocuspointMedia::get( $filename );
 
 if ( $fpMedia )
 {
@@ -204,7 +205,7 @@ gesetzt. `true` bewirkt, dass der Rückgabewert in absolute Bildpunkte umgerechn
 Ein Bild mit den Abmessungen `1291px / 855px` ergibt auf Basis des Fallback-Wertes die Rückgabe
 `[646,513]`.
 
-> `focuspoint_media::get( $filename )` liefert nur dann ein Objekt zurück, wenn die angegebene
+> `FocuspointMedia::get( $filename )` liefert nur dann ein Objekt zurück, wenn die angegebene
 > Datei ein Bild ist, sonst `null`.
 
 
@@ -325,7 +326,7 @@ $x = $this->getMetaField(  );                     // Ergebnis: 'med_focuspoint'
 ### getFocus()
 
 ```php
-array function getFocus( focuspoint_media $media=null, array $default=null, array $wh=null )
+array function getFocus( FocuspointMedia $media=null, array $default=null, array $wh=null )
 ```
 
 Die Funktion ermittelt den für das Bild relevanten Fokuspunkt. Dabei werden unterschiedliche Quellen in folgender Reihenfolge herangezogen:
@@ -334,14 +335,14 @@ Die Funktion ermittelt den für das Bild relevanten Fokuspunkt. Dabei werden unt
 	greift Variante 2.
 2. Falls in der URL der Parameter xy=«metafeld» enthalten ist, wird statt des in der Effekt-Konfiguration ausgewählten
 	Focuspoint-Metafeldes das hier angegebene Feld benutzt. Für $media gelten die Regeln aus Punkt 3.
-3. Wenn $media ein Objekt vom Typ focuspoint_media (oder davon abgeleitet) ist, wird darüber der Fokuspunkt  
+3. Wenn $media ein Objekt vom Typ FocuspointMedia (oder davon abgeleitet) ist, wird darüber der Fokuspunkt  
 	direkt aus den Bilddaten im Medienpool abgerufen. Basis ist das in der Effekt-Konfiguration ausgewählte Metafeld.
 4. Wenn die obigen Varianten auf einen Fehler laufen bzw. keine Daten finden, wird `$default` zurückgegeben.
 5. Wenn `$default` nicht angegeben ist, wird `[50,50]` zurückgegeben (also Bildmitte).
 
 
 ```php
-$focuspoint = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ), [ 50,60 ] );
+$focuspoint = $this->getFocus( FocuspointMedia::get( $this->media->getMediaFilename() ), [ 50,60 ] );
 ...
 ```
 
@@ -430,7 +431,7 @@ class rex_effect_focuspoint_myeffect extends rex_effect_abstract_focuspoint
     function execute()
     {
 
-		$focuspoint = $this->getFocus( focuspoint_media::get( $this->media->getMediaFilename() ) );
+		$focuspoint = $this->getFocus( FocuspointMedia::get( $this->media->getMediaFilename() ) );
 
 		$this->media->asImage();
 		$gdimage = $this->media->getImage();

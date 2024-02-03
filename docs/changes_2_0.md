@@ -8,7 +8,7 @@ Version 2.0 ist komplett neu entwickelt. Am Grundprinzip hat sich nichts geände
 Allerdings sind einige Erweiterungen hinzugekommen, die die Nutzung erweitern und erleichtern, sowie
 strukturelle Änderungen.
 
-- die Klasse `focuspoint_media` erweitert `rex_media` mit einer zusätzlichen Methode zum Abruf valider Koordinaten
+- die Klasse `FocuspointMedia` erweitert `rex_media` mit einer zusätzlichen Methode zum Abruf valider Koordinaten
 - Die Klasse `rex_effect_abstract_focuspoint` erweitert "rex_effect_abstract" um Fokuspunkt-bezogene Methoden und dient als Basis der mitgelieferten und für eigene Media-Manager-Effekte
 - Zusätzliche eigene Fokuspunkt-Felder mit dem neuen Metatyp `Focuspoint (AddOn)`
 - Verbesserte interaktive Fokuspunkt-Zuordnung im Media-Detailformular
@@ -36,9 +36,9 @@ Um einen dem alten Feld vergleichbaren Wert zu erhalten, sollte die Koordinate i
 Einzelwerten abgerufen werden. Man kann die Einzelwerte nach Bedarf weiterverarbeiten.
 
 ```
-use FriendsOfRedaxo\Focuspoint\focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
 
-$fpMedia = focuspoint_media::get( $filename );  // statt rex_media::get( $filename )
+$fpMedia = FocuspointMedia::get( $filename );  // statt rex_media::get( $filename )
 list( $x, $y) = $fpMedia->getFocus();           // Abruf von "med_focuspoint" als [$x,$y]
 $fp = "$x%,$y%";                                // Verwendung
 ```
@@ -52,30 +52,10 @@ Wert zwischen -1 (links bzw. unten) und 1 (rechts bzw. oben).
 - neu: 50.0,60.0
 
 ```
-use FriendsOfRedaxo\Focuspoint\focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
 
-$fpMedia = focuspoint_media::get( $filename );  // statt rex_media::get( $filename )
+$fpMedia = FocuspointMedia::get( $filename );  // statt rex_media::get( $filename )
 list( $x_neu, $y_neu) = $fpMedia->getFocus();    // Abruf von "med_focuspoint" als [$x,$y]
 $x_alt = $x_neu / 50 - 1;                       // X-Koordinate umrechnen
 $y_alt = 1 - $y_neu / 50;                       // Y-Koordinate umrechnen
 ```
-
-## Media-Manager-Effekt "focuspoint_resize"
-
-Der Effekt `focuspoint_resize` für den Media-Manager wird nicht mehr unterstützt, da sich in Umfragen keine
-Nutzer gemeldet haben. Der Effekt ist noch im Addon enthalten und wird erst in Version 2.2 vollständig entfernt werden.
-Die Dokumentation geht nicht weiter auf den Effekt ein.
-
-**Empfehlung:**
-Ersatz durch den Effekt `focuspoint_fit`. Die Parametrisierung ist allerdings so unterschiedlich, dass
-keine konkrete Empfehlung gegeben werden kann, wie das Resize-Ergebnis exakt reproduziert werden kann.
-Der Grund: "resize" orientiert sich am Ausgangsbild, "fit" am Zielformat.
-
-Wer auf keinen Fall auf den Effekt verzichten kann, sollte ihn perspektivisch in das Projekt-Addon
-verschieben.
-
-**Roadmap:**
-
-- Version 2.0: Der Effekt ist als "künftig wegfallend" markiert, steht aber weiterhin (ohne Dokumentation) zur Verfügung.
-- Version 2.1: Der Effekt wird zwar weiterhin ausgeliefert, aber nicht in der boot.php aktiviert.
-- Version 2.2: Der Effekt wird komplett entfernt.

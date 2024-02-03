@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -52,16 +52,13 @@
 namespace FriendsOfRedaxo\Focuspoint;
 
 use rex_addon;
+use rex_functional_exception;
+use rex_i18n;
 
 /**
  * @var rex_addon $this
  * @var string $request Ist aus dem aufrufenden Context vorhanden
  */
-
-namespace FriendsOfRedaxo\Focuspoint;
-
-use rex_functional_exception;
-use rex_i18n;
 
 $message = '';
 $header = '';
@@ -73,19 +70,19 @@ switch ($request) {
         // noop
         break;
     case 'activate':
-        $message = focuspoint::checkActivateDependencies();
+        $message = Focuspoint::checkActivateDependencies();
         $header = 'addon_no_activation';
         break;
     case 'deactivate':
-        $message = focuspoint::checkDeactivateDependencies();
+        $message = Focuspoint::checkDeactivateDependencies();
         $header = 'addon_no_deactivation';
         break;
     case 'uninstall':
-        $message = focuspoint::checkUninstallDependencies();
+        $message = Focuspoint::checkUninstallDependencies();
         $header = 'addon_no_uninstall';
         break;
     case 'delete':
-        $message = focuspoint::checkUninstallDependencies();
+        $message = Focuspoint::checkUninstallDependencies();
         $header = 'addon_not_deleted';
         break;
 }

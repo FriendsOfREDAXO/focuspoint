@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -45,7 +45,7 @@
  *  Beispiel: $dw, $dh, $dr
  */
 
-use FriendsOfRedaxo\Focuspoint\Focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
 
 /** @api */
 class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
@@ -88,7 +88,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
                 dann den FP des Bildes.
                 Umrechnen in absolute Bildkoordinaten (Pixel)
         */
-        [$fx, $fy] = $this->getFocus(focuspoint_media::get($this->media->getMediaFilename()), $this->getDefaultFocus(), [$sw, $sh]);
+        [$fx, $fy] = $this->getFocus(FocuspointMedia::get($this->media->getMediaFilename()), $this->getDefaultFocus(), [$sw, $sh]);
 
         /*--------------------------
 

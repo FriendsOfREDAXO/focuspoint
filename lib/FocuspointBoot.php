@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -33,7 +33,7 @@ use function array_key_exists;
 use function count;
 
 /** @api */
-class Focuspoint_boot
+class FocuspointBoot
 {
     /**
      *  page=mediapool/media.
@@ -47,8 +47,8 @@ class Focuspoint_boot
     {
         rex_view::addCssFile($fpAddon->getAssetsUrl('focuspoint.min.css'));
         rex_view::addJsFile($fpAddon->getAssetsUrl('focuspoint.min.js'));
-        rex_extension::register('MEDIA_DETAIL_SIDEBAR', 'focuspoint::show_sidebar');
-        rex_extension::register('METAINFO_CUSTOM_FIELD', 'focuspoint::customfield');
+        rex_extension::register('MEDIA_DETAIL_SIDEBAR', [Focuspoint::class, 'show_sidebar']);
+        rex_extension::register('METAINFO_CUSTOM_FIELD', [Focuspoint::class, 'customfield']);
     }
 
     /**
@@ -66,13 +66,13 @@ class Focuspoint_boot
             rex_extension::register('REX_FORM_GET', static function (rex_extension_point $ep) {
                 try {
                     // provide access to the form-elements
-                    $formReflection = new focuspoint_reflection($ep->getSubject());
+                    $formReflection = new FocuspointReflection($ep->getSubject());
                     $fieldset = $formReflection->getPropertyValue('fieldset');
                     // search the type-select
                     $typeid = $formReflection->executeMethod('getElement', [$fieldset, 'type_id']);
-                    $typeidReflection = new focuspoint_reflection($typeid);
+                    $typeidReflection = new FocuspointReflection($typeid);
                     // get access to the internal REX_SELECT-element
-                    $selectReflection = new focuspoint_reflection($typeidReflection->getPropertyValue('select'));
+                    $selectReflection = new FocuspointReflection($typeidReflection->getPropertyValue('select'));
                     $options = $selectReflection->getPropertyValue('options');
                     foreach ($options[0][0] as $i => $o) {
                         if (rex_effect_abstract_focuspoint::META_FIELD_TYPE !== $o[0]) {
@@ -110,7 +110,7 @@ class Focuspoint_boot
         // prevent deletion of meta-fields still in use by effects
         if ('delete' === rex_request('func', 'string')) {
             rex_extension::register('PACKAGES_INCLUDED', static function (rex_extension_point $ep) {
-                $inUseMessage = focuspoint::metafield_is_in_use(rex_request('field_id', 'int', 0));
+                $inUseMessage = Focuspoint::metafield_is_in_use(rex_request('field_id', 'int', 0));
                 if ('' < $inUseMessage) {
                     // STAN: Using $_REQUEST is forbidden, use rex_request::request() or rex_request() instead.
                     // Da hat er recht, aber ich wüsste nicht, wie man es anders löst.
@@ -127,7 +127,7 @@ class Focuspoint_boot
         if ('edit' === rex_request('func', 'string')) {
             rex_extension::register('REX_FORM_GET', static function (rex_extension_point $ep) {
                 $form = $ep->getSubject();
-                $fpMetafields = focuspoint::getMetafieldList();
+                $fpMetafields = Focuspoint::getMetafieldList();
                 $field_id = rex_request('field_id', 'int');
                 if (array_key_exists($field_id, $fpMetafields)) {
                     $fpField = $fpMetafields[$field_id];
@@ -135,7 +135,7 @@ class Focuspoint_boot
 
                     try {
                         // provide access to the form-elements
-                        $formReflection = new focuspoint_reflection($ep->getSubject());
+                        $formReflection = new FocuspointReflection($ep->getSubject());
                         $fieldset = $formReflection->getPropertyValue('fieldset');
                         $elements = $formReflection->getPropertyValue('elements');
                         $fselements = $elements[$fieldset] ?? [];
@@ -145,10 +145,10 @@ class Focuspoint_boot
                             $message .= rex_i18n::msg('focuspoint_edit_msg_inuse2', $fpField) . '<br>';
                         }
                         // focuspoint-fields in use will get restrictions
-                        $effects = focuspoint::getFocuspointMetafieldInUse($fpField);
+                        $effects = Focuspoint::getFocuspointMetafieldInUse($fpField);
                         if (0 < count($effects)) {
                             $message .= rex_i18n::msg('focuspoint_edit_msg_inuse1', $fpField) .
-                               '<br>' . focuspoint::getFocuspointEffectsInUseMessage($effects);
+                               '<br>' . Focuspoint::getFocuspointEffectsInUseMessage($effects);
                         }
                         if ('' < $message) {
                             $message .= rex_i18n::msg('focuspoint_edit_msg_inuse3', rex_i18n::msg('minfo_field_label_name'), rex_i18n::msg('minfo_field_label_type'));
@@ -174,7 +174,7 @@ class Focuspoint_boot
                                 if ('rex_form_control_element' === $e::class) {
                                     // don´t delete the default-field or fields in use
                                     // so remove the delete-button
-                                    $controlReflection = new focuspoint_reflection($e);
+                                    $controlReflection = new FocuspointReflection($e);
                                     $controlReflection->setPropertyValue('deleteElement', null);
                                     continue;
                                 }
@@ -193,7 +193,7 @@ class Focuspoint_boot
             $list = $ep->getSubject();
             // Erkenntnis aus rexstan: $effectsInUse wird in der custom-function nicht (mehr) benutzt.
             // Erst mal als Kommentar im Code belassen
-            //            $effectsInUse = focuspoint::getFocuspointEffectsInUse();
+            //            $effectsInUse = Focuspoint::getFocuspointEffectsInUse();
             //            $list->setColumnFormat('delete', 'custom', function ($params) use($effectsInUse) {
             $list->setColumnFormat('delete', 'custom', static function ($params) {
                 $list = $params['list'];
@@ -202,7 +202,7 @@ class Focuspoint_boot
                 }
                 // planned with V3.0 because it is a breaking change:
                 //   show detailed in-use-information insteag of a "blocked"
-                // if( $inUse = focuspoint::metafield_is_in_use( $list->getValue('id') ) ) return '<small class="text-muted">'.$inUse.'</small>';
+                // if( $inUse = Focuspoint::metafield_is_in_use( $list->getValue('id') ) ) return '<small class="text-muted">'.$inUse.'</small>';
                 if ($presetValue = $params['params'][0]) {
                     return $list->formatValue('', $presetValue, false, 'delete');
                 }
@@ -257,7 +257,7 @@ class Focuspoint_boot
                     rex_extension::register('REX_FORM_GET', static function (rex_extension_point $ep) {
                         $form = $ep->getSubject();
                         // provide access to the form-elements
-                        $formReflection = new focuspoint_reflection($form);
+                        $formReflection = new FocuspointReflection($form);
                         $fieldset = $formReflection->getPropertyValue('fieldset');
                         $elements = $formReflection->getPropertyValue('elements');
                         $fselements = $elements[$fieldset] ?? [];

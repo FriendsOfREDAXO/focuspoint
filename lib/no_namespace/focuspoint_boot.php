@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -16,10 +16,8 @@
  * auf diesem Wege weiterhin bereitgestellt. Diese Klasse fällt mit Version 5.0.0 weg, nachdem
  * Redaxo auf Composer als Installer umgestellt wurde.
  *
- * @deprecated 5.0.0 Aufrufe auf "FriendsOfRedaxo\Focuspoint\focuspoint_boot" (Namespace) umstellen
+ * @deprecated 5.0.0 Aufrufe auf "FriendsOfRedaxo\Focuspoint\FocuspointBoot" (Namespace) umstellen
  * @see https://github.com/orgs/FriendsOfREDAXO/discussions/40
  */
 
-class focuspoint_boot extends FriendsOfRedaxo\Focuspoint\Focuspoint_boot
-{
-}
+class focuspoint_boot extends FriendsOfRedaxo\Focuspoint\FocuspointBoot {}
