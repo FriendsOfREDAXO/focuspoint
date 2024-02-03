@@ -1,15 +1,16 @@
 # Changelog
 
-## **xx.02.2024 Version 4.2.0**
+## **03.02.2024 Version 4.2.0**
 
 - Umstellung der Klassennamen im Namespace auf CamelCase unter Wegfall von _.
-  Beispiel `focuspoint_media` -> `FocuspointMedia`
-- Anpassen der Dateinamen an die Klassennamen
+  Beispiel `focuspoint_media` -> `FocuspointMedia`,
+- Anpassen der Dateinamen an die Klassennamen,
 
 Ausnahme: auf `rex_effect` und `rex_api` aufsetzende Klassen
 
 Bugfix: 
-- StrToLower per array-Walk in die vorhergehende SQL-Abfrage verlagert. 
+- strtolower mittels array_walk durch geänderte SQL-Abfrage ersetzt (#129)
+- in `rex_effect_abstract_focuspoint` Namespace korrekt berücksichtigt `is_a($media, FocuspointMedia::class)` (#130)
 
 ## **01.02.2024 Version 4.1.0**
 
