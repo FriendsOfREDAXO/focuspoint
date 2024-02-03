@@ -140,14 +140,13 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
             // hier eingebaut zur Funktionsfähigkeit von focuspoint_api
             $fp = self::str2fp($xy);
             if (false === $fp) {
-                // TODO: oder FocuspointMedia::class ?
-                $fp = null !== $media && is_a($media, 'FocuspointMedia')
+                $fp = null !== $media && is_a($media, FocuspointMedia::class)
                     ? $media->getFocus($xy, $default) // $xy = Meta-Feld-Name??
                     : $this->getDefaultFocus($default);
             }
         } else {
             // Standard
-            $fp = null !== $media && is_a($media, 'FocuspointMedia')
+            $fp = null !== $media && is_a($media, FocuspointMedia::class)
                 ? $media->getFocus($this->getMetaField(), $default)
                 : $this->getDefaultFocus($default);
         }
