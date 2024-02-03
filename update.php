@@ -126,7 +126,7 @@ if (rex_version::compare($this->getVersion(), '2.0', '<')) {
                 rex_metainfo_delete_field('med_focuspoint_data');
                 rex_metainfo_delete_field('med_focuspoint_css');
 
-                // update parameter-set per field "focuspoint-fit" and "focuspoint-resize" to new structure"
+                // update parameter-set per field "focuspoint-fit" to new structure"
 
                 $tab = rex::getTable('media_manager_type_effect');
                 $mitte = sprintf(rex_effect_abstract_focuspoint::STRING, rex_effect_abstract_focuspoint::$mitte[0], rex_effect_abstract_focuspoint::$mitte[1]);

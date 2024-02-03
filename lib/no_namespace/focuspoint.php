@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -20,6 +20,4 @@
  * @see https://github.com/orgs/FriendsOfREDAXO/discussions/40
  */
 
-class focuspoint extends FriendsOfRedaxo\Focuspoint\Focuspoint
-{
-}
+class xfocuspoint extends FriendsOfRedaxo\Focuspoint\Focuspoint {}

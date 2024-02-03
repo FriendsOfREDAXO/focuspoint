@@ -4,7 +4,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -90,7 +90,7 @@ class Focuspoint
         if (false === $p2) {
             return;
         }
-        $p2 = $p2 + 4;
+        $p2 += 4;
 
         $fragment = new rex_fragment();
         $fragment->setVar('mediafile', $mediafile);
@@ -421,7 +421,6 @@ class Focuspoint
     {
         $message = '';
         foreach ($effekte as $effect) {
-            /** @ var rex_effect_abstract $target */
             /** @var non-falsy-string $target */
             $target = "rex_effect_{$effect['effect']}";
             $name = new $target();

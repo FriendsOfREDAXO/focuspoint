@@ -12,7 +12,7 @@
  *
  *  ------------------------------------------------------------------------------------------------
  *
- *  Die Klasse "focuspoint_media" ist von "rex_media" abgeleitet und erleichetrt den
+ *  Die Klasse "FocuspointMedia" ist von "rex_media" abgeleitet und erleichetrt den
  *  Umgang mit Medien, deren Darstellung auf Fokuspunkten basiert.
  */
 
@@ -22,7 +22,7 @@ use rex_effect_abstract_focuspoint;
 use rex_media;
 
 /** @api */
-class Focuspoint_media extends rex_media
+class FocuspointMedia extends rex_media
 {
     /**
      *  Gibt die Bildinstanz zurück und prüft dabei ab, ob es ein Bild ist (isImage).

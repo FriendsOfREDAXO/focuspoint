@@ -20,6 +20,4 @@
  * @see https://github.com/orgs/FriendsOfREDAXO/discussions/40
  */
 
-class focuspoint_boot extends FriendsOfRedaxo\Focuspoint\Focuspoint_boot
-{
-}
+class xfocuspoint_boot extends FriendsOfRedaxo\Focuspoint\FocuspointBoot {}

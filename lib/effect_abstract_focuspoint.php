@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -20,7 +20,7 @@
  *  "rex_effect_abstract"!
  */
 
-use FriendsOfRedaxo\Focuspoint\Focuspoint_media;
+use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
 
 /** @api */
 abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
@@ -69,7 +69,7 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *  @param  array<mixed>    $xy     Array [x,y] der relativen Koordinaten (0..100)
      *  @param  array<mixed>    $wh     Array [breite,höhe] der Bildabmessungen
      *
-     *  @return array<integer>            [x,y] als absolute Werte der Fokuspunkt-Koordinate
+     *  @return array<int>            [x,y] als absolute Werte der Fokuspunkt-Koordinate
      */
     public static function rel2px(array $xy, array $wh)
     {
@@ -124,7 +124,7 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *  Falls $media kein gültiges Objekt aus dem Medienpool ist (z.B. wenn der Medienpfad mit dem
      *  vorgeschalteten Effekt "mediapath" geändert wurde), werden die Defaultwerte herangezogen.
      *
-     *  @param  focuspoint_media    $media    Media-Objekt oder null
+     *  @param  FocuspointMedia     $media    Media-Objekt oder null
      *  @param  array<mixed>        $default  Default-Koordinaten falls auf anderem Wege keine
      *                                        gültigen Koordinaten ermittelt werden können
      *  @param  array<mixed>        $wh       array [breite,höhe] mit den Referenzwerten, auf die
@@ -140,13 +140,14 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
             // hier eingebaut zur Funktionsfähigkeit von focuspoint_api
             $fp = self::str2fp($xy);
             if (false === $fp) {
-                $fp = null !== $media && is_a($media, 'focuspoint_media')
+                // TODO: oder FocuspointMedia::class ?
+                $fp = null !== $media && is_a($media, 'FocuspointMedia')
                     ? $media->getFocus($xy, $default) // $xy = Meta-Feld-Name??
                     : $this->getDefaultFocus($default);
             }
         } else {
             // Standard
-            $fp = null !== $media && is_a($media, 'focuspoint_media')
+            $fp = null !== $media && is_a($media, 'FocuspointMedia')
                 ? $media->getFocus($this->getMetaField(), $default)
                 : $this->getDefaultFocus($default);
         }
@@ -170,10 +171,9 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      */
     public function getParams()
     {
-        $qry = 'SELECT id,name FROM ' . rex::getTable('metainfo_field') . ' WHERE type_id=(SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label="' . self::META_FIELD_TYPE . '"  LIMIT 1) AND name LIKE "med_%" ORDER BY name ASC';
+        $qry = 'SELECT id,LOWER(name) as name FROM ' . rex::getTable('metainfo_field') . ' WHERE type_id=(SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label="' . self::META_FIELD_TYPE . '"  LIMIT 1) AND name LIKE "med_%" ORDER BY name ASC';
         $felder = rex_sql::factory()->getArray($qry, [], PDO::FETCH_KEY_PAIR);
         $felder[] = 'default => ' . rex_i18n::msg('focuspoint_edit_label_focus');
-        array_walk($felder, 'strtolower');
         $default = current($felder);
         if (($k = array_search(self::MED_DEFAULT, $felder, true)) !== false) {
             $default = $felder[$k];

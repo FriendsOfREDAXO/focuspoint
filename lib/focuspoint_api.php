@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.0
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -49,7 +49,7 @@ class rex_api_focuspoint extends rex_api_function
         $mediatype = rex_request('type', 'string', '');
 
         if ('' < $mediafile && '' < $mediatype) {
-            $bild = focuspoint_media_manager::createMedia($mediatype, $mediafile);
+            $bild = FocuspointMediaManager::createMedia($mediatype, $mediafile);
             $bild->sendMedia('', '');
         }
         exit;
@@ -60,7 +60,7 @@ class rex_api_focuspoint extends rex_api_function
  *  Da die wichtige Funktion rex_media_manager->applyEffects 'protected' ist, muss eine abgeleitete
  *  Klasse "focuspoint_media_manager" zwischengeschaltet werden, um das neue Bild zu generieren.
  */
-class focuspoint_media_manager extends rex_media_manager
+class FocuspointMediaManager extends rex_media_manager
 {
     /**
      *  Erzeugt das Bild des media-Effektes.
