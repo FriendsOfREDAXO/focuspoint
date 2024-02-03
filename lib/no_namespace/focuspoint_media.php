@@ -20,4 +20,4 @@
  * @see https://github.com/orgs/FriendsOfREDAXO/discussions/40
  */
 
-class xfocuspoint_media extends FriendsOfRedaxo\Focuspoint\FocuspointMedia {}
+class focuspoint_media extends FriendsOfRedaxo\Focuspoint\FocuspointMedia {}

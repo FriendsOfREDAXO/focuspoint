@@ -20,4 +20,4 @@
  * @see https://github.com/orgs/FriendsOfREDAXO/discussions/40
  */
 
-class xfocuspoint_reflection extends FriendsOfRedaxo\Focuspoint\FocuspointReflection {}
+class focuspoint_reflection extends FriendsOfRedaxo\Focuspoint\FocuspointReflection {}

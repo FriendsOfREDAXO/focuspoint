@@ -16,8 +16,8 @@
  * auf diesem Wege weiterhin bereitgestellt. Diese Klasse fällt mit Version 5.0.0 weg, nachdem
  * Redaxo auf Composer als Installer umgestellt wurde.
  *
- * @deprecated 5.0.0 Aufrufe auf "FriendsOfRedaxo\Focuspoint\focuspoint" (Namespace) umstellen
+ * @deprecated 5.0.0 Aufrufe auf "FriendsOfRedaxo\Focuspoint\Focuspoint" (Namespace) umstellen
  * @see https://github.com/orgs/FriendsOfREDAXO/discussions/40
  */
 
-class xfocuspoint extends FriendsOfRedaxo\Focuspoint\Focuspoint {}
+class focuspoint extends FriendsOfRedaxo\Focuspoint\Focuspoint {}
