@@ -52,16 +52,13 @@
 namespace FriendsOfRedaxo\Focuspoint;
 
 use rex_addon;
+use rex_functional_exception;
+use rex_i18n;
 
 /**
  * @var rex_addon $this
  * @var string $request Ist aus dem aufrufenden Context vorhanden
  */
-
-namespace FriendsOfRedaxo\Focuspoint;
-
-use rex_functional_exception;
-use rex_i18n;
 
 $message = '';
 $header = '';
