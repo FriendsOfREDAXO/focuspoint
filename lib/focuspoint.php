@@ -20,7 +20,6 @@ namespace FriendsOfRedaxo\Focuspoint;
 
 use PDO;
 use rex;
-use rex_effect_abstract;
 use rex_effect_abstract_focuspoint;
 use rex_extension;
 use rex_extension_point;
@@ -32,6 +31,8 @@ use rex_url;
 
 use function count;
 use function strlen;
+
+use const ARRAY_FILTER_USE_KEY;
 
 /** @api */
 class Focuspoint
@@ -441,7 +442,6 @@ class Focuspoint
                     'effect_id' => $effect['id'],
                 ]),
             ) . ' / ' . $effect['effect'] . '</li>';
-
         }
         if ('' < $message) {
             $message = "<ul>$message</ul>";
