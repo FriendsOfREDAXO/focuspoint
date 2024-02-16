@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.1.0
+ *  @version     4.2.1
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -36,7 +36,7 @@ use function in_array;
 /** @var rex_addon $this */
 
 // make addon-parameters available
-include_once 'lib/effect_focuspoint.php';
+include_once 'lib/effect_abstract_focuspoint.php';
 
 $successMsg = [];
 $message = '';

@@ -1,5 +1,9 @@
 # Changelog
 
+## **16.02.2024 Version 4.2.1**
+
+- Bugfix: falscher Dateiname ([#133](https://github.com/FriendsOfREDAXO/focuspoint/issues/133) @tbaddade)
+
 ## **03.02.2024 Version 4.2.0**
 
 - Umstellung der Klassennamen im Namespace auf CamelCase unter Wegfall von _.
