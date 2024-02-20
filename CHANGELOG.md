@@ -1,5 +1,9 @@
 # Changelog
 
+## **20.02.2024 Version 4.2.2**
+
+- Bugfix: Abhängigkeiten in `package.yml` an die seit Version 4.1.0 geltenden Voraussetzungen angepasst (#136; Danke @godsdog)
+
 ## **16.02.2024 Version 4.2.1**
 
 - Bugfix: falscher Dateiname ([#133](https://github.com/FriendsOfREDAXO/focuspoint/issues/133) @tbaddade)
