@@ -18,9 +18,9 @@ requires:
     packages:
         media_manager: '^2.12.0'
         mediapool: '^2.11.0'
-    redaxo: '^5.13.0'
+    redaxo: '^5.15.0'
     php:
-        version: '>=7.3'
+        version: '>=8.1'
 
 help:
     # Default-View, für page=packages (Aufruf aus der Addon-Verwaltung)
