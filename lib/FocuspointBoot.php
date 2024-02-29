@@ -47,8 +47,8 @@ class FocuspointBoot
     {
         rex_view::addCssFile($fpAddon->getAssetsUrl('focuspoint.min.css'));
         rex_view::addJsFile($fpAddon->getAssetsUrl('focuspoint.min.js'));
-        rex_extension::register('MEDIA_DETAIL_SIDEBAR', [Focuspoint::class, 'show_sidebar']);
-        rex_extension::register('METAINFO_CUSTOM_FIELD', [Focuspoint::class, 'customfield']);
+        rex_extension::register('MEDIA_DETAIL_SIDEBAR', Focuspoint::show_sidebar(...));
+        rex_extension::register('METAINFO_CUSTOM_FIELD', Focuspoint::customfield(...));
     }
 
     /**
