@@ -3,7 +3,7 @@
  *  This file is part of the REDAXO-AddOn "focuspoint".
  *
  *  @author      FriendsOfREDAXO @ GitHub <https://github.com/FriendsOfREDAXO/focuspoint>
- *  @version     4.2.1
+ *  @version     4.2.3
  *  @copyright   FriendsOfREDAXO <https://friendsofredaxo.github.io/>
  *
  *  For the full copyright and license information, please view the LICENSE
@@ -149,7 +149,8 @@ elseif ($meta_action_field && $media_feld) {
 
 $qry = 'SELECT a.id,b.type_id from ' . $db_mmtype . ' AS a LEFT JOIN ' . $db_mmeffect . ' AS b ON a.id = b.type_id WHERE a.name=:name LIMIT 1';
 $mm_type = $sql->getArray($qry, [':name' => rex_effect_abstract_focuspoint::MM_TYPE]);
-$mm_action_type = null === ($mm_type[0]['id'] ?? null);
+$mm_type_id = $mm_type[0]['id'] ?? null;
+$mm_action_type = null === $mm_type_id;
 $mm_action_effect = null === ($mm_type[0]['type_id'] ?? null);
 
 // --- Metainfos anlegen ---------------------------------------------------------------------------
@@ -223,8 +224,6 @@ if ($mm_action_type && '' === $message) {
 if ($mm_action_effect && '' === $message) {
     $sql->setTable($db_mmeffect);
     /**
-     * STAN: Variable $mm_type_id might not be defined.
-     * Auch wenn rexstan hier meckert, ich halte es für passend.
      * STAN: Value 'type_id' does not exist in table selected via setTable().
      * Falsch. media_manager_type_effect.type_id ist ein Standardfeld.
      * @phpstan-ignore-next-line
