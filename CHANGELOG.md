@@ -1,5 +1,9 @@
 # Changelog
 
+## **27.05.2024 Version 4.2.3**
+
+- Bugfix: Installations-Abbruch wegen nicht initialisiertem $mm_type_id gefixed (#138; Danke @tbaddade)
+
 ## **20.02.2024 Version 4.2.2**
 
 - Bugfix: Abhängigkeiten in `package.yml` an die seit Version 4.1.0 geltenden Voraussetzungen angepasst (#136; Danke @godsdog)
