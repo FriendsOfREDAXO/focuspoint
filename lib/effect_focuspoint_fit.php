@@ -46,7 +46,6 @@
  */
 
 use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
-use Imagick;
 
 /** @api */
 class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
@@ -125,20 +124,15 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
             Falls Breite/Höhe als AspectRatio (fr) angegeben wurden: immer 100%
         */
         switch ($this->params['zoom']) {
-            case $this->optionsZoom[1]:
-                $zoom = 0.25;
+            case $this->optionsZoom[1]: $zoom = 0.25;
                 break;
-            case $this->optionsZoom[2]:
-                $zoom = 0.5;
+            case $this->optionsZoom[2]: $zoom = 0.5;
                 break;
-            case $this->optionsZoom[3]:
-                $zoom = 0.75;
+            case $this->optionsZoom[3]: $zoom = 0.75;
                 break;
-            case $this->optionsZoom[4]:
-                $zoom = 1;
+            case $this->optionsZoom[4]: $zoom = 1;
                 break;
-            default:
-                $zoom = 0;
+            default: $zoom = 0;
         }
 
         /*--------------------------
@@ -232,12 +226,13 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
         if (extension_loaded('imagick')) {
             $des = $this->resizeWithImagick($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
         } else {
-            $des = $this->resizeWithGD($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
-        }
+            $des = $this->resizeWithGD($des, $gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
+        }        
 
         // @phpstan-ignore-next-line
         $this->media->setImage($des);
         $this->media->refreshImageDimensions();
+
     }
 
     /**
@@ -278,7 +273,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
     /**
      * Resize using GD with quality improvements
      */
-    private function resizeWithGD($gdimage, $cx, $cy, $cw, $ch, $dw, $dh)
+    private function resizeWithGD($des, $gdimage, $cx, $cy, $cw, $ch, $dw, $dh)
     {
         // Multi-step downscaling for better quality
         // Only if we're downscaling significantly (more than 2x reduction)
@@ -287,9 +282,6 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
         if ($needsMultiStep) {
             return $this->multiStepResize($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
         }
-
-        // Standard single-step resize
-        $des = imagecreatetruecolor((int) $dw, (int) $dh);
 
         if (false === $des) {
             return false;
@@ -407,8 +399,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 
         return $current;
     }
-
-
+    
     /**
      *  Stellt die Felder für die Effekt-Konfiguration als Array bereit.
      *
