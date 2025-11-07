@@ -222,10 +222,12 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
         // TODO: 5.0.0 Auflösen; wir sind bei nur noch PHP 8
         // @phpstan-ignore-next-line
         $this->keepTransparent($des);
-        // @phpstan-ignore-next-line
-        imagecopyresampled($des, $gdimage,
-            0, 0, (int) $cx, (int) $cy,
-            (int) $dw, (int) $dh, (int) $cw, (int) $ch);
+
+        if (extension_loaded('imagick')) {
+            $des = $this->resizeWithImagick($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
+        } else {
+            $des = $this->resizeWithGD($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
+        }        
 
         // @phpstan-ignore-next-line
         $this->media->setImage($des);
@@ -233,6 +235,176 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 
     }
 
+    /**
+     * Resize using Imagick for best quality
+     */
+    private function resizeWithImagick($gdimage, $cx, $cy, $cw, $ch, $dw, $dh)
+    {
+        try {
+            // Create Imagick object from GD resource
+            ob_start();
+            imagepng($gdimage);
+            $imageBlob = ob_get_clean();
+
+            $imagick = new Imagick();
+            $imagick->readImageBlob($imageBlob);
+
+            // Crop first if needed
+            if ($cx > 0 || $cy > 0 || $cw < $imagick->getImageWidth() || $ch < $imagick->getImageHeight()) {
+                $imagick->cropImage((int) $cw, (int) $ch, (int) $cx, (int) $cy);
+            }
+
+            // Resize with high-quality Lanczos filter
+            $imagick->resizeImage((int) $dw, (int) $dh, Imagick::FILTER_LANCZOS, 1);
+
+            // Optional: slight sharpening for extra crispness
+            // $imagick->unsharpMaskImage(0, 0.5, 1, 0.05);
+
+            // Convert back to GD resource
+            $imagick->setImageFormat('png');
+            $gdimage = imagecreatefromstring($imagick->getImageBlob());
+            $imagick->destroy();
+
+            return $gdimage;
+        } catch (\Exception $e) {
+            // Fallback to GD if Imagick fails
+            return $this->resizeWithGD($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
+        }
+    }
+
+    /**
+     * Resize using GD with quality improvements
+     */
+    private function resizeWithGD($gdimage, $cx, $cy, $cw, $ch, $dw, $dh)
+    {
+        // Multi-step downscaling for better quality
+        // Only if we're downscaling significantly (more than 2x reduction)
+        $needsMultiStep = ($cw / $dw > 2 || $ch / $dh > 2);
+
+        if ($needsMultiStep) {
+            return $this->multiStepResize($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
+        }
+
+        // Standard single-step resize
+        $des = imagecreatetruecolor((int) $dw, (int) $dh);
+
+        if (false === $des) {
+            return false;
+        }
+
+        $this->keepTransparent($des);
+
+        imagecopyresampled(
+            $des,
+            $gdimage,
+            0,
+            0,
+            (int) $cx,
+            (int) $cy,
+            (int) $dw,
+            (int) $dh,
+            (int) $cw,
+            (int) $ch
+        );
+
+        return $des;
+    }
+
+    /**
+     * Multi-step resizing for better downscaling quality
+     */
+    private function multiStepResize($gdimage, $cx, $cy, $cw, $ch, $dw, $dh)
+    {
+        // First, crop to the desired area
+        $cropped = imagecreatetruecolor((int) $cw, (int) $ch);
+        if (false === $cropped) {
+            return false;
+        }
+
+        $this->keepTransparent($cropped);
+
+        imagecopy(
+            $cropped,
+            $gdimage,
+            0,
+            0,
+            (int) $cx,
+            (int) $cy,
+            (int) $cw,
+            (int) $ch
+        );
+
+        // Now resize in steps (halving each time until we get close to target)
+        $currentW = $cw;
+        $currentH = $ch;
+        $current = $cropped;
+
+        while ($currentW / $dw > 2 || $currentH / $dh > 2) {
+            $nextW = max($dw, floor($currentW / 2));
+            $nextH = max($dh, floor($currentH / 2));
+
+            $next = imagecreatetruecolor((int) $nextW, (int) $nextH);
+            if (false === $next) {
+                return $current;
+            }
+
+            $this->keepTransparent($next);
+
+            imagecopyresampled(
+                $next,
+                $current,
+                0,
+                0,
+                0,
+                0,
+                (int) $nextW,
+                (int) $nextH,
+                (int) $currentW,
+                (int) $currentH
+            );
+
+            if ($current !== $cropped) {
+                imagedestroy($current);
+            }
+
+            $current = $next;
+            $currentW = $nextW;
+            $currentH = $nextH;
+        }
+
+        // Final resize to exact dimensions
+        if ($currentW != $dw || $currentH != $dh) {
+            $final = imagecreatetruecolor((int) $dw, (int) $dh);
+            if (false === $final) {
+                return $current;
+            }
+
+            $this->keepTransparent($final);
+
+            imagecopyresampled(
+                $final,
+                $current,
+                0,
+                0,
+                0,
+                0,
+                (int) $dw,
+                (int) $dh,
+                (int) $currentW,
+                (int) $currentH
+            );
+
+            imagedestroy($current);
+            $current = $final;
+        }
+
+        if ($cropped !== $current) {
+            imagedestroy($cropped);
+        }
+
+        return $current;
+    }
+    
     /**
      *  Stellt die Felder für die Effekt-Konfiguration als Array bereit.
      *
