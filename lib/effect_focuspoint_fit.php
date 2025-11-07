@@ -46,6 +46,7 @@
  */
 
 use FriendsOfRedaxo\Focuspoint\FocuspointMedia;
+use Imagick;
 
 /** @api */
 class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
@@ -124,15 +125,20 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
             Falls Breite/Höhe als AspectRatio (fr) angegeben wurden: immer 100%
         */
         switch ($this->params['zoom']) {
-            case $this->optionsZoom[1]: $zoom = 0.25;
+            case $this->optionsZoom[1]:
+                $zoom = 0.25;
                 break;
-            case $this->optionsZoom[2]: $zoom = 0.5;
+            case $this->optionsZoom[2]:
+                $zoom = 0.5;
                 break;
-            case $this->optionsZoom[3]: $zoom = 0.75;
+            case $this->optionsZoom[3]:
+                $zoom = 0.75;
                 break;
-            case $this->optionsZoom[4]: $zoom = 1;
+            case $this->optionsZoom[4]:
+                $zoom = 1;
                 break;
-            default: $zoom = 0;
+            default:
+                $zoom = 0;
         }
 
         /*--------------------------
@@ -227,12 +233,11 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
             $des = $this->resizeWithImagick($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
         } else {
             $des = $this->resizeWithGD($gdimage, $cx, $cy, $cw, $ch, $dw, $dh);
-        }        
+        }
 
         // @phpstan-ignore-next-line
         $this->media->setImage($des);
         $this->media->refreshImageDimensions();
-
     }
 
     /**
@@ -242,9 +247,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
     {
         try {
             // Create Imagick object from GD resource
-            ob_start();
-            imagepng($gdimage);
-            $imageBlob = ob_get_clean();
+            $imageBlob = $this->media->getSource();
 
             $imagick = new Imagick();
             $imagick->readImageBlob($imageBlob);
@@ -261,7 +264,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
             // $imagick->unsharpMaskImage(0, 0.5, 1, 0.05);
 
             // Convert back to GD resource
-            $imagick->setImageFormat('png');
+            $imagick->setImageFormat($this->media->getFormat());
             $gdimage = imagecreatefromstring($imagick->getImageBlob());
             $imagick->destroy();
 
@@ -404,7 +407,8 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
 
         return $current;
     }
-    
+
+
     /**
      *  Stellt die Felder für die Effekt-Konfiguration als Array bereit.
      *
