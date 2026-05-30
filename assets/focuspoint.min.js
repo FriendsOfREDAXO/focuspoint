@@ -68,6 +68,7 @@ function fpCreateController ( container, mediafile )
                                     previewUrl.searchParams.set('type', this.mediatype);
                                     previewUrl.searchParams.set('file', this.mediafile);
                                     previewUrl.searchParams.set('xy', this.cPos.asData());
+                                    previewUrl.searchParams.set('_fpv', Date.now().toString());
                                     this.domPreviewImage.attr('src', previewUrl.toString());
                                 },
         setInfo             : function( pos ) {
