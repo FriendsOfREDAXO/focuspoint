@@ -44,6 +44,10 @@ class rex_api_focuspoint extends rex_api_function
      */
     public function execute()
     {
+        // Ensure focuspoint effects are registered in this API context as well.
+        include_once __DIR__ . '/effect_abstract_focuspoint.php';
+        include_once __DIR__ . '/effect_focuspoint_fit.php';
+        rex_media_manager::addEffect(rex_effect_focuspoint_fit::class);
 
         $mediafile = rex_request('file', 'string', '');
         $mediatype = rex_request('type', 'string', '');
