@@ -60,11 +60,25 @@
 .focuspoint-panel.focuspoint-panel-zoom button[data-button="zoom"] .fa-search-minus { display:inline; }
 
 .focuspoint-panel.focuspoint-panel-zoom {
-    position: relative;
-    z-index: 10;
+    position: fixed;
+    top: 2vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1100px, 96vw);
+    max-height: 96vh;
+    overflow: auto;
+    background: #fff;
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    z-index: 2000;
 }
 
 .focuspoint-panel.focuspoint-panel-zoom > .focuspoint-panel-image > img {
-    max-height: 75vh;
+    max-height: 68vh;
     object-fit: contain;
+}
+
+body.focuspoint-overlay-open {
+    overflow: hidden;
 }

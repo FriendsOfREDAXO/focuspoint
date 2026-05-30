@@ -51,6 +51,7 @@ function fpCreateController ( container, mediafile )
         domInfo             : container.find('small span'),
         domField            : null,
         domInput            : null,
+        zoomMode            : false,
         // internal variables
         mediafile           : mediafile,
         mediatypes          : '',
@@ -80,6 +81,14 @@ function fpCreateController ( container, mediafile )
         previewToggle       : function( toggle ) {
                                     this.domPreviewContainer.toggleClass( 'hidden', !toggle );
                                     this.domPreviewOff.toggleClass( 'hidden', !toggle );
+                                },
+        setZoomMode         : function( toggle ) {
+                                    this.zoomMode = !!toggle;
+                                    this.domContainer.toggleClass( 'focuspoint-panel-zoom', this.zoomMode );
+                                    $('body').toggleClass( 'focuspoint-overlay-open', this.zoomMode );
+                                },
+        toggleZoomMode      : function() {
+                                    this.setZoomMode( !this.zoomMode );
                                 },
 
         // Event-related functions
@@ -155,7 +164,17 @@ function fpCreateController ( container, mediafile )
     // set event-handler
         container.find('button[data-button="zoom"]').click( function( event ) {
             event.preventDefault();
-            container.toggleClass('focuspoint-panel-zoom');
+            controller.toggleZoomMode();
+        });
+    container.on('click', function( event ) {
+            if( controller.zoomMode && event.target === this ) {
+                controller.setZoomMode(false);
+            }
+        });
+    $(document).on('keydown.focuspointZoom', function( event ) {
+            if( controller.zoomMode && event.key === 'Escape' ) {
+                controller.setZoomMode(false);
+            }
         });
     controller.domImageContainer.mousemove( controller, function( event ) {
             event.data.setInfo( fpCreatePositionFromEvent( event ) );
