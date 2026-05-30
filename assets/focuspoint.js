@@ -153,9 +153,9 @@ function fpCreateController ( container, mediafile )
     }
 
     // set event-handler
-    container.find('button[data-button="zoom"]').click( function( event ) {
+        container.find('button[data-button="zoom"]').click( function( event ) {
             event.preventDefault();
-            $(this).closest('.col-sm-4').toggleClass('col-sm-12');
+            container.toggleClass('focuspoint-panel-zoom');
         });
     controller.domImageContainer.mousemove( controller, function( event ) {
             event.data.setInfo( fpCreatePositionFromEvent( event ) );

@@ -56,5 +56,15 @@
 }
 
 .focuspoint-panel button[data-button="zoom"] .fa-search-minus { display:none; }
-.col-sm-12 .focuspoint-panel button[data-button="zoom"] .fa-search-plus { display:none; }
-.col-sm-12 .focuspoint-panel button[data-button="zoom"] .fa-search-minus { display:inline; }
+.focuspoint-panel.focuspoint-panel-zoom button[data-button="zoom"] .fa-search-plus { display:none; }
+.focuspoint-panel.focuspoint-panel-zoom button[data-button="zoom"] .fa-search-minus { display:inline; }
+
+.focuspoint-panel.focuspoint-panel-zoom {
+    position: relative;
+    z-index: 10;
+}
+
+.focuspoint-panel.focuspoint-panel-zoom > .focuspoint-panel-image > img {
+    max-height: 75vh;
+    object-fit: contain;
+}
