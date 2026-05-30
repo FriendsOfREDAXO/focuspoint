@@ -62,13 +62,13 @@ function fpCreateController ( container, mediafile )
                                 {
                                     if( this.domPreviewContainer.hasClass('hidden') ) return this;
                                     if( this.mediatype == '' ) { this.domPreviewOff.click(); return; }
-                                    this.domPreviewImage.attr( 'src',
-                                        location.pathname +
-                                        location.search +
-                                        '&rex-api-call=focuspoint&type=' + this.mediatype +
-                                        '&file=' + this.mediafile +
-                                        '&xy=' + this.cPos.asData()
-                                    );
+                                    var previewUrl = new URL(window.location.href);
+                                    previewUrl.searchParams.delete('_pjax');
+                                    previewUrl.searchParams.set('rex-api-call', 'focuspoint');
+                                    previewUrl.searchParams.set('type', this.mediatype);
+                                    previewUrl.searchParams.set('file', this.mediafile);
+                                    previewUrl.searchParams.set('xy', this.cPos.asData());
+                                    this.domPreviewImage.attr('src', previewUrl.toString());
                                 },
         setInfo             : function( pos ) {
                                     this.domInfo.html( pos.asInfo() );
