@@ -62,8 +62,7 @@ function fpCreateController ( container, mediafile )
                                 {
                                     if( this.domPreviewContainer.hasClass('hidden') ) return this;
                                     if( this.mediatype == '' ) { this.domPreviewOff.click(); return; }
-                                    var previewUrl = new URL(window.location.href);
-                                    previewUrl.searchParams.delete('_pjax');
+                                    var previewUrl = new URL(window.location.origin + window.location.pathname);
                                     previewUrl.searchParams.set('rex-api-call', 'focuspoint');
                                     previewUrl.searchParams.set('type', this.mediatype);
                                     previewUrl.searchParams.set('file', this.mediafile);
