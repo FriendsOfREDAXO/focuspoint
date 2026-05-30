@@ -212,8 +212,25 @@ function fpCreateController ( container, mediafile )
     return controller;
 }
 
-$(document).ready( function() {
-    $('.focuspoint-panel[data-mediafile]').each(function() {
-        fpCreateController( $(this), $(this).data('mediafile') );
+function fpInitControllers( context )
+{
+    var root = context ? $(context) : $(document);
+    root.find('.focuspoint-panel[data-mediafile]').each(function() {
+        var panel = $(this);
+        if (panel.data('fpInitialized')) {
+            return;
+        }
+        var controller = fpCreateController( panel, panel.data('mediafile') );
+        if (controller !== null) {
+            panel.data('fpInitialized', true);
+        }
     });
+}
+
+$(document).on('rex:ready', function( event, container ) {
+    fpInitControllers(container);
+});
+
+$(function() {
+    fpInitControllers(document);
 });
