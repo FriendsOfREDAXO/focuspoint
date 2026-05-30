@@ -27,6 +27,11 @@ focuspoint_uninstall_metafields = Zusätzliche Metafelder des Typs "{0}". Das Ad
 focuspoint_uninstall_external_effects = Zusätzliche Fokuspunkt-Effekte. Das AddOn kann erst gelöscht werden, wenn die Effekte deaktiviert sind.
 focuspoint_uninstall_effects_in_use = Betroffene Media-Manager-Typen:
 focuspoint_uninstall_dependencies = Abhängigkeiten zwischen dem Focuspoint-AddOn und anderen Bereichen!
+focuspoint_uninstall_effects_migrated = {0} Focuspoint-Effekt(e) wurden aus Media-Manager-Typen entfernt.
+focuspoint_uninstall_effects_skipped = {0} Focuspoint-Effekt(e) konnten nicht automatisch entfernt werden. Diese Effekte bitte manuell löschen.
+focuspoint_uninstall_effects_cleanup_noop = Keine aktiven Fokuspunkt-Effekte gefunden. Du kannst die Deinstallation erneut starten.
+focuspoint_uninstall_offer_cleanup_button = Focuspoint-Effekte entfernen
+focuspoint_uninstall_offer_cleanup_hint = Danach die Deinstallation erneut ausführen.
 focuspoint_activate_dependencies = Fehlende Komponenten; Re-Install erforderlich!
 focuspoint_deactivate_dependencies = Abhängigkeiten zwischen dem Focuspoint-AddOn und anderen Bereichen!
 # update.php : taken from from previous version before 2.0.
@@ -67,6 +72,9 @@ focuspoint_detail_reset = Zurücksetzen
 focuspoint_detail_initial = Ausgangswert
 focuspoint_detail_remove = Entfernen
 focuspoint_detail_select = Fokus-Feld
+focuspoint_detail_zoom_toggle = Zoomansicht umschalten
+focuspoint_detail_close_preview = Vorschau schließen
+focuspoint_detail_image_aria = Fokuspunkt per Klick oder Pfeiltasten setzen
 
 #
 # page=metainfo/media -> is_in_use-check

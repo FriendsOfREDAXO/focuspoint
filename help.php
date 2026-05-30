@@ -97,7 +97,7 @@ if( !class_exists('help_documentation') )
                 unset( $this->navigation['permissions'] );
                 foreach( $permissions as $k=>$v ) {
                     foreach( (array) $v as $perm ) {
-                        if( $perm && !$user->hasPerm($perm) ) {
+                        if( $perm && (null === $user || !$user->hasPerm($perm)) ) {
                             $this->prohibited[] = $k;
                         }
                     }
@@ -106,13 +106,13 @@ if( !class_exists('help_documentation') )
 
             foreach( $this->navigation as $k1=>$v1 ) {
                 $permission = $v1['perm'] ?? '';
-                if( $permission && !$user->hasPerm($permission) ) {
+                if( $permission && (null === $user || !$user->hasPerm($permission)) ) {
                     $this->prohibited[] = $v1['path'];
                     unset( $this->navigation[$k1] );
                 }
                 foreach( ($v1['subnav'] ?? []) as $k2=>$v2 ) {
                     $subPermission = $v2['perm'] ?? $permission;
-                    if( $subPermission && !$user->hasPerm($subPermission) ) {
+                    if( $subPermission && (null === $user || !$user->hasPerm($subPermission)) ) {
                         $this->prohibited[] = $v2['path'];
                         unset( $this->navigation[$k1][$k2] );
                     }
@@ -224,7 +224,10 @@ if( !class_exists('help_documentation') )
         {
             \rex_response::cleanOutputBuffers();
             if ( ($path = $this->getFilePath()) && \rex_media::isDocType($this->filetype) ) {
-                $mime = \rex_file::mimeType( $path );
+                $mime = (string) \rex_file::mimeType( $path );
+                if ('' === $mime) {
+                    $mime = 'application/octet-stream';
+                }
                 if( 'image/' === substr($mime,0,6) ) {
                     \rex_response::sendFile( $path, $mime );
                 } else {
@@ -245,7 +248,7 @@ if( !class_exists('help_documentation') )
 
         function stripGithubNavigation( string $text ): string
         {
-            return preg_replace( '/^(\>\s+\-\s?.*?\\n)*\s*\\n/', '', $text );
+            return (string) preg_replace( '/^(\>\s+\-\s?.*?\\n)*\s*\\n/', '', $text );
         }
 
         //  Im Text werden alle Links, die nicht Datei-intern (#...) und nicht URIs (z.B. http://...)
@@ -270,7 +273,7 @@ if( !class_exists('help_documentation') )
                     $marker = '<!--' . md5($matches[0]) . '-->';
                     $original["/$marker/"] = $matches[0];
                     return $marker;
-                }, $text );
+                }, $text ) ?? $text;
 
             # Links umbauen; nur Markdown! [label](link) bzw. ![label](link)
             $text = preg_replace_callback (
@@ -307,11 +310,11 @@ if( !class_exists('help_documentation') )
                         ['source'=>$matches[0],'label'=>$matches[3],'link'=>$matches[4],'href'=>$href,'isImageLink'=>($matches[2]>''),'context'=>$this->context]
                     ));
                 },
-                $text );
+                $text ) ?? $text;
 
             # Code-Blöcke wieder einfügen
             if( $original ) {
-                $text = preg_replace( array_keys($original), $original, $text );
+                $text = preg_replace( array_keys($original), $original, $text ) ?? $text;
             }
 
             return $text;
@@ -327,10 +330,10 @@ if( !class_exists('help_documentation') )
         {
             $url = '';
             if( preg_match('/^(?<link>.*?)(#(?<hook>.*?))?$$/',$link,$linkinfo) ){
-                if( $linkinfo['link'] ?? '' ) $request['doc'] .= DIRECTORY_SEPARATOR . $linkinfo['link'];
+                if( '' !== $linkinfo['link'] ) $request['doc'] .= DIRECTORY_SEPARATOR . $linkinfo['link'];
                 if( isset($request['_pjax']) ) unset($request['_pjax']);
                 $url = \rex_url::currentBackendPage( $request,false );
-                if( $linkinfo['hook'] ?? '' ) $url .= '#' . $linkinfo['hook'];
+                if( isset($linkinfo['hook']) && '' !== $linkinfo['hook'] ) $url .= '#' . $linkinfo['hook'];
                 $docfile = $request['doc'];
             }
             return $url;
@@ -456,6 +459,10 @@ if( !class_exists('help_documentation') )
 
         function getJsCss( ): string
         {
+            if (!$this->context instanceof \rex_addon) {
+                return '';
+            }
+
             $HTML = '';
             $path = $this->context->getAssetsPath('help.min.js');
             if( file_exists($path) ){
@@ -493,7 +500,7 @@ if( '' === ($path = $publish->getFilePath()) ) {
 
 } else {
 
-    $text = \rex_file::get( $path );
+    $text = (string) \rex_file::get( $path );
 
     $text = $publish->stripGithubNavigation( $text );
     $text = $publish->replaceLinks( $text );

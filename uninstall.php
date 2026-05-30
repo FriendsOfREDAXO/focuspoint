@@ -29,6 +29,7 @@ namespace FriendsOfRedaxo\Focuspoint;
 use rex;
 use rex_addon;
 use rex_effect_abstract_focuspoint;
+use rex_i18n;
 use rex_media_manager;
 use rex_sql;
 
@@ -37,7 +38,19 @@ use function count;
 /** @var rex_addon $this */
 
 // make addon-parameters available
-include_once 'lib/effect_focuspoint.php';
+include_once 'lib/effect_abstract_focuspoint.php';
+
+$migration = Focuspoint::migrateEffectsToResizeFallback();
+$messages = [];
+if (0 < $migration['converted']) {
+    $messages[] = rex_i18n::msg('focuspoint_uninstall_effects_migrated', $migration['converted']);
+}
+if (0 < $migration['skipped']) {
+    $messages[] = rex_i18n::msg('focuspoint_uninstall_effects_skipped', $migration['skipped']);
+}
+if (0 < count($messages)) {
+    $this->setProperty('successmsg', '<ul><li>' . implode('</li><li>', $messages) . '</li></ul>');
+}
 
 $sql = rex_sql::factory();
 
@@ -49,7 +62,7 @@ $qry = 'SELECT id FROM ' . rex::getTable('metainfo_type') . ' WHERE label=:label
 $typeId = $sql->getArray($qry, [':label' => rex_effect_abstract_focuspoint::META_FIELD_TYPE]);
 
 if (0 < count($typeId)) {
-    rex_metainfo_delete_field_type($typeId[0]['id']);
+    rex_metainfo_delete_field_type((int) $typeId[0]['id']);
 }
 
 // remove media-manager-type

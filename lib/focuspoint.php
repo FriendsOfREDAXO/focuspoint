@@ -21,6 +21,7 @@ namespace FriendsOfRedaxo\Focuspoint;
 use PDO;
 use rex;
 use rex_effect_abstract_focuspoint;
+use rex_effect_abstract;
 use rex_extension;
 use rex_extension_point;
 use rex_fragment;
@@ -30,6 +31,7 @@ use rex_sql;
 use rex_url;
 
 use function count;
+use function json_decode;
 use function strlen;
 
 use const ARRAY_FILTER_USE_KEY;
@@ -189,7 +191,7 @@ class Focuspoint
      *
      *  @return string
      */
-    public static function checkUninstallDependencies()
+    public static function checkUninstallDependencies(bool $includeEffectsInUse = true)
     {
         $message = '';
 
@@ -202,10 +204,12 @@ class Focuspoint
         }
 
         // ermittle alle Effekte der Liste, die im Media-Manager genutzt werden
-        $mmEffekteMsg = self::getFocuspointEffectsInUse();
-        if (0 < count($mmEffekteMsg)) {
-            $mmEffekteMsg = self::getFocuspointEffectsInUseMessage($mmEffekteMsg);
-            $message .= "<li>$mmEffekteMsg</li>";
+        if ($includeEffectsInUse) {
+            $mmEffekteMsg = self::getFocuspointEffectsInUse();
+            if (0 < count($mmEffekteMsg)) {
+                $mmEffekteMsg = self::getFocuspointEffectsInUseMessage($mmEffekteMsg) . self::getUninstallCleanupOffer();
+                $message .= '<li>' . rex_i18n::msg('focuspoint_uninstall_effects_in_use') . $mmEffekteMsg . '</li>';
+            }
         }
 
         if ('' < $message) {
@@ -341,14 +345,15 @@ class Focuspoint
      *  rex_effect_abstract_focuspoint erzeugt und nutze das Parameterfeld "meta".
      *
      *  @param  string $feld  Name des Fokuspunkt-Metafeldes
-     *  @return array<mixed>  Array mit einem Subarray je Type/Effekt mit
+    *  @return array<int,array<string,mixed>>  Array mit einem Subarray je Type/Effekt mit
      *                          name        => Name des Typ
      *                          type_id     => id des Typs "name" (rex_media_manager_type)
      *                          effect      => Name des eingesetzten Fokuspunkt-Effektes
      *                          id          => id des effektes (rex_media_manager_type_effect)
      *                          parameters  => Parameter des Effektes
+    *  @phpstan-return array<int,array<string,mixed>>
      */
-    public static function getFocuspointMetafieldInUse($feld)
+    public static function getFocuspointMetafieldInUse(string $feld): array
     {
         $effects = self::getFocuspointEffectsInUse();
         foreach ($effects as $k => $v) {
@@ -425,6 +430,9 @@ class Focuspoint
             /** @var non-falsy-string $target */
             $target = "rex_effect_{$effect['effect']}";
             $name = new $target();
+            if (!$name instanceof rex_effect_abstract) {
+                continue;
+            }
             $message .= '<li>' . rex_i18n::rawMsg(
                 'focuspoint_isinuse_entry',
                 $effect['name'],
@@ -447,5 +455,53 @@ class Focuspoint
             $message = "<ul>$message</ul>";
         }
         return $message;
+    }
+
+    /**
+     * Entfernt aktive Fokuspunkt-Effekte aus Media-Manager-Typen.
+     *
+     * Das wird als bewusste Bereinigungsaktion vor der Deinstallation genutzt,
+     * wenn der Anwender Fokuspunkt absichtlich entfernen moechte.
+     *
+     * @return array{converted: int, skipped: int}
+     */
+    public static function migrateEffectsToResizeFallback()
+    {
+        $effects = self::getFocuspointEffectsInUse();
+        if (0 === count($effects)) {
+            return ['converted' => 0, 'skipped' => 0];
+        }
+
+        $sql = rex_sql::factory();
+        $converted = 0;
+        $skipped = 0;
+
+        foreach ($effects as $effect) {
+            try {
+                $sql->setTable(rex::getTable('media_manager_type_effect'));
+                $sql->setWhere('id=:id', [':id' => $effect['id']]);
+                $sql->delete();
+                ++$converted;
+            } catch (\Throwable $e) {
+                ++$skipped;
+            }
+        }
+
+        return ['converted' => $converted, 'skipped' => $skipped];
+    }
+
+    /**
+     * @return string
+     */
+    private static function getUninstallCleanupOffer()
+    {
+        $url = rex_url::backendController([
+            'page' => 'packages',
+            'package' => 'focuspoint',
+            'rex-api-call' => 'focuspoint_package',
+            'function' => 'cleanup_focuspoint_effects',
+        ]);
+
+        return '<p><a class="btn btn-xs btn-primary" href="' . $url . '">' . rex_i18n::msg('focuspoint_uninstall_offer_cleanup_button') . '</a> ' . rex_i18n::msg('focuspoint_uninstall_offer_cleanup_hint') . '</p>';
     }
 }

@@ -32,7 +32,7 @@ use rex_media_manager;
 
 /** @var rex_fragment $this */
 ?>
-<div id="focuspoint-panel" class="focuspoint-panel panel panel-default">
+<div id="focuspoint-panel" class="focuspoint-panel panel panel-default" data-mediafile="<?= $this->mediafile ?>">
     <div class="panel-heading"><?= rex_i18n::msg('focuspoint_detail_header') ?></div>
 <?php
 $mediatypes = '';
@@ -56,9 +56,12 @@ if (isset($this->fieldselect) && \is_array($this->fieldselect)) {
     </div>
 <?php
 }
+
+$media = rex_media::get($this->mediafile);
+$buster = null !== $media ? $media->getUpdateDate() : time();
 ?>
-    <div class="focuspoint-panel-image">
-        <img src="<?= rex_media_manager::getUrl(rex_effect_abstract_focuspoint::MM_TYPE, $this->mediafile, rex_media::get($this->mediafile)->getUpdateDate()) ?>">
+    <div class="focuspoint-panel-image" tabindex="0" role="button" aria-label="<?= rex_i18n::msg('focuspoint_detail_image_aria') ?>">
+        <img alt="focuspoint-source" src="<?= rex_media_manager::getUrl(rex_effect_abstract_focuspoint::MM_TYPE, $this->mediafile, $buster) ?>">
         <div class="focuspoint-panel-enabler hidden"></div>
     </div>
     <small class="focuspoint-panel-enabler hidden"><span></span></small>
@@ -70,14 +73,14 @@ if (isset($this->fieldselect) && \is_array($this->fieldselect)) {
                 <li data-button="remove"><a class="dropdown-item" href="#"><?= rex_i18n::msg('focuspoint_detail_remove') ?></a></li>
             </ul>
         </div>
-        <button type="button" class="btn btn-primary btn-sm" data-button="zoom" ><i class="rex-icon fa-search-plus"></i><i class="rex-icon fa-search-minus"></i></button>
+        <button type="button" class="btn btn-primary btn-sm" data-button="zoom" title="<?= rex_i18n::msg('focuspoint_detail_zoom_toggle') ?>" aria-label="<?= rex_i18n::msg('focuspoint_detail_zoom_toggle') ?>"><i class="rex-icon fa-search-plus"></i><i class="rex-icon fa-search-minus"></i></button>
 <?php
 if ('' < $mediatypes) {
 ?>
         <div class="focuspoint-panel-typeselect btn-group">
             <button type="button" class="btn btn-default  btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?= rex_i18n::msg('focuspoint_detail_preview') ?> <span class="badge"></span> <span class="caret"></span></button>
             <ul class="dropdown-menu"><?= $mediatypes ?></ul>
-            <button type="button" data-button="schalter" class="btn btn-default hidden btn-sm"><i class="rex-icon fa-times"></i></button>
+            <button type="button" data-button="schalter" class="btn btn-default hidden btn-sm" title="<?= rex_i18n::msg('focuspoint_detail_close_preview') ?>" aria-label="<?= rex_i18n::msg('focuspoint_detail_close_preview') ?>"><i class="rex-icon fa-times"></i></button>
         </div>
 <?php } ?>
     </div>
@@ -85,13 +88,7 @@ if ('' < $mediatypes) {
 if ('' < $mediatypes) {
 ?>
     <div class="hidden panel-body">
-        <img >
+        <img alt="focuspoint-preview">
     </div>
 <?php } ?>
 </div>
-
-<script type="text/javascript">
-    $(document).ready( function() {
-        fpCreateController( $('#focuspoint-panel'), "<?= $this->mediafile ?>" );
-    });
-</script>

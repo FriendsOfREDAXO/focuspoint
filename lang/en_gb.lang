@@ -27,6 +27,11 @@ focuspoint_uninstall_metafields = Additional meta-fields of type "{0}" found. Fi
 focuspoint_uninstall_external_effects = Additional focuspoint-effects found. First deacticate these effects, then try again to delete the Focuspoint-AddOn..
 focuspoint_uninstall_effects_in_use = Affected Media-Manager-Types:
 focuspoint_uninstall_dependencies = Dependencies between Focuspoint-AddOn and other AddOns!
+focuspoint_uninstall_effects_migrated = {0} focuspoint effect(s) were removed from Media Manager types.
+focuspoint_uninstall_effects_skipped = {0} focuspoint effect(s) could not be removed automatically. Please delete these effects manually.
+focuspoint_uninstall_effects_cleanup_noop = No active focuspoint effects found. You can retry uninstall now.
+focuspoint_uninstall_offer_cleanup_button = Remove focuspoint effects
+focuspoint_uninstall_offer_cleanup_hint = Run uninstall again afterwards.
 focuspoint_activate_dependencies = Components missing; re-install required!
 focuspoint_deactivate_dependencies = Dependencies between Focuspoint-AddOn and other AddOns!
 # update.php : taken from from previous version before 2.0.
@@ -67,6 +72,9 @@ focuspoint_detail_reset = Reset
 focuspoint_detail_initial = Initial value
 focuspoint_detail_remove = Remove
 focuspoint_detail_select = Focuspoint-Field
+focuspoint_detail_zoom_toggle = Toggle zoom view
+focuspoint_detail_close_preview = Close preview
+focuspoint_detail_image_aria = Set focuspoint by click or arrow keys
 
 #
 # page=metainfo/media -> is_in_use-check

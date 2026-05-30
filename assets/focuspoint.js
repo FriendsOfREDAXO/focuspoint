@@ -20,11 +20,13 @@ function fpCreatePosition( x,y )
         asCss: function () { return {'top':this.Y()+'%','left':this.X()+'%'}; },
     }
 }
+
 function fpCreatePositionFromEvent( event )
 {
     var that = $(event.currentTarget);
     return fpCreatePosition( (event.pageX - that.offset().left + 1)/that.width() * 100, (event.pageY - that.offset().top + 1)/that.height() * 100 );
 }
+
 function fpCreatePositionFromData( data )
 {
     data = data.match( /^((100|[1-9]?[0-9])[.][0-9]),((100|[1-9]?[0-9])[.][0-9])$/ );
@@ -75,7 +77,7 @@ function fpCreateController ( container, mediafile )
                                     this.setInfo( this.cPos );
                                     this.setPreview();
                                 },
-        previewToggle           : function( toggle ) {
+        previewToggle       : function( toggle ) {
                                     this.domPreviewContainer.toggleClass( 'hidden', !toggle );
                                     this.domPreviewOff.toggleClass( 'hidden', !toggle );
                                 },
@@ -84,7 +86,7 @@ function fpCreateController ( container, mediafile )
         select              : function( field ) {
                                     this.domField = field.closest( '.focuspoint-input-group' );
                                     this.domInput = this.domField.find('input');
-                                    name = this.domInput.attr('name');
+                                    var name = this.domInput.attr('name');
                                     this.oPos = this.domField.data( 'fpinitialpos' );
                                     this.cPos = fpCreatePositionFromData( this.domInput.val() );
                                     this.mediatype = this.domField.data( 'fpmediatype');
@@ -96,12 +98,17 @@ function fpCreateController ( container, mediafile )
                                     $('form .focuspoint-input-group button').removeClass( 'btn-info' );
                                     this.domField.find('button').addClass( 'btn-info' );
                                     if( this.mediatype > '' ) this.previewToggle( true );
+                                    this.domBadge.text( this.mediatype );
                                     if( this.domSelect.length > 0 ) this.domSelect.get(0).value = name;
                                 },
         set                 : function( pos ) {
                                     this.cPos = pos;
                                     this.domInput.val( pos.asData() );
                                     this.updateView();
+                                },
+        nudge               : function( x, y ) {
+                                    if( this.cPos == null ) return;
+                                    this.set( fpCreatePosition(this.cPos.x + x, this.cPos.y + y) );
                                 },
         reset               : function() {
                                     this.cPos = this.oPos;
@@ -116,12 +123,14 @@ function fpCreateController ( container, mediafile )
         startPreview        : function( mediatype ) {
                                     this.previewToggle( true );
                                     this.mediatype = mediatype;
+                                    this.domBadge.text( mediatype );
                                     this.domField.data( 'fpmediatype', mediatype );
                                     this.setPreview();
                                 },
         stopPreview         : function() {
                                     this.previewToggle( false );
                                     this.mediatype = '';
+                                    this.domBadge.text( '' );
                                     this.domField.data( 'fpmediatype', '' );
                                 },
     }
@@ -133,18 +142,19 @@ function fpCreateController ( container, mediafile )
         var ich = $(this);
         ich.data( 'fpinitialpos', fpCreatePositionFromData( ich.find('input').data( 'fpinitial' ) ) );
         ich.data( 'fpmediatype', '' );
-        ich.find('button').click( controller, function( event ) { event.data.select( $(this) ); });
-        ich.find('input').change( controller, function( event ) { event.data.select( $(this) ); });
+        ich.find('button').click( controller, function( event ) { event.preventDefault(); event.data.select( $(this) ); });
+        ich.find('input').change( controller, function( event ) { event.preventDefault(); event.data.select( $(this) ); });
     });
     if( (fieldList.length > 1 ) && (fieldList.closest('.form-group').filter('.hidden').length > 0 ) )
     {
-        container.children('.focuspoint-panel-select').find('option').click( function( event ) {
-            $('#rex-metainfo-' + $(this).attr('value') ).closest('.input-group').find('button').click();
+        controller.domSelect.on( 'change', function() {
+            $('#rex-metainfo-' + $(this).val() ).closest('.input-group').find('button').click();
         });
     }
 
     // set event-handler
-    container.find('button[data-button="zoom"]').click( function() {
+    container.find('button[data-button="zoom"]').click( function( event ) {
+            event.preventDefault();
             $(this).closest('.col-sm-4').toggleClass('col-sm-12');
         });
     controller.domImageContainer.mousemove( controller, function( event ) {
@@ -156,16 +166,41 @@ function fpCreateController ( container, mediafile )
     controller.domImageContainer.click( controller, function( event ) {
             event.data.set( fpCreatePositionFromEvent( event ) );
         });
+    controller.domImageContainer.keydown( controller, function( event ) {
+            var delta = event.shiftKey ? 2 : 0.5;
+            switch (event.key) {
+                case 'ArrowUp':
+                    event.preventDefault();
+                    event.data.nudge( 0, -delta );
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    event.data.nudge( 0, delta );
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    event.data.nudge( -delta, 0 );
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    event.data.nudge( delta, 0 );
+                    break;
+            }
+        });
     container.find('li[data-button="reset"]').click( controller, function( event ) {
+            event.preventDefault();
             event.data.reset( );
         });
     container.find('li[data-button="remove"]').click( controller, function( event ) {
+            event.preventDefault();
             event.data.remove( );
         });
     container.find('li[data-ref]').click( controller, function( event ) {
+            event.preventDefault();
             event.data.startPreview( $(this).data('ref') );
         });
     controller.domPreviewOff.click( controller, function( event ) {
+            event.preventDefault();
             event.data.stopPreview( );
         });
 
@@ -176,3 +211,9 @@ function fpCreateController ( container, mediafile )
 
     return controller;
 }
+
+$(document).ready( function() {
+    $('.focuspoint-panel[data-mediafile]').each(function() {
+        fpCreateController( $(this), $(this).data('mediafile') );
+    });
+});

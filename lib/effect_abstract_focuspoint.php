@@ -54,7 +54,10 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
     {
         $i = preg_match_all(self::PATTERN, $xy, $tags);
         if (0 < $i) {
-            $xy = [min(100, max(0, $tags['x'][0])), min(100, max(0, $tags['y'][0]))];
+            $xy = [
+                (float) min(100.0, max(0.0, (float) $tags['x'][0])),
+                (float) min(100.0, max(0.0, (float) $tags['y'][0])),
+            ];
             if (is_array($wh)) {
                 $xy = self::rel2px($xy, $wh);
             }
@@ -132,7 +135,7 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
      *
      *  @return array<float>                  [x,y] als Koordinaten-Array
      */
-    public function getFocus($media = null, ?array $default = null, ?array $wh = null)
+    public function getFocus(?FocuspointMedia $media = null, ?array $default = null, ?array $wh = null)
     {
         $xy = rex_request(self::URL_KEY, 'string', null);
         if (is_string($xy)) {
@@ -140,13 +143,13 @@ abstract class rex_effect_abstract_focuspoint extends rex_effect_abstract
             // hier eingebaut zur Funktionsfähigkeit von focuspoint_api
             $fp = self::str2fp($xy);
             if (false === $fp) {
-                $fp = null !== $media && is_a($media, FocuspointMedia::class)
+                $fp = null !== $media
                     ? $media->getFocus($xy, $default) // $xy = Meta-Feld-Name??
                     : $this->getDefaultFocus($default);
             }
         } else {
             // Standard
-            $fp = null !== $media && is_a($media, FocuspointMedia::class)
+            $fp = null !== $media
                 ? $media->getFocus($this->getMetaField(), $default)
                 : $this->getDefaultFocus($default);
         }

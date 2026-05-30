@@ -22,6 +22,7 @@ namespace FriendsOfRedaxo\Focuspoint;
 
 use ReflectionClass;
 
+/** @extends ReflectionClass<object> */
 class FocuspointReflection extends ReflectionClass
 {
     /**

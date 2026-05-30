@@ -78,8 +78,11 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
         */
         $this->media->asImage();
         $gdimage = $this->media->getImage();
-        $sw = $this->media->getWidth();
-        $sh = $this->media->getHeight();
+        $sw = (int) $this->media->getWidth();
+        $sh = (int) $this->media->getHeight();
+        if ($sw < 1 || $sh < 1) {
+            return;
+        }
         $sr = $sw / $sh;
 
         /*
@@ -146,6 +149,9 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
         */
         $dw = null === $dw ? $dh * $sr : $dw;
         $dh = null === $dh ? $dw / $sr : $dh;
+        if ($dw < 1 || $dh < 1) {
+            return;
+        }
         $dr = $dw / $dh;
         $too_wide = ($sr >= $dr);
 
@@ -190,6 +196,15 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
             $cw = floor($cw * $faktor);
             $ch = floor($ch * $faktor);
         }
+
+        if ($cw < 1 || $ch < 1) {
+            return;
+        }
+
+        $targetWidth = max(1, (int) round($dw));
+        $targetHeight = max(1, (int) round($dh));
+        $cropWidth = max(1, (int) round($cw));
+        $cropHeight = max(1, (int) round($ch));
         /*
             Den Bildauschnitt positionieren:
 
@@ -208,9 +223,9 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
             Ausgabe der Grafik
         */
         if (function_exists('ImageCreateTrueColor')) {
-            $des = @imagecreatetruecolor((int) $dw, (int) $dh);
+            $des = @imagecreatetruecolor($targetWidth, $targetHeight);
         } else {
-            $des = @imagecreate((int) $dw, (int) $dh);
+            $des = @imagecreate($targetWidth, $targetHeight);
         }
 
         if (false === $des) {
@@ -225,7 +240,7 @@ class rex_effect_focuspoint_fit extends rex_effect_abstract_focuspoint
         // @phpstan-ignore-next-line
         imagecopyresampled($des, $gdimage,
             0, 0, (int) $cx, (int) $cy,
-            (int) $dw, (int) $dh, (int) $cw, (int) $ch);
+            $targetWidth, $targetHeight, $cropWidth, $cropHeight);
 
         // @phpstan-ignore-next-line
         $this->media->setImage($des);

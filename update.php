@@ -40,7 +40,7 @@ if (rex_version::compare($this->getVersion(), '2.0', '<')) {
     rex_i18n::addDirectory(__DIR__ . '/lang');
 
     // prerequisites, to fetch predefined strings
-    include_once 'lib/effect_focuspoint.php';
+    include_once 'lib/effect_abstract_focuspoint.php';
 
     $sql = rex_sql::factory();
     /**
@@ -75,7 +75,7 @@ if (rex_version::compare($this->getVersion(), '2.0', '<')) {
             }
         } else {
             // field does not exist. Add field
-            $result = rex_metainfo_add_field('translate:focuspoint_field_label', rex_effect_abstract_focuspoint::MED_DEFAULT, 3, '', $type_id, '', '', '', '');
+            $result = rex_metainfo_add_field('translate:focuspoint_field_label', rex_effect_abstract_focuspoint::MED_DEFAULT, 3, '', (int) $type_id, '', '', '', '');
             if (true !== $result) {
                 $message = rex_i18n::msg('focuspoint_install_field_error', rex_effect_abstract_focuspoint::MED_DEFAULT, "<strong><i>$result</i></strong>");
             }
@@ -109,8 +109,8 @@ if (rex_version::compare($this->getVersion(), '2.0', '<')) {
                     $liste = $sql->getArray($qry, [], PDO::FETCH_KEY_PAIR);
                     foreach ($liste as $k => $v) {
                         if (0 < preg_match_all('/(?<x>[+-]?[0-1][.][0-9]{2}),(?<y>[+-]?[0-1][.][0-9]{2})/', $v, $tags)) {
-                            $x = ($tags['x'][0] + 1) * 50;
-                            $y = (1 - $tags['y'][0]) * 50;
+                            $x = ((float) $tags['x'][0] + 1.0) * 50.0;
+                            $y = (1.0 - (float) $tags['y'][0]) * 50.0;
                             $x = max(0, min(100, $x));
                             $y = max(0, min(100, $y));
                             $sql->setTable($tab);
@@ -153,8 +153,7 @@ if (rex_version::compare($this->getVersion(), '2.0', '<')) {
                             unset($v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_fp']);
                         }
                         if (isset($v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom']) &&
-                            0 < preg_match('(0%|25%|50%|75%|100%)', $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'], $match) &&
-                            0 < count($match)) {
+                            0 < preg_match('(0%|25%|50%|75%|100%)', $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'], $match)) {
                             $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'] = $match[0];
                         } else {
                             $v['rex_effect_focuspoint_fit']['rex_effect_focuspoint_fit_zoom'] = '0%';

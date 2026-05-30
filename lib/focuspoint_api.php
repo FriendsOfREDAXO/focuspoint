@@ -70,7 +70,7 @@ class FocuspointMediaManager extends rex_media_manager
      *
      *  @return rex_managed_media   Ergebnisbild
      */
-    public static function createMedia($type = null, $file = null)
+    public static function createMedia(string $type, string $file)
     {
         $mediaPath = rex_path::media($file);
         $media = new rex_managed_media($mediaPath);

@@ -43,9 +43,26 @@ class rex_api_focuspoint_package extends rex_api_package
     public function execute()
     {
         $function = strtolower(rex_request('function', 'string'));
-        if (!in_array($function, ['install', 'uninstall', 'activate', 'deactivate', 'delete'], true)) {
+        if (!in_array($function, ['install', 'uninstall', 'activate', 'deactivate', 'delete', 'cleanup_focuspoint_effects'], true)) {
             throw new rex_api_exception('Unknown package function "' . $function . '"!');
         }
+
+        if ('cleanup_focuspoint_effects' === $function) {
+            $migration = \FriendsOfRedaxo\Focuspoint\Focuspoint::migrateEffectsToResizeFallback();
+            $messages = [];
+            if (0 < $migration['converted']) {
+                $messages[] = rex_i18n::msg('focuspoint_uninstall_effects_migrated', $migration['converted']);
+            }
+            if (0 < $migration['skipped']) {
+                $messages[] = rex_i18n::msg('focuspoint_uninstall_effects_skipped', $migration['skipped']);
+            }
+            if (0 === count($messages)) {
+                $messages[] = rex_i18n::msg('focuspoint_uninstall_effects_cleanup_noop');
+            }
+
+            return new rex_api_result(true, implode('<br>', $messages));
+        }
+
         $packageId = rex_request('package', 'string');
         $package = rex_package::get($packageId);
         if ('uninstall' === $function && !$package->isInstalled()

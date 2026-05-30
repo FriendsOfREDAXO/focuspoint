@@ -171,12 +171,16 @@ if ('' < $meta_action_type && '' === $message) {
 }
 
 if ($meta_action_field && '' === $message) {
-    $result = rex_metainfo_add_field('translate:focuspoint_field_label', rex_effect_abstract_focuspoint::MED_DEFAULT, 0, '', $meta_type_id, '', '', '', '');
-    if (true === $result) {
+    if (!is_numeric($meta_type_id)) {
+        $message = rex_i18n::rawMsg('focuspoint_install_type_error', rex_effect_abstract_focuspoint::META_FIELD_TYPE, '<strong><i>invalid type id</i></strong>');
+    } else {
+        $result = rex_metainfo_add_field('translate:focuspoint_field_label', rex_effect_abstract_focuspoint::MED_DEFAULT, 0, '', (int) $meta_type_id, '', '', '', '');
+    }
+    if (isset($result) && true === $result) {
         $successMsg[] = rex_i18n::msg('focuspoint_install_field_ok', rex_effect_abstract_focuspoint::MED_DEFAULT);
         $meta_action_connect = false; // impliziet beim Anlegen durchgeführt
         $meta_action_media = false; // impliziet beim Anlegen durchgeführt
-    } else {
+    } elseif ('' === $message) {
         $message = rex_i18n::rawMsg('focuspoint_install_field_error', rex_effect_abstract_focuspoint::MED_DEFAULT, "<strong><i>$result</i></strong>");
     }
 }
