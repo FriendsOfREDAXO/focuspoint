@@ -48,7 +48,6 @@ class FocuspointReflection extends ReflectionClass
     public function executeMethod($method, array $params)
     {
         $method = $this->getMethod($method);
-        $method->setAccessible(true);
         return $method->invokeArgs($this->obj, $params);
     }
 
@@ -60,7 +59,6 @@ class FocuspointReflection extends ReflectionClass
     public function getPropertyValue($prop)
     {
         $property = $this->getProperty($prop);
-        $property->setAccessible(true);
         return $property->getValue($this->obj);
     }
 
@@ -73,7 +71,6 @@ class FocuspointReflection extends ReflectionClass
     public function setPropertyValue($prop, $value)
     {
         $property = $this->getProperty($prop);
-        $property->setAccessible(true);
         $property->setValue($this->obj, $value);
     }
 }
