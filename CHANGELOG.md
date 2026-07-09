@@ -1,5 +1,9 @@
 # Changelog
 
+## **09.07.2024 Version 4.2.4**
+
+- Bugfix: ab PHP 8.5 Whoops durch deprecated-Methode `ReflectionMethod::setAccessible()` behoben (#244; Danke an @tbaddade)
+
 ## **27.05.2024 Version 4.2.3**
 
 - Bugfix: Installations-Abbruch wegen nicht initialisiertem $mm_type_id gefixed (#138; Danke @tbaddade)
