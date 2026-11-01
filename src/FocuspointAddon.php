@@ -6,7 +6,6 @@ namespace FriendsOfRedaxo\Focuspoint;
 
 use Override;
 use Redaxo\Core\Addon\Addon;
-use Redaxo\Core\Backend\Controller;
 use Redaxo\Core\Core;
 use Redaxo\Core\ExtensionPoint\Extension;
 use Redaxo\Core\MediaPool\ExtensionPoint\MediaDetailSidebar;
@@ -30,10 +29,12 @@ final class FocuspointAddon extends Addon
     #[Override]
     public function boot(): void
     {
-        if (!Core::isBackend() || 'mediapool' !== Controller::getCurrentPagePart(1)) {
+        if (!Core::isBackend()) {
             return;
         }
 
+        // Auf jeder Backend-Seite: Der Medienpool öffnet sich auch als Overlay (Medienfeld, Struktur), und das Overlay
+        // übernimmt nur den Hauptinhalt der geladenen Seite, nicht deren Skripte.
         Asset::addCssFile($this->getAssetsUrl('focuspoint.css'));
         Asset::addJsFile($this->getAssetsUrl('focuspoint.js'));
 

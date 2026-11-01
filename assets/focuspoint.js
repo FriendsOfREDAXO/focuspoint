@@ -10,7 +10,9 @@
 
     function init(root) {
         root.querySelectorAll('[data-focuspoint-preview]').forEach(function (preview) {
-            var input = document.querySelector('[data-focuspoint-input]');
+            // Feld aus derselben Ansicht: Über der Mediendetailseite kann ein Overlay mit einer zweiten liegen
+            var scope = preview.closest('dialog') || document;
+            var input = scope.querySelector('[data-focuspoint-input]');
             var img = preview.querySelector('img');
             if (preview.dataset.focuspointReady || !input || !img) {
                 return;
