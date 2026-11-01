@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.0-dev (REDAXO 6)
+
+- Neu für REDAXO 6 als Composer-Paket `friendsofredaxo/focuspoint`, Namensraum `FriendsOfRedaxo\Focuspoint`.
+- Metafeld über das MetaInfo-Schema des Cores (`meta_focuspoint`, Format wie `med_focuspoint`).
+- Zuschnitt als Intervention-Modifier `FocusCover` statt Media-Manager-Effekt; `Focuspoint::cssPosition()` für `object-position`.
+- Entfallen: Effekt `focuspoint_fit` mit Zoom, mehrere Fokuspunkt-Felder, eigenes Panel, Hilfeseiten.
+
 ## **09.07.2024 Version 4.2.4**
 
 - Bugfix: ab PHP 8.5 Whoops durch deprecated-Methode `ReflectionMethod::setAccessible()` behoben (#144; Danke an @tbaddade)

@@ -1,44 +1,62 @@
-# Focuspoint für REDAXO 5
+# Focuspoint für REDAXO 6
 
-Das Addon erweitert den Medienpool um die Fähigkeit, den inhaltlichen Mittelpunkt (Fokuspunkt) eines
-Bilds zu bestimmen, um es bei der Darstellung auf der Website daran auszurichten.
+Fokuspunkt für Bilder des Medienpools: Auf der Detailseite eines Bildes setzt ein Klick in die Vorschau den
+wichtigsten Bildbereich. Medientypen mit festem Seitenverhältnis schneiden dann um diesen Punkt herum zu statt
+mittig – Köpfe bleiben im Bild.
 
-![Beispiel](docs/assets/fp.png)
+Dies ist die REDAXO-6-Fassung (Branch `5.x`). Die Fassung für REDAXO 5 liegt bei
+[FriendsOfREDAXO/focuspoint](https://github.com/FriendsOfREDAXO/focuspoint).
 
-Die Fokuspunkte können interaktiv im Medienpool festgelegt werden. Die ermittelten Daten werden in
-der Medien-Datenbank hinterlegt und können bei der Bildausgabe berücksichtigt werden.
+## Installation
 
-Die Bilder für die Ausgabe werden typischerweise mit Hilfe des REDAXO-Media-Managers erzeugt. Die
-nötigen Effekte sind im Addon enthalten.
+```bash
+composer require friendsofredaxo/focuspoint:5.x-dev
+php bin/console migrate
+```
 
-> Version 2 ist komplett neu geschrieben; Details stehen in der [Änderungsübersicht](docs/changes_2_0.md);
-> Speicherung der Daten und Parametrisierung der Media-Manager-Effekte sind geändert. Die Umstellung
-> wird bei einem Update automatisch vorgenommen. Es wird dringend geraten, vor dem Update eine
-> Datensicherung durchzuführen.
+`migrate` legt das Metafeld als Spalte `meta_focuspoint` in `rex_media` an. Der Wert hat dasselbe Format wie
+`med_focuspoint` der REDAXO-5-Fassung („x,y" in Prozent, z. B. `52.3,35.5`) und lässt sich direkt übernehmen:
 
-Eine [ausführliche Dokumentation](docs/overview.md) steht auch im Backend zur Verfügung. Sie ist dort
-erreichbar über "Hauptmenü / Addons" und dort in der Zeile "focuspoint" mit dem Button "Hilfe".
+```sql
+UPDATE rex_media SET meta_focuspoint = med_focuspoint WHERE med_focuspoint <> '';
+```
 
-___
+## Zuschnitt im Medientyp
 
-Schreibt doch bitte auftretende Fehler, Notices und Wünsche als Issue auf [Github](https://github.com/FriendsOfREDAXO/focuspoint/issues)
+```php
+use Redaxo\Core\MediaManager\AsMediaType;
+use Redaxo\Core\MediaManager\MediaContext;
+use Redaxo\Core\MediaManager\MediaType;
+use FriendsOfRedaxo\Focuspoint\Modifier\FocusCover;
 
-___
+#[AsMediaType('teaser')]
+final class Teaser implements MediaType
+{
+    public function process(MediaContext $context): void
+    {
+        $context->image->modify(FocusCover::forFile($context->filename, 800, 450));
+    }
+}
+```
 
-Das Changelog findet sich hier: [CHANGELOG.md](CHANGELOG.md)
+`FocusCover` arbeitet wie `coverDown()` von Intervention Image: größter Ausschnitt im Zielverhältnis, dann
+verkleinern, nie vergrößern. Ohne gesetzten Fokuspunkt liegt der Ausschnitt mittig. Nach einer Änderung des Punktes
+leert der Core den Cache des Bildes.
 
----
+## Im Frontend
 
+Für Bilder, die per CSS beschnitten werden (`object-fit: cover`):
 
-## Lizenz
+```php
+use FriendsOfRedaxo\Focuspoint\Focuspoint;
 
-[The MIT License (MIT)](LICENSE.md)
+$position = Focuspoint::forMedia($media)?->cssPosition();   // "52.3% 35.5%"
+echo '<img src="…" style="object-fit:cover; object-position:' . ($position ?? '50% 50%') . '">';
+```
 
-## Credits
+## Unterschiede zur REDAXO-5-Fassung
 
-- [FriendsOfREDAXO](https://github.com/FriendsOfREDAXO)
-- Idee und Realisierung / Project Lead der ersten Version: [concedra.de / Oliver Kreischer](http://concedra.de)
-- Project Lead: [Christoph Böcker](https://github.com/christophboecker)
-- Für das Syntax-Highlighting in der Dokumentation:
-    - [PrismJS](https://prismjs.com/) und
-    - [ClipboardJS](https://clipboardjs.com/)
+- Kein Effekt `focuspoint_fit` mit Zoom-Stufen: REDAXO 6 hat keine Effekt-Ketten mehr, Medientypen sind Klassen.
+  Der Zuschnitt ist ein Intervention-Modifier.
+- Ein Metafeld (`meta_focuspoint`) statt beliebig vieler Fokuspunkt-Felder; die Klickfläche sitzt in der Vorschau
+  der Detailseite statt in einem eigenen Panel.

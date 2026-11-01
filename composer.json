@@ -1,0 +1,37 @@
+{
+    "name": "friendsofredaxo/focuspoint",
+    "type": "redaxo-addon",
+    "description": "Focus point for images of the REDAXO 6 media pool: set it by click, crop media types around it.",
+    "keywords": [
+        "redaxo",
+        "redaxo-addon",
+        "focuspoint",
+        "media-manager",
+        "crop"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/FriendsOfREDAXO/focuspoint",
+    "authors": [
+        {
+            "name": "Friends Of REDAXO",
+            "homepage": "https://github.com/FriendsOfREDAXO"
+        }
+    ],
+    "require": {
+        "php": "^8.5",
+        "redaxo/core": "^6.0@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfRedaxo\\Focuspoint\\": "src/"
+        }
+    },
+    "extra": {
+        "redaxo": {
+            "addon-class": "FriendsOfRedaxo\\Focuspoint\\FocuspointAddon"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
