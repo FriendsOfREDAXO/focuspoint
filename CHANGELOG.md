@@ -5,6 +5,9 @@
 - Neu für REDAXO 6 als Composer-Paket `friendsofredaxo/focuspoint`, Namensraum `FriendsOfRedaxo\Focuspoint`.
 - Metafeld über das MetaInfo-Schema des Cores (`meta_focuspoint`, Format wie `med_focuspoint`).
 - Zuschnitt als Intervention-Modifier `FocusCover` statt Media-Manager-Effekt; `Focuspoint::cssPosition()` für `object-position`.
+- `FocusCover::focusInResult()`: Lage des Punkts im zugeschnittenen Bild, für ein weiteres Beschneiden im Browser.
+- Basisklasse `FocuspointCropType` für Medientypen mit Zuschnitt (Maße am `#[AsMediaType]`), Platzierung des Punkts im
+  Ausschnitt (`placeX`/`placeY`, z. B. oberes Fünftel).
 - Fokuspunkt-Auswahl wie in 4.x: Fadenkreuz ab dem Öffnen (ohne Wert in der Bildmitte), Koordinaten unter der Maus,
   Zurücksetzen auf Ausgangswert oder Entfernen, Vergrößern; neu per Pfeiltasten bedienbar. Läuft auch im Medienpool-Overlay.
 - Entfallen: Effekt `focuspoint_fit` mit Zoom, mehrere Fokuspunkt-Felder, Vorschau der Medientypen, Hilfeseiten.

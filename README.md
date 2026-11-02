@@ -23,25 +23,31 @@ UPDATE rex_media SET meta_focuspoint = med_focuspoint WHERE med_focuspoint <> ''
 
 ## Zuschnitt im Medientyp
 
-```php
-use Redaxo\Core\MediaManager\AsMediaType;
-use Redaxo\Core\MediaManager\MediaContext;
-use Redaxo\Core\MediaManager\MediaType;
-use FriendsOfRedaxo\Focuspoint\Modifier\FocusCover;
+Am einfachsten über die Basisklasse `FocuspointCropType`: Name und Maße stehen am Attribut, beliebig viele Formate
+in einer Klasse.
 
-#[AsMediaType('teaser')]
-final class Teaser implements MediaType
+```php
+use FriendsOfRedaxo\Focuspoint\MediaType\FocuspointCropType;
+use Redaxo\Core\MediaManager\AsMediaType;
+use Redaxo\Core\MediaManager\NegotiatesFormat;
+use Redaxo\Core\MediaManager\NegotiatesImageFormats;
+
+#[AsMediaType('teaser', width: 800, height: 450)]
+#[AsMediaType('hero_mobile', width: 1000, height: 1250, placeY: 20)]
+final readonly class CropTypes extends FocuspointCropType implements NegotiatesFormat
 {
-    public function process(MediaContext $context): void
-    {
-        $context->image->modify(FocusCover::forFile($context->filename, 800, 450));
-    }
+    use NegotiatesImageFormats;
 }
 ```
 
-`FocusCover` arbeitet wie `coverDown()` von Intervention Image: größter Ausschnitt im Zielverhältnis, dann
-verkleinern, nie vergrößern. Ohne gesetzten Fokuspunkt liegt der Ausschnitt mittig. Nach einer Änderung des Punktes
-leert der Core den Cache des Bildes.
+Der Zuschnitt arbeitet wie `coverDown()` von Intervention Image: größter Ausschnitt im Zielverhältnis, dann
+verkleinern, nie vergrößern. Der Fokuspunkt steht im Ausschnitt an der Stelle `placeX`/`placeY` (Prozent, Standard
+Mitte), soweit das Bild reicht – mit `placeY: 20` etwa im oberen Fünftel, wenn unten Text über dem Bild liegt. Ohne
+gesetzten Punkt liegt der Ausschnitt mittig. Nach einer Änderung des Punktes leert der Core den Cache des Bildes; nach
+einem Update dieses Pakets `console cache:clear`, denn der Bild-Cache hängt am Quelltext der eigenen Unterklasse.
+
+In eigenen Medientypen geht dasselbe direkt mit dem Modifier:
+`$context->image->modify(FocusCover::forFile($context->filename, 800, 450));`
 
 ## Im Frontend
 
@@ -52,6 +58,14 @@ use FriendsOfRedaxo\Focuspoint\Focuspoint;
 
 $position = Focuspoint::forMedia($media)?->cssPosition();   // "52.3% 35.5%"
 echo '<img src="…" style="object-fit:cover; object-position:' . ($position ?? '50% 50%') . '">';
+```
+
+Ist das Bild vorher schon serverseitig zugeschnitten, liegt der Punkt im gelieferten Bild an anderer Stelle. Dann die
+Lage im Ergebnis verwenden:
+
+```php
+$type = MediaTypeRegistry::get('teaser');   // FocuspointCropType
+$position = $type->focusInResult($media)?->cssPosition();
 ```
 
 ## Unterschiede zur REDAXO-5-Fassung

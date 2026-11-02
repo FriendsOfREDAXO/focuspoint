@@ -11,7 +11,8 @@ use Intervention\Image\Interfaces\ModifierInterface;
 /**
  * Zuschnitt auf ein festes Seitenverhältnis um den Fokuspunkt herum, danach Verkleinern auf die Zielgröße.
  * Wie `coverDown()` von Intervention, nur dass der Ausschnitt nicht mittig sitzt: Er liegt so, dass der Fokuspunkt
- * möglichst in seiner Mitte steht, ohne über den Bildrand hinauszugehen. Vergrößert wird nie.
+ * möglichst an der Stelle `placement` des Ausschnitts steht (Standard: Mitte), ohne über den Bildrand hinauszugehen.
+ * Mit `placement` 50,20 landet der Punkt im oberen Fünftel, etwa wenn unten Text über dem Bild liegt. Vergrößert wird nie.
  *
  * In einem Medientyp:
  *
@@ -30,20 +31,53 @@ final readonly class FocusCover implements ModifierInterface
         private int $width,
         private int $height,
         private Focuspoint $focus = new Focuspoint(),
+        private Focuspoint $placement = new Focuspoint(),
     ) {}
 
-    /** Mit dem Fokuspunkt des Mediums aus dem Medienpool, ohne gesetzten Punkt mittig. */
-    public static function forFile(string $filename, int $width, int $height): self
+    /**
+     * Mit dem Fokuspunkt des Mediums aus dem Medienpool. Ohne gesetzten Punkt mittig, dann auch ohne `placement`:
+     * Die Bildmitte an den oberen Rand zu rücken, würde den oberen Bildteil abschneiden.
+     */
+    public static function forFile(string $filename, int $width, int $height, Focuspoint $placement = new Focuspoint()): self
     {
-        return new self($width, $height, Focuspoint::forMedia($filename) ?? new Focuspoint());
+        $focus = Focuspoint::forMedia($filename);
+
+        return null === $focus ? new self($width, $height) : new self($width, $height, $focus, $placement);
     }
 
     public function apply(ImageInterface $image): ImageInterface
     {
-        $sourceWidth = $image->width();
-        $sourceHeight = $image->height();
-        if ($sourceWidth < 1 || $sourceHeight < 1 || $this->width < 1 || $this->height < 1) {
+        $crop = $this->crop($image->width(), $image->height());
+        if (null === $crop) {
             return $image;
+        }
+
+        return $image->crop(...$crop)->scaleDown($this->width, $this->height);
+    }
+
+    /**
+     * Lage des Fokuspunkts im fertigen Bild, für ein weiteres Beschneiden im Browser (`object-position`,
+     * `background-position`): Der Ausschnitt verschiebt den Punkt, wenn er nicht mittig liegen kann.
+     */
+    public function focusInResult(int $sourceWidth, int $sourceHeight): Focuspoint
+    {
+        $crop = $this->crop($sourceWidth, $sourceHeight);
+        if (null === $crop) {
+            return $this->focus;
+        }
+        [$cropWidth, $cropHeight, $x, $y] = $crop;
+
+        return new Focuspoint(
+            self::percent($this->focus->x / 100 * $sourceWidth - $x, $cropWidth),
+            self::percent($this->focus->y / 100 * $sourceHeight - $y, $cropHeight),
+        );
+    }
+
+    /** @return array{int, int, int, int}|null Breite, Höhe, linke und obere Kante des Ausschnitts */
+    private function crop(int $sourceWidth, int $sourceHeight): ?array
+    {
+        if ($sourceWidth < 1 || $sourceHeight < 1 || $this->width < 1 || $this->height < 1) {
+            return null;
         }
 
         // Größter Ausschnitt im Zielverhältnis
@@ -58,15 +92,22 @@ final readonly class FocusCover implements ModifierInterface
         $cropWidth = max(1, min($cropWidth, $sourceWidth));
         $cropHeight = max(1, min($cropHeight, $sourceHeight));
 
-        $x = self::offset($this->focus->x / 100 * $sourceWidth, $cropWidth, $sourceWidth);
-        $y = self::offset($this->focus->y / 100 * $sourceHeight, $cropHeight, $sourceHeight);
-
-        return $image->crop($cropWidth, $cropHeight, $x, $y)->scaleDown($this->width, $this->height);
+        return [
+            $cropWidth,
+            $cropHeight,
+            self::offset($this->focus->x / 100 * $sourceWidth, $cropWidth, $sourceWidth, $this->placement->x),
+            self::offset($this->focus->y / 100 * $sourceHeight, $cropHeight, $sourceHeight, $this->placement->y),
+        ];
     }
 
-    /** Linke bzw. obere Kante des Ausschnitts: Fokus in der Mitte, aber innerhalb des Bildes. */
-    private static function offset(float $focus, int $crop, int $source): int
+    private static function percent(float $value, int $size): float
     {
-        return (int) round(max(0, min($focus - $crop / 2, $source - $crop)));
+        return round(max(0, min(100, $value / $size * 100)), 1);
+    }
+
+    /** Linke bzw. obere Kante des Ausschnitts: Fokus an der Stelle `placement` (Prozent), aber innerhalb des Bildes. */
+    private static function offset(float $focus, int $crop, int $source, float $placement): int
+    {
+        return (int) round(max(0, min($focus - $crop * $placement / 100, $source - $crop)));
     }
 }
