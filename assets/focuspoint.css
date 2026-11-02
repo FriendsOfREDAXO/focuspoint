@@ -1,8 +1,11 @@
-/* Fokuspunkt auf der Mediendetailseite (assets/focuspoint.js) */
-.focuspoint-frame { position: relative; display: inline-block; max-width: 100%; cursor: crosshair; line-height: 0; }
-.focuspoint-frame img { display: block; }
-.focuspoint-marker { position: absolute; width: 28px; height: 28px; margin: -14px 0 0 -14px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 2px rgba(0, 0, 0, .65), inset 0 0 0 2px rgba(0, 0, 0, .65); pointer-events: none; }
-.focuspoint-marker::after { content: ""; position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .65); }
-.focuspoint-marker[hidden] { display: none; }
-.focuspoint-tools { display: flex; flex-wrap: wrap; align-items: center; gap: .5em; margin: .5em 0 0; font-size: 12px; }
-.focuspoint-tools [hidden] { display: none; }
+/* Fokuspunkt-Auswahl auf der Mediendetailseite (assets/focuspoint.js), Aufbau wie in der REDAXO-5-Fassung */
+.focuspoint-panel-image { position: relative; overflow: hidden; line-height: 0; cursor: crosshair; cursor: url('cross.png') 49 49, crosshair; }
+.focuspoint-panel-image img { display: block; width: 100%; height: auto; }
+.focuspoint-panel-image:focus-visible { outline: 3px dashed var(--rex-color-focus); outline-offset: -3px; }
+.focuspoint-panel-pointer { position: absolute; top: 50%; left: 50%; width: 99px; height: 99px; margin: -49px 0 0 -49px; background: url('cross.png') no-repeat; pointer-events: none; transition: top 300ms ease-in-out, left 300ms ease-in-out; }
+.focuspoint-panel-info { margin: 0; text-align: center; font-size: 85%; line-height: 1.6; }
+.focuspoint-panel-info > span { display: inline-block; width: 17rem; max-width: 100%; border: 1px solid rgba(64, 64, 64, .3); border-top: 0; border-radius: 0 0 1rem 1rem; background: rgba(128, 128, 128, .3); font-variant-numeric: tabular-nums; }
+.focuspoint-panel-toolbar { padding: 10px; }
+.focuspoint-panel [data-focuspoint-zoom][aria-pressed="false"] .fa-magnifying-glass-minus,
+.focuspoint-panel [data-focuspoint-zoom][aria-pressed="true"] .fa-magnifying-glass-plus { display: none; }
+@media (prefers-reduced-motion: reduce) { .focuspoint-panel-pointer { transition: none; } }

@@ -1,5 +1,10 @@
 focuspoint_label = Focus point
-focuspoint_notice = Click into the preview to mark the most important area. Cropping media types cut around this point. Empty = centre.
+focuspoint_notice = Click into the image of the focus point selection to mark the most important area. Cropping media types cut around this point. Empty = centre.
 focuspoint_invalid = The focus point must be given as "x,y" in percent, e.g. 50.0,30.5.
-focuspoint_reset = Remove focus point
-focuspoint_preview_hint = Click into the image to set the focus point
+focuspoint_panel = Focus point selection
+focuspoint_panel_image = Focus point: click into the image or move it with the arrow keys
+focuspoint_panel_reset = Reset
+focuspoint_panel_initial = Initial value
+focuspoint_panel_remove = Remove
+focuspoint_panel_zoom = Enlarge preview
+focuspoint_panel_select = Select the focus point in the image

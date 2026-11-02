@@ -1,7 +1,7 @@
 # Focuspoint für REDAXO 6
 
-Fokuspunkt für Bilder des Medienpools: Auf der Detailseite eines Bildes setzt ein Klick in die Vorschau den
-wichtigsten Bildbereich. Medientypen mit festem Seitenverhältnis schneiden dann um diesen Punkt herum zu statt
+Fokuspunkt für Bilder des Medienpools: Auf der Detailseite eines Bildes zeigt die Fokuspunkt-Auswahl den Punkt als
+Fadenkreuz (ohne Wert die Bildmitte), ein Klick ins Bild oder die Pfeiltasten setzen den wichtigsten Bildbereich. Medientypen mit festem Seitenverhältnis schneiden dann um diesen Punkt herum zu statt
 mittig – Köpfe bleiben im Bild.
 
 Dies ist die REDAXO-6-Fassung (Branch `5.x`). Die Fassung für REDAXO 5 liegt bei
@@ -58,5 +58,6 @@ echo '<img src="…" style="object-fit:cover; object-position:' . ($position ?? 
 
 - Kein Effekt `focuspoint_fit` mit Zoom-Stufen: REDAXO 6 hat keine Effekt-Ketten mehr, Medientypen sind Klassen.
   Der Zuschnitt ist ein Intervention-Modifier.
-- Ein Metafeld (`meta_focuspoint`) statt beliebig vieler Fokuspunkt-Felder; die Klickfläche sitzt in der Vorschau
-  der Detailseite statt in einem eigenen Panel.
+- Ein Metafeld (`meta_focuspoint`) statt beliebig vieler Fokuspunkt-Felder. Die Fokuspunkt-Auswahl ist aufgebaut
+  wie bisher (Fadenkreuz, Koordinaten, Zurücksetzen auf Ausgangswert oder Entfernen, Vergrößern), ohne
+  Vorschau der Medientypen.

@@ -1,5 +1,10 @@
 focuspoint_label = Fokuspunkt
-focuspoint_notice = Ins Vorschaubild klicken, um den wichtigsten Bildbereich zu markieren. Bildformate mit Zuschnitt schneiden um diesen Punkt herum. Leer = Bildmitte.
+focuspoint_notice = In der Fokuspunkt-Auswahl ins Bild klicken, um den wichtigsten Bildbereich zu markieren. Bildformate mit Zuschnitt schneiden um diesen Punkt herum. Leer = Bildmitte.
 focuspoint_invalid = Der Fokuspunkt muss die Form „x,y“ in Prozent haben, z. B. 50.0,30.5.
-focuspoint_reset = Fokuspunkt entfernen
-focuspoint_preview_hint = Klick ins Bild setzt den Fokuspunkt
+focuspoint_panel = Fokuspunkt-Auswahl
+focuspoint_panel_image = Fokuspunkt: ins Bild klicken oder mit den Pfeiltasten verschieben
+focuspoint_panel_reset = Zurücksetzen
+focuspoint_panel_initial = Ausgangswert
+focuspoint_panel_remove = Entfernen
+focuspoint_panel_zoom = Vorschau vergrößern
+focuspoint_panel_select = Fokuspunkt im Bild wählen
