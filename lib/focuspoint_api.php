@@ -72,6 +72,12 @@ class FocuspointMediaManager extends rex_media_manager
      */
     public static function createMedia($type = null, $file = null)
     {
+        if( $file === null || $type === null ) {
+            throw new InvalidArgumentException('Missing required parameters: type and file must be provided.');
+        }
+        if ($file !== rex_path::basename($file)) {
+            throw new InvalidArgumentException('Invalid file name: ' . $file);
+        }
         $mediaPath = rex_path::media($file);
         $media = new rex_managed_media($mediaPath);
         $manager = new self($media);

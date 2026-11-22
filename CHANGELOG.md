@@ -1,5 +1,10 @@
 # Changelog
 
+## **22.11.2026 Version 4.2.5**
+
+- Bugfix: in der Klasse `FocuspointMediaManager` konnten - aufgerufen aus `rex_api_focuspoint`
+  Media-Dateinamen mit Pfadangaben untergeschoben und somit u.U. sonst verborgene Dateien abzurufen. Der Patch schließ die Lücke, indem nur noch reine Dateinamen (`basename(...)`)zulässig sind. 
+
 ## **09.07.2024 Version 4.2.4**
 
 - Bugfix: ab PHP 8.5 Whoops durch deprecated-Methode `ReflectionMethod::setAccessible()` behoben (#144; Danke an @tbaddade)
